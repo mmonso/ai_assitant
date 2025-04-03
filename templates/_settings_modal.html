@@ -1,0 +1,92 @@
+<div id="settings-page-overlay"> <!-- Overlay for centering and dimming -->
+    <div id="settings-modal-main" class="settings-modal"> <!-- Added ID -->
+        <button id="close-settings-button" class="close-settings-btn" title="Close Settings">&times;</button>
+        <!-- Sidebar Removed -->
+        <main class="settings-content">
+            <!-- Account Tab -->
+            <div id="account" class="settings-tab active"> <!-- Default active might be handled by JS -->
+                <h3>Account</h3>
+
+                <!-- Profile Settings -->
+                <section class="settings-section">
+                    <h4>Profile</h4>
+                    <form id="profile-form">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <!-- Value needs to be populated, either by JS fetch or Flask context -->
+                            <input type="text" id="username" name="username" value="{{ user.username }}" required minlength="{{ config.USERNAME_MIN_LENGTH }}" maxlength="{{ config.USERNAME_MAX_LENGTH }}">
+                            <span class="form-error" id="username-error"></span>
+                            <p class="help-text">Allowed characters: letters, numbers, underscore. Length: {{ config.USERNAME_MIN_LENGTH }}-{{ config.USERNAME_MAX_LENGTH }}.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile_picture_url">Profile Picture URL (Optional)</label>
+                            <input type="url" id="profile_picture_url" name="profile_picture_url" value="{{ user.profile_picture_url or '' }}" placeholder="https://example.com/avatar.png">
+                            <span class="form-error" id="profile_picture_url-error"></span>
+                        </div>
+                         <button type="submit" class="settings-button">Save Profile</button>
+                         <span class="form-success" id="profile-success"></span>
+                    </form>
+                </section>
+
+                <!-- Password Change -->
+                <section class="settings-section">
+                    <h4>Change Password</h4>
+                    <form id="password-form">
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                             <span class="form-error" id="current_password-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" id="new_password" name="new_password" required minlength="{{ config.PASSWORD_MIN_LENGTH }}">
+                             <span class="form-error" id="new_password-error"></span>
+                             <p class="help-text">Minimum length: {{ config.PASSWORD_MIN_LENGTH }} characters.</p>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                             <span class="form-error" id="confirm_password-error"></span>
+                        </div>
+                        <button type="submit" class="settings-button">Change Password</button>
+                        <span class="form-success" id="password-success"></span>
+                         <span class="form-error" id="password-form-error"></span> <!-- General form error -->
+                    </form>
+                </section>
+
+                <!-- Delete Account -->
+                <section class="settings-section">
+                    <h4>Delete Account</h4>
+                    <p class="help-text" style="color: var(--flash-error-text);">Warning: Deleting your account is permanent and will remove all your conversations and messages.</p>
+                    <form id="delete-form">
+                        <button type="submit" class="settings-button delete-button">Delete My Account</button>
+                         <span class="form-error" id="delete-error"></span>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Chat Settings Tab -->
+            <div id="chat" class="settings-tab">
+                 <h3>Chat Settings</h3>
+                 <!-- System Prompt -->
+                <section class="settings-section">
+                    <h4>System Prompt (Optional)</h4>
+                    <form id="prompt-form">
+                        <div class="form-group">
+                            <label for="system_prompt">Customize LLM Behavior</label>
+                            <textarea id="system_prompt" name="system_prompt" rows="4" placeholder="e.g., You are a helpful assistant that speaks like a pirate.">{{ user.system_prompt or '' }}</textarea>
+                            <span class="form-error" id="system_prompt-error"></span>
+                            <p class="help-text">Define instructions or personality for the chatbot.</p>
+                        </div>
+                        <button type="submit" class="settings-button">Save Prompt</button>
+                         <span class="form-success" id="prompt-success"></span>
+                    </form>
+                </section>
+                 <!-- Add more chat-related settings here -->
+            </div>
+
+             <!-- Add more tabs here as needed -->
+
+        </main>
+    </div>
+</div>

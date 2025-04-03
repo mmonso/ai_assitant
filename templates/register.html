@@ -21,7 +21,7 @@
             {% endif %}
         {% endwith %}
 
-        <form method="POST" action="{{ url_for('register') }}">
+        <form method="POST" action="{{ url_for('auth.register') }}">
             <div>
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>
@@ -38,7 +38,7 @@
             <button type="submit">Register</button>
         </form>
         <div class="switch-link">
-            Already have an account? <a href="{{ url_for('login') }}">Login here</a>
+            Already have an account? <a href="{{ url_for('auth.login') }}">Login here</a>
         </div>
     </div>
 </body>

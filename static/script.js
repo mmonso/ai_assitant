@@ -7,15 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const newChatButton = document.getElementById('new-chat-button');
     const openSettingsButton = document.getElementById('open-settings-button'); // Gear Icon Button
     const settingsPopoverLevel1 = document.getElementById('settings-popover-level1'); // Level 1 Popover
-    const settingsModalOverlay = document.getElementById('settings-page-overlay'); // Level 2 Modal Overlay
-    const settingsModalMain = document.getElementById('settings-modal-main'); // Level 2 Modal Content
-    const closeSettingsButton = document.getElementById('close-settings-button'); // Level 2 Modal Close Button
+    // Modal elements will be queried dynamically after loading
+    let settingsModalOverlay = null;
+    let settingsModalMain = null;
+    let closeSettingsButton = null;
+    const settingsModalPlaceholder = document.getElementById('settings-modal-placeholder'); // Placeholder Div
 
     // --- Force Hide Modal & Popover on Load ---
-    if (settingsModalOverlay) {
-        settingsModalOverlay.style.display = 'none';
-        settingsModalOverlay.classList.remove('visible');
-    }
+    // Initial hide is not needed as the placeholder is empty
     if (settingsPopoverLevel1) {
         settingsPopoverLevel1.style.display = 'none';
         settingsPopoverLevel1.classList.remove('visible');
@@ -212,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadConversationList() {
         console.log("Loading conversation list...");
         try {
-            const response = await fetch('/get_conversation_list');
+            const response = await fetch('/api/chat/list');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             displayConversations(data.conversations || []);
@@ -230,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const loadingIndicator = chatBox.lastChild;
 
         try {
-            const response = await fetch(`/get_conversation_messages?conversation_id=${conversationId}`);
+            const response = await fetch(`/api/chat/messages?conversation_id=${conversationId}`);
             if (loadingIndicator && chatBox.contains(loadingIndicator)) chatBox.removeChild(loadingIndicator);
 
             if (!response.ok) {
@@ -268,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const typingIndicator = chatBox.lastChild;
 
         try {
-            const response = await fetch('/chat', {
+            const response = await fetch('/api/chat/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: messageText }),
@@ -293,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.new_conversation_id) {
                 currentConversationId = data.new_conversation_id;
                 console.log(`Backend created new conversation: ${currentConversationId}`);
-                await fetch('/set_active_conversation', {
+                await fetch('/api/chat/set_active', {
                      method: 'POST',
                      headers: { 'Content-Type': 'application/json' },
                      body: JSON.stringify({ conversation_id: currentConversationId }),
@@ -333,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
             titleSpan.textContent = newTitle;
             input.replaceWith(titleSpan);
             try {
-                const response = await fetch(`/rename_conversation/${conversationId}`, {
+                const response = await fetch(`/api/chat/rename/${conversationId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title: newTitle }),
@@ -366,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleDeleteConversation(listItem, conversationId, conversationTitle) {
         if (!confirm(`Are you sure you want to delete "${conversationTitle}"?\nThis action cannot be undone.`)) return;
         console.log(`Attempting to delete conversation: ${conversationId}`);
-        fetch(`/delete_conversation/${conversationId}`, { method: 'DELETE' })
+        fetch(`/api/chat/delete/${conversationId}`, { method: 'DELETE' })
             .then(response => {
                 if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Failed to delete'); });
                 return response.json();
@@ -389,7 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (conversationId === currentConversationId) return;
         console.log(`Switching to conversation: ${conversationId}`);
         try {
-            const response = await fetch('/set_active_conversation', {
+            const response = await fetch('/api/chat/set_active', {
                  method: 'POST',
                  headers: { 'Content-Type': 'application/json' },
                  body: JSON.stringify({ conversation_id: conversationId }),
@@ -405,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleNewChat() {
         console.log("Starting new chat...");
         try {
-             const response = await fetch('/start_new_conversation', { method: 'POST' });
+             const response = await fetch('/api/chat/start_new', { method: 'POST' });
              if (!response.ok) throw new Error("Failed to signal new conversation to backend");
              currentConversationId = null;
              clearChatbox();
@@ -429,7 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchAndPopulateSettings() {
         console.log("Fetching user settings data...");
         try {
-            const response = await fetch('/api/get_user_settings'); // New API endpoint
+            const response = await fetch('/api/settings/get_user_settings'); // Use settings API blueprint
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -452,12 +451,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    function openSettingsModal(targetTabId = 'account') { // Default to account tab
-        if (!settingsModalOverlay || !settingsModalMain) return;
+    async function openSettingsModal(targetTabId = 'account') { // Default to account tab
+        if (!settingsModalPlaceholder) {
+            console.error("Settings modal placeholder not found!");
+            return;
+        }
 
-        fetchAndPopulateSettings(); // Fetch data when opening
+        // Check if modal content is already loaded
+        let modalContentLoaded = settingsModalPlaceholder.querySelector('#settings-page-overlay');
 
-        // Activate the correct tab based on the clicked Level 1 link
+        if (!modalContentLoaded) {
+            console.log("Settings modal not loaded, fetching...");
+            try {
+                const response = await fetch('/get_settings_modal'); // Fetch the partial HTML
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const modalHtml = await response.text();
+                settingsModalPlaceholder.innerHTML = modalHtml; // Inject the HTML
+
+                // Now that HTML is injected, query for the elements
+                settingsModalOverlay = settingsModalPlaceholder.querySelector('#settings-page-overlay');
+                settingsModalMain = settingsModalPlaceholder.querySelector('#settings-modal-main');
+                closeSettingsButton = settingsModalPlaceholder.querySelector('#close-settings-button');
+
+                if (!settingsModalOverlay || !settingsModalMain || !closeSettingsButton) {
+                     console.error("Failed to find modal elements after loading!");
+                     settingsModalPlaceholder.innerHTML = '<p style="color:red;">Error loading settings modal content.</p>';
+                     return;
+                }
+
+                // Re-attach close button listener (important!)
+                closeSettingsButton.addEventListener('click', closeSettingsModal);
+
+                console.log("Settings modal HTML loaded and elements found.");
+
+                // Note: Event listeners inside settings.js for forms might need adjustment
+                // if they rely on running only once at initial DOMContentLoaded.
+                // Calling populateSettingsForms should be sufficient for now.
+
+            } catch (error) {
+                console.error("Failed to fetch or inject settings modal:", error);
+                settingsModalPlaceholder.innerHTML = `<p style="color:red;">Error loading settings: ${error.message}</p>`;
+                return; // Stop if loading failed
+            }
+        } else {
+             // Modal already loaded, just ensure elements are referenced
+             settingsModalOverlay = modalContentLoaded;
+             settingsModalMain = settingsModalOverlay.querySelector('#settings-modal-main');
+             closeSettingsButton = settingsModalOverlay.querySelector('#close-settings-button');
+             console.log("Settings modal already loaded.");
+        }
+
+        // Ensure elements are valid before proceeding
+        if (!settingsModalOverlay || !settingsModalMain) {
+             console.error("Cannot proceed, settings modal elements are missing.");
+             return;
+        }
+
+        // Fetch/refresh data and populate forms (now happens *after* HTML is potentially loaded)
+        await fetchAndPopulateSettings(); // Make sure this awaits if needed
+
+        // Activate the correct tab
         const tabs = settingsModalMain.querySelectorAll('.settings-tab');
         let activated = false;
         tabs.forEach(tab => {
@@ -473,17 +528,28 @@ document.addEventListener('DOMContentLoaded', () => {
             tabs[0].classList.add('active');
         }
 
-
+        // Show the modal
         settingsModalOverlay.style.display = 'flex';
-        settingsModalOverlay.classList.add('visible');
-        document.body.classList.add('settings-modal-open'); // Optional: Add class to body
+        // Use setTimeout to allow the browser to render the display change before adding the class for transition
+        setTimeout(() => {
+             settingsModalOverlay.classList.add('visible');
+        }, 10); // Small delay
+        document.body.classList.add('settings-modal-open');
     }
 
     function closeSettingsModal() {
-        if (settingsModalOverlay) {
-            settingsModalOverlay.style.display = 'none';
-            settingsModalOverlay.classList.remove('visible');
-            document.body.classList.remove('settings-modal-open'); // Optional: Remove class from body
+        // Now references the dynamically loaded element
+        if (settingsModalOverlay && settingsModalOverlay.classList.contains('visible')) {
+             settingsModalOverlay.classList.remove('visible');
+             // Wait for transition to finish before hiding completely
+             settingsModalOverlay.addEventListener('transitionend', () => {
+                 settingsModalOverlay.style.display = 'none';
+             }, { once: true }); // Remove listener after it runs once
+             document.body.classList.remove('settings-modal-open');
+        } else if (settingsModalOverlay) {
+             // If somehow called when not visible, just ensure it's hidden
+             settingsModalOverlay.style.display = 'none';
+             document.body.classList.remove('settings-modal-open');
         }
     }
 
@@ -520,7 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (closeSettingsButton) {
-        closeSettingsButton.addEventListener('click', closeSettingsModal);
     }
     if (settingsModalOverlay) {
         // Close modal if clicking directly on the overlay background
