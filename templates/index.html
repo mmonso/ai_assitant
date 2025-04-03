@@ -1,0 +1,31 @@
+<![CDATA[<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="app-container"> <!-- Renamed container for clarity and structure -->
+        <div id="sidebar">
+            <h2>History</h2>
+            <ul id="history-list">
+                <!-- History items will be added here -->
+            </ul>
+        </div>
+        <div id="main-content">
+            <h1>Gemini Chatbot</h1>
+            <div id="chat-box">
+                <!-- Chat messages will appear here -->
+            </div>
+            <div id="input-area">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>]]>
