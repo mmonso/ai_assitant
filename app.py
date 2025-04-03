@@ -138,6 +138,66 @@ def get_conversation_list():
         print(f"Error fetching conversation list for user {user_id}: {e}")
         return jsonify({"error": "Failed to retrieve conversation list"}), 500
 
+@app.route('/rename_conversation/<int:conversation_id>', methods=['PUT'])
+def rename_conversation(conversation_id):
+    """Renames a specific conversation."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+
+    data = request.get_json()
+    new_title = data.get('title')
+
+    if not new_title or len(new_title.strip()) == 0:
+        return jsonify({"error": "New title cannot be empty"}), 400
+
+    user_id = session['user_id']
+    try:
+        success = db_utils.set_conversation_title(conversation_id, user_id, new_title.strip())
+        if success:
+            return jsonify({"message": "Conversation renamed successfully"}), 200
+        else:
+            # Error message handled by db_utils or implies not found/not owned
+            return jsonify({"error": "Failed to rename conversation. Not found or permission denied."}), 404
+    except Exception as e:
+        print(f"Error renaming conversation {conversation_id}: {e}")
+        return jsonify({"error": "An internal error occurred during rename"}), 500
+
+@app.route('/delete_conversation/<int:conversation_id>', methods=['DELETE'])
+def delete_conversation(conversation_id):
+    """Deletes a specific conversation."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+
+    user_id = session['user_id']
+    try:
+        # Verify ownership before deleting (important!)
+        with db_utils.get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT user_id FROM conversations WHERE conversation_id = ?", (conversation_id,))
+            conversation = cursor.fetchone()
+
+            if not conversation:
+                return jsonify({"error": "Conversation not found"}), 404
+            if conversation['user_id'] != user_id:
+                return jsonify({"error": "Permission denied"}), 403
+
+            # If checks pass, delete the conversation (cascading delete handles messages)
+            cursor.execute("DELETE FROM conversations WHERE conversation_id = ?", (conversation_id,))
+            conn.commit()
+
+            # Clear from session if it was the active one
+            if session.get('current_conversation_id') == conversation_id:
+                session.pop('current_conversation_id', None)
+
+            return jsonify({"message": "Conversation deleted successfully"}), 200
+
+    except Exception as e:
+        print(f"Error deleting conversation {conversation_id}: {e}")
+        return jsonify({"error": "An internal error occurred during deletion"}), 500
+
+
 @app.route('/get_conversation_messages', methods=['GET'])
 def get_conversation_messages():
     """Fetches messages for a specific conversation."""

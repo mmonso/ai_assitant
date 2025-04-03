@@ -126,6 +126,8 @@ input::placeholder {
     flex-direction: column;
     border-right: 1px solid var(--border-color);
     flex-shrink: 0; /* Prevent shrinking */
+    overflow-y: auto; /* Handle scrolling here */
+    position: relative; /* Needed if popover calculation depends on sidebar */
 }
 
 #main-content {
@@ -175,19 +177,20 @@ input::placeholder {
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow-y: auto; /* Allow scrolling */
-    flex-grow: 1;
+    /* overflow-y: auto; */ /* Removed - handled by sidebar */
+    /* flex-grow: 1; */ /* Removed - let content determine height within flex column */
 }
 
 #conversation-list li {
-    padding: 10px 12px;
+    padding: 0; /* Remove padding from li itself */
     margin-bottom: 4px;
     border-radius: var(--border-radius-md);
     cursor: pointer;
     font-size: 0.9em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    position: relative; /* Make li the positioning context for popover */
+    /* white-space: nowrap; */ /* Let content wrap if needed, or handle in title span */
+    /* overflow: hidden; */ /* REMOVE overflow from li */
+    /* text-overflow: ellipsis; */ /* Handle ellipsis in title span */
     color: var(--text-secondary);
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
 }
@@ -196,6 +199,126 @@ input::placeholder {
     background-color: var(--bg-hover);
     color: var(--text-primary);
 }
+
+#conversation-list li .conversation-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative; /* Needed for popover positioning */
+    padding-right: 8px; /* Add padding to push button from right edge, matching title's left padding */
+}
+
+#conversation-list li .conversation-title {
+    flex-grow: 1;
+    /* overflow: hidden; */ /* REMOVE overflow */
+    /* text-overflow: ellipsis; */ /* REMOVE ellipsis */
+    white-space: normal; /* Allow wrapping if needed */
+    /* Padding: Top Right Bottom Left */
+    padding: 10px 5px 10px 12px; /* <- padding-left: 12px está aqui */
+    white-space: nowrap;
+    padding-right: 5px; /* Space before button */
+    /* Ensure title doesn't prevent hover on the whole item */
+    pointer-events: none; /* Title span itself isn't clickable */
+}
+#conversation-list li:hover .conversation-title,
+#conversation-list li.active .conversation-title {
+     pointer-events: auto; /* Allow clicking title when item is hovered/active */
+}
+
+
+#conversation-list li .conversation-actions-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    line-height: 1;
+    border-radius: var(--border-radius-sm);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+#conversation-list li:hover .conversation-actions-button,
+#conversation-list li .actions-popover.visible + .conversation-actions-button /* Keep visible if popover is open */
+ {
+    opacity: 1; /* Show on hover */
+}
+
+#conversation-list li .conversation-actions-button:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Popover Styles - Appended to Body */
+.actions-popover {
+    display: none; /* Hidden by default */
+    position: fixed; /* Position relative to viewport */
+    /* right: 0px; */  /* Removed - JS calculates 'left' */
+    /* bottom: calc(100% + 2px); */ /* Removed - JS calculates 'top' */
+    /* margin-bottom: 4px; */ /* Removed, using calc */
+    background-color: var(--bg-secondary); /* Match sidebar */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 10; /* Ensure popover is above other items */
+    z-index: 10;
+    padding: 5px;
+    min-width: 130px; /* Ensure enough width */
+}
+
+.actions-popover.visible {
+    display: block; /* Show when class is added */
+}
+
+.popover-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 0.9em;
+    border-radius: var(--border-radius-sm);
+}
+
+.popover-button .icon {
+    margin-right: 8px;
+    font-size: 1.1em; /* Slightly larger icon */
+    display: inline-block;
+    width: 1.2em; /* Ensure alignment */
+    text-align: center;
+}
+
+
+.popover-button:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.popover-button.delete-button:hover {
+    color: var(--accent-secondary); /* Red hint on hover for delete */
+}
+
+/* Inline Edit Input */
+.edit-conversation-input {
+    flex-grow: 1; /* Take available space */
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-focus); /* Indicate editing */
+    color: var(--text-primary);
+    padding: 2px 5px; /* Minimal padding */
+    margin: 0; /* Reset margin */
+    font-size: inherit; /* Match list item font size */
+    border-radius: var(--border-radius-sm);
+    height: auto; /* Adjust height */
+    line-height: inherit;
+}
+
 
 #conversation-list li.active {
     background-color: var(--bg-active);
