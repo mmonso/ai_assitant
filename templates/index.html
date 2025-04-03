@@ -9,13 +9,21 @@
 <body>
     <div id="app-container"> <!-- Renamed container for clarity and structure -->
         <div id="sidebar">
-            <h2>History</h2>
-            <ul id="history-list">
-                <!-- History items will be added here -->
+            <div class="sidebar-header">
+                 <h2>Conversations</h2>
+                 <button id="new-chat-button">New Chat</button>
+            </div>
+            <ul id="conversation-list"> <!-- Renamed from history-list -->
+                <!-- Conversation items will be added here by JS -->
             </ul>
         </div>
         <div id="main-content">
-            <h1>Gemini Chatbot</h1>
+            <div class="main-header">
+                <h1>Gemini Chatbot</h1>
+                <!-- Optional: Display username if passed from Flask -->
+                <!-- {% if username %}<span>Welcome, {{ username }}!</span>{% endif %} -->
+                <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            </div>
             <div id="chat-box">
                 <!-- Chat messages will appear here -->
             </div>

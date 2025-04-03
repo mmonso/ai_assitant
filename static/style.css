@@ -1,146 +1,419 @@
-body {
-    font-family: sans-serif;
-    margin: 0;
-    background-color: #202123; /* Dark background for the whole page */
-    color: #ececf1; /* Light text color */
-    display: flex; /* Use flex for sidebar layout */
-    min-height: 100vh;
+/* --- Dark Theme CSS --- */
+
+/* 1. Variables */
+:root {
+    --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean sans-serif */
+
+    /* Dark Palette (Deep Blue/Gray Tones) */
+    --bg-primary: #0a0f18;       /* Deepest background (body) */
+    --bg-secondary: #101827;     /* Slightly lighter (sidebar, headers) */
+    --bg-tertiary: #1c2536;      /* Lighter elements (inputs, messages) */
+    --bg-hover: #2a3447;         /* Hover states */
+    --bg-active: #3a5f80;        /* Active/selected state */
+
+    --text-primary: #e1e8f0;     /* Main text (light gray/blue) */
+    --text-secondary: #a0aec0;   /* Subtler text (placeholders, secondary info) */
+    --text-accent: #63b3ed;      /* Accent text (links) */
+
+    --border-color: #2d3748;     /* Subtle borders */
+    --border-focus: #63b3ed;     /* Border color on focus */
+
+    --accent-primary: #4299e1;   /* Primary accent (buttons, active states) - Blue */
+    --accent-primary-hover: #3182ce;
+    --accent-secondary: #e53e3e; /* Secondary accent (logout, delete) - Red */
+    --accent-secondary-hover: #c53030;
+
+    /* Message Specific */
+    --user-message-bg: #1a3a5c;   /* Slightly distinct user message bg */
+    --bot-message-bg: #1c2536;    /* Same as tertiary bg */
+
+    /* Flash Messages */
+    --flash-success-bg: #1c4532;
+    --flash-success-text: #9ae6b4;
+    --flash-success-border: #2f6f4f;
+    --flash-error-bg: #521b1b;
+    --flash-error-text: #feb2b2;
+    --flash-error-border: #9b2c2c;
+    --flash-info-bg: #1a3852;
+    --flash-info-text: #a0d3e8;
+    --flash-info-border: #2b6cb0;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 18px; /* For messages */
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
 }
 
+/* 2. Global Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 16px;
+    line-height: 1.5;
+    overflow: hidden; /* Prevent body scroll */
+}
+
+a {
+    color: var(--text-accent);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: var(--accent-primary);
+    text-decoration: underline;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 0.6em 1.2em;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+input[type="text"],
+input[type="password"] {
+    font-family: inherit;
+    padding: 0.7em 1em;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.95em;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(var(--border-focus), 0.3); /* Subtle focus ring */
+}
+
+input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* 3. Layout Styles */
 #app-container {
     display: flex;
     width: 100%;
-    height: 100vh; /* Make app container fill the viewport height */
+    height: 100vh;
 }
 
 #sidebar {
-    width: 260px; /* Fixed width for the sidebar */
-    background-color: #171717; /* Slightly darker sidebar background */
+    width: 280px; /* Slightly wider */
+    background-color: var(--bg-secondary);
     padding: 15px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #3a3a3c; /* Subtle border */
-    box-sizing: border-box; /* Include padding in width */
+    border-right: 1px solid var(--border-color);
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
-#sidebar h2 {
-    margin-top: 0;
-    font-size: 1.1em;
-    border-bottom: 1px solid #3a3a3c;
+#main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--bg-primary);
+    overflow: hidden; /* Prevent main content scroll */
+}
+
+/* 4. Sidebar Styles */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding-bottom: 10px;
     margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
 }
 
-#history-list {
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+#new-chat-button {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    font-size: 0.85em;
+    border-radius: var(--border-radius-sm);
+}
+
+#new-chat-button:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+#conversation-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    overflow-y: auto; /* Allow scrolling if history gets long */
+    overflow-y: auto; /* Allow scrolling */
     flex-grow: 1;
 }
 
-#history-list li { /* Style for future history items */
-    padding: 8px 10px;
-    margin-bottom: 5px;
-    border-radius: 4px;
+#conversation-list li {
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: var(--border-radius-md);
     cursor: pointer;
     font-size: 0.9em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: var(--text-secondary);
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
 }
 
-#history-list li:hover {
-    background-color: #2a2b2e; /* Hover effect */
+#conversation-list li:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
 }
 
+#conversation-list li.active {
+    background-color: var(--bg-active);
+    color: var(--text-primary);
+    font-weight: 500;
+}
 
-#main-content {
-    flex-grow: 1; /* Takes remaining width */
+/* Scrollbar styling (optional, for a more refined look) */
+#conversation-list::-webkit-scrollbar { width: 6px; }
+#conversation-list::-webkit-scrollbar-track { background: transparent; }
+#conversation-list::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 10px; }
+#conversation-list::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+
+
+/* 5. Main Content Styles */
+.main-header {
     display: flex;
-    flex-direction: column;
-    height: 100%; /* Ensure it fills the height within app-container */
-    background-color: #202123; /* Match body background */
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
-#main-content h1 {
-    text-align: center;
-    padding: 15px;
+.main-header h1 {
     margin: 0;
-    background-color: #171717; /* Darker header background */
-    color: #ececf1;
     font-size: 1.2em;
-    border-bottom: 1px solid #3a3a3c;
+    font-weight: 600;
+}
+
+.logout-button {
+    background-color: var(--accent-secondary);
+    color: white;
+    padding: 6px 12px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.9em;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.logout-button:hover {
+    background-color: var(--accent-secondary-hover);
+    color: white;
+    text-decoration: none;
 }
 
 #chat-box {
     flex-grow: 1;
-    /* Removed fixed height, flex-grow handles it */
-    overflow-y: auto; /* Enable scrolling */
-    padding: 20px; /* Increased padding */
+    overflow-y: auto;
+    padding: 25px;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Increased space between messages */
+    gap: 20px; /* Space between messages */
 }
 
-/* Remove chat-container styles as it's replaced by main-content */
-/* #chat-container { ... } */
+/* Scrollbar styling for chatbox */
+#chat-box::-webkit-scrollbar { width: 8px; }
+#chat-box::-webkit-scrollbar-track { background: transparent; }
+#chat-box::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 10px; border: 2px solid var(--bg-primary); }
+#chat-box::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
 
-.message {
-    padding: 10px 15px; /* Slightly larger padding */
-    border-radius: 18px; /* More rounded */
-    max-width: 80%; /* Allow slightly wider messages */
-    word-wrap: break-word;
-    line-height: 1.4;
-}
-
-.user-message {
-    background-color: #343541; /* Darker user message background */
-    color: #ececf1;
-    align-self: flex-end;
-    border-bottom-right-radius: 5px;
-}
-
-.bot-message {
-    background-color: #444654; /* Darker bot message background */
-    color: #d1d5db; /* Slightly different bot text color */
-    align-self: flex-start;
-    border-bottom-left-radius: 5px;
-}
 
 #input-area {
     display: flex;
-    padding: 20px; /* Increased padding */
-    border-top: 1px solid #3a3a3c; /* Darker separator */
-    background-color: #202123; /* Match background */
+    padding: 15px 25px;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-primary); /* Match body */
+    flex-shrink: 0; /* Prevent shrinking */
+    gap: 10px;
 }
 
+/* 6. Chat Message Styles */
+.message {
+    padding: 12px 18px;
+    border-radius: var(--border-radius-lg);
+    max-width: 75%; /* Max width */
+    word-wrap: break-word;
+    line-height: 1.45;
+    box-shadow: var(--shadow-sm);
+}
+
+.user-message {
+    background-color: var(--user-message-bg);
+    color: var(--text-primary);
+    align-self: flex-end;
+    border-bottom-right-radius: var(--border-radius-sm); /* Slightly flatter corner */
+}
+
+.bot-message {
+    background-color: var(--bot-message-bg);
+    color: var(--text-primary); /* Use primary text for bot too */
+    align-self: flex-start;
+    border-bottom-left-radius: var(--border-radius-sm);
+}
+
+.system-message { /* For errors or info */
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.9em;
+    text-align: center;
+    align-self: center;
+    max-width: 90%;
+    padding: 5px;
+    box-shadow: none;
+}
+
+
+/* 7. Input Area Styles */
 #user-input {
     flex-grow: 1;
-    padding: 12px 15px; /* Increased padding */
-    border: 1px solid #565869; /* Darker border */
-    border-radius: 6px;
-    margin-right: 10px;
-    background-color: #40414f; /* Dark input background */
-    color: #ececf1; /* Light text color */
-    font-size: 1em;
+    background-color: var(--bg-secondary); /* Slightly different from tertiary */
+    border-color: var(--border-color);
+    padding: 12px 18px; /* Match message padding */
+    border-radius: var(--border-radius-md); /* Consistent radius */
 }
 
-#user-input::placeholder {
-    color: #8e8ea0; /* Lighter placeholder text */
+#user-input:focus {
+     border-color: var(--border-focus);
+     background-color: var(--bg-tertiary); /* Lighten on focus */
 }
 
 #send-button {
-    padding: 10px 18px; /* Adjusted padding */
-    background-color: #19c37d; /* Greenish send button like image */
+    background-color: var(--accent-primary);
     color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    font-weight: bold;
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: var(--border-radius-md);
+    flex-shrink: 0; /* Prevent shrinking */
 }
 
 #send-button:hover {
-    background-color: #15a36a; /* Darker green on hover */
+    background-color: var(--accent-primary-hover);
+}
+
+/* 8. Authentication Page Styles */
+.auth-container {
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 30px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--bg-secondary);
+    box-shadow: var(--shadow-md);
+}
+
+.auth-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.auth-container label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="password"] {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.auth-container button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-primary);
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.auth-container button[type="submit"]:hover {
+    background-color: var(--accent-primary-hover);
+}
+
+.auth-container .switch-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.auth-container .switch-link a {
+    font-weight: 500;
+}
+
+/* 9. Flash Message Styles */
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0; /* Add margin below */
+}
+
+.flash-messages li {
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95em;
+    border: 1px solid transparent; /* Base border */
+}
+
+.flash-messages .success {
+    background-color: var(--flash-success-bg);
+    color: var(--flash-success-text);
+    border-color: var(--flash-success-border);
+}
+.flash-messages .error {
+    background-color: var(--flash-error-bg);
+    color: var(--flash-error-text);
+    border-color: var(--flash-error-border);
+}
+.flash-messages .info {
+    background-color: var(--flash-info-bg);
+    color: var(--flash-info-text);
+    border-color: var(--flash-info-border);
 }
