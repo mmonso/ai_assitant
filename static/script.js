@@ -1,9 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Get element references
     const chatBox = document.getElementById('chat-box');
     const userInput = document.getElementById('user-input');
     const sendButton = document.getElementById('send-button');
-    const conversationList = document.getElementById('conversation-list'); // Updated ID
+    const conversationList = document.getElementById('conversation-list');
     const newChatButton = document.getElementById('new-chat-button');
+    const openSettingsButton = document.getElementById('open-settings-button'); // Gear Icon Button
+    const settingsPopoverLevel1 = document.getElementById('settings-popover-level1'); // Level 1 Popover
+    const settingsModalOverlay = document.getElementById('settings-page-overlay'); // Level 2 Modal Overlay
+    const settingsModalMain = document.getElementById('settings-modal-main'); // Level 2 Modal Content
+    const closeSettingsButton = document.getElementById('close-settings-button'); // Level 2 Modal Close Button
+
+    // --- Force Hide Modal & Popover on Load ---
+    if (settingsModalOverlay) {
+        settingsModalOverlay.style.display = 'none';
+        settingsModalOverlay.classList.remove('visible');
+    }
+    if (settingsPopoverLevel1) {
+        settingsPopoverLevel1.style.display = 'none';
+        settingsPopoverLevel1.classList.remove('visible');
+    }
 
     let currentConversationId = null; // Track the active conversation
 
@@ -14,25 +30,17 @@ document.addEventListener('DOMContentLoaded', () => {
         messageElement.classList.add('message', `${sender}-message`);
 
         if (sender === 'bot') {
-            // 1. Parse Markdown using marked
-            const rawHtml = marked.parse(message, { gfm: true, breaks: true }); // Enable GitHub Flavored Markdown & line breaks
-
-            // 2. Sanitize HTML using DOMPurify
+            const rawHtml = marked.parse(message, { gfm: true, breaks: true });
             const cleanHtml = DOMPurify.sanitize(rawHtml);
-
-            // 3. Set innerHTML
             messageElement.innerHTML = cleanHtml;
-
-            // 4. Apply Syntax Highlighting to code blocks within this message
             messageElement.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
         } else {
-            // For user or system messages, just set text content
             messageElement.textContent = message;
         }
         chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight; // Scroll down
+        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     function clearChatbox() {
@@ -40,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayConversations(conversations) {
-        conversationList.innerHTML = ''; // Clear existing list
+        conversationList.innerHTML = '';
         if (!conversations || conversations.length === 0) {
             const noConvItem = document.createElement('li');
             noConvItem.textContent = 'No conversations yet.';
@@ -57,88 +65,95 @@ document.addEventListener('DOMContentLoaded', () => {
                 listItem.classList.add('active');
             }
 
-            // Container for title and actions
             const itemContent = document.createElement('div');
             itemContent.classList.add('conversation-item-content');
 
-            // Title Span (for potential editing)
             const titleSpan = document.createElement('span');
             titleSpan.classList.add('conversation-title');
             titleSpan.textContent = conv.title || `Conversation ${conv.conversation_id}`;
             titleSpan.addEventListener('click', (e) => {
-                // Prevent triggering edit/delete when clicking title to select
                 if (!listItem.classList.contains('editing')) {
                     handleConversationSelect(conv.conversation_id);
                 }
-                e.stopPropagation(); // Prevent li click handler if needed
+                e.stopPropagation();
             });
 
-            // Actions Button (...)
             const actionsButton = document.createElement('button');
             actionsButton.classList.add('conversation-actions-button');
-            actionsButton.innerHTML = '&#8943;'; // Horizontal ellipsis HTML entity
+            actionsButton.innerHTML = '&#8943;';
             actionsButton.title = "More options";
             actionsButton.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent li click handler
-                toggleActionsPopover(listItem);
+                e.stopPropagation();
+                // *** FIX: Call the renamed function ***
+                toggleConversationActionsPopover(listItem);
             });
 
-            // Actions Popover (initially hidden)
-            const popover = document.createElement('div');
-            popover.classList.add('actions-popover');
-            popover.innerHTML = `
+            // Conversation Actions Popover (initially hidden)
+            const convPopover = document.createElement('div');
+            convPopover.classList.add('actions-popover'); // Use existing class for conversation actions
+            convPopover.innerHTML = `
                 <button class="popover-button edit-button" title="Edit title">
-                    <span class="icon">&#x270E;</span> Edit <!-- Unicode Lower Right Pencil -->
+                    <span class="icon">&#x270E;</span> Edit
                 </button>
                 <button class="popover-button delete-button" title="Delete conversation">
-                    <span class="icon">&#x2715;</span> Delete <!-- Unicode Multiplication X -->
+                    <span class="icon">&#x2715;</span> Delete
                 </button>
             `;
-            // Add event listeners inside the popover creation
-            popover.querySelector('.edit-button').addEventListener('click', (e) => {
+            convPopover.querySelector('.edit-button').addEventListener('click', (e) => {
                 e.stopPropagation();
                 handleEditConversation(listItem, titleSpan, conv.conversation_id);
                 hideAllPopovers();
             });
-            popover.querySelector('.delete-button').addEventListener('click', (e) => {
+            convPopover.querySelector('.delete-button').addEventListener('click', (e) => {
                 e.stopPropagation();
                 handleDeleteConversation(listItem, conv.conversation_id, titleSpan.textContent);
                 hideAllPopovers();
             });
 
-
             itemContent.appendChild(titleSpan);
             itemContent.appendChild(actionsButton);
-            // Don't append popover here initially
-            // Store popover element reference on the list item for later use
-            listItem._popoverElement = popover;
+            listItem._popoverElement = convPopover; // Store reference for conversation actions
             listItem.appendChild(itemContent);
             conversationList.appendChild(listItem);
         });
 
         // Add global listener to close popovers when clicking outside
-        document.addEventListener('click', hideAllPopovers); // Remove capture phase (true)
+        document.addEventListener('click', hideAllPopovers);
     }
 
      function hideAllPopovers(event) {
-        // If the click was specifically on an actions button, let its handler manage toggling
-        if (event && event.target.closest('.conversation-actions-button')) {
-             // Check if the click was on the button that *owns* the currently visible popover
-             const currentVisiblePopover = document.querySelector('.actions-popover.visible');
-             if (currentVisiblePopover && event.target.closest('.conversation-item')._popoverElement === currentVisiblePopover) {
-                 // Allow the toggle function to handle closing it
-                 return;
-             }
+        let clickedInsidePopover = false;
+        let clickedOnActionsButton = false;
+        let clickedOnGearButton = false;
+
+        if (event) {
+            clickedInsidePopover = event.target.closest('.actions-popover, .settings-popover');
+            clickedOnActionsButton = event.target.closest('.conversation-actions-button');
+            clickedOnGearButton = event.target.closest('#open-settings-button');
         }
 
-        // Hide and remove any popovers attached to the body
-        const visiblePopovers = document.querySelectorAll('body > .actions-popover.visible');
-        visiblePopovers.forEach(popover => {
-            popover.remove(); // Remove from body
+        // Hide Conversation Actions Popovers
+        const visibleConvPopovers = document.querySelectorAll('body > .actions-popover.visible');
+        visibleConvPopovers.forEach(popover => {
+            // Don't hide if the click was inside this specific popover or on its corresponding button
+            const ownerButton = document.querySelector(`.conversation-actions-button[aria-describedby="${popover.id}"]`); // Assuming we add aria later
+            const ownerLi = ownerButton ? ownerButton.closest('.conversation-item') : null;
+            if (!clickedInsidePopover && !(clickedOnActionsButton && ownerLi && ownerLi._popoverElement === popover)) {
+                 popover.remove();
+            }
         });
+
+        // Hide Settings Level 1 Popover
+        if (settingsPopoverLevel1 && settingsPopoverLevel1.classList.contains('visible')) {
+            if (!clickedInsidePopover && !clickedOnGearButton) {
+                settingsPopoverLevel1.classList.remove('visible');
+                settingsPopoverLevel1.style.display = 'none';
+            }
+        }
     }
 
-    function toggleActionsPopover(listItem) {
+    // Renamed from toggleActionsPopover to avoid confusion
+    function toggleConversationActionsPopover(listItem) {
         const popover = listItem._popoverElement;
         if (!popover) return;
 
@@ -148,14 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // If this popover is already visible, hide and remove it
         if (currentlyVisiblePopover === popover) {
             popover.remove();
-            console.log("Popover removed (toggle off)");
             return;
         }
-
         // If another popover is visible, hide and remove it first
         if (currentlyVisiblePopover) {
             currentlyVisiblePopover.remove();
-            console.log("Previous popover removed");
         }
 
         // Append the new popover to the body and calculate position
@@ -164,53 +176,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const btnRect = button.getBoundingClientRect();
         const popoverRect = popover.getBoundingClientRect(); // Measure after visible
-
-        console.log("Button Rect:", btnRect); // Debugging
-        console.log("Popover Rect:", popoverRect); // Debugging
-
-        // --- Position Calculation ---
         const buffer = 4; // Gap between button and popover
-
-        // Default: Position BELOW the button, aligned left
         let top = btnRect.bottom + buffer;
         let left = btnRect.left; // Align left edge of popover with left edge of button
-
-        console.log(`[Popover] Initial calculated top (below): ${top}, left: ${left}`);
 
         // Adjust if it goes off-screen BOTTOM
         if (top + popoverRect.height > window.innerHeight - buffer) {
             top = btnRect.top - popoverRect.height - buffer; // Try placing ABOVE instead
-            console.log(`[Popover] Adjusting top (too low): placing ABOVE button at ${top}`);
-            // Double-check if placing ABOVE now goes off-screen top
-            if (top < buffer) {
-                 top = buffer; // Place near top edge as last resort
-                 console.log(`[Popover] Adjusting top (ABOVE too high): placing near top edge at ${top}`);
-            }
+            if (top < buffer) top = buffer; // Place near top edge as last resort
         }
         // Adjust if it goes off-screen right (popover left + width > viewport width)
         if (left + popoverRect.width > window.innerWidth) {
             left = window.innerWidth - popoverRect.width - 5; // Position from right edge with 5px margin
-             console.log("Adjusting left: preventing right overflow");
         }
          // Adjust if it goes off-screen left (shouldn't happen often with left alignment, but check)
-        if (left < 0) {
-            left = 5; // Position from left edge with 5px margin
-            console.log("Adjusting left: preventing left overflow");
-        }
-        // --- End Position Calculation ---
+        if (left < 0) left = 5; // Position from left edge with 5px margin
 
         popover.style.top = `${top}px`;
         popover.style.left = `${left}px`;
-        console.log(`Popover positioned at top: ${top}px, left: ${left}px`); // Debugging
     }
 
 
     function setActiveConversationInSidebar(conversationId) {
-        // Remove active/editing class from all items
         document.querySelectorAll('#conversation-list li').forEach(item => {
-            item.classList.remove('active', 'editing'); // Also remove editing class
+            item.classList.remove('active', 'editing');
         });
-        // Add active class to the selected one
         const activeItem = document.querySelector(`#conversation-list li[data-conversation-id="${conversationId}"]`);
         if (activeItem) {
             activeItem.classList.add('active');
@@ -223,45 +213,29 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Loading conversation list...");
         try {
             const response = await fetch('/get_conversation_list');
-            if (!response.ok) {
-                console.error(`Error loading conversation list: ${response.status}`);
-                // Handle error display if needed
-                displayConversations([]); // Show empty state
-                return;
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             displayConversations(data.conversations || []);
-            // Optionally load the most recent conversation automatically?
-            // if (data.conversations && data.conversations.length > 0) {
-            //    handleConversationSelect(data.conversations[0].conversation_id);
-            // }
         } catch (error) {
             console.error('Failed to fetch conversation list:', error);
             addMessageToChatbox('Could not load conversation list.', 'system');
-            displayConversations([]); // Show empty state
+            displayConversations([]);
         }
     }
 
     async function loadConversationMessages(conversationId) {
         console.log(`Loading messages for conversation: ${conversationId}`);
-        clearChatbox(); // Clear chat before loading new messages
-        addMessageToChatbox('Loading messages...', 'system'); // Loading indicator
+        clearChatbox();
+        addMessageToChatbox('Loading messages...', 'system');
+        const loadingIndicator = chatBox.lastChild;
 
         try {
             const response = await fetch(`/get_conversation_messages?conversation_id=${conversationId}`);
-            const loadingIndicator = chatBox.lastChild; // Get indicator element
-            if (loadingIndicator && loadingIndicator.textContent === 'Loading messages...') {
-                 chatBox.removeChild(loadingIndicator); // Remove indicator
-            }
+            if (loadingIndicator && chatBox.contains(loadingIndicator)) chatBox.removeChild(loadingIndicator);
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                const errorMsg = `Error loading messages: ${response.status} ${errorData.error || ''}`;
-                console.error(errorMsg);
-                addMessageToChatbox(errorMsg, 'system');
-                currentConversationId = null; // Reset if loading failed
-                setActiveConversationInSidebar(null);
-                return;
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorData.error || 'Unknown error'}`);
             }
 
             const data = await response.json();
@@ -270,20 +244,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const sender = message.role === 'assistant' ? 'bot' : message.role;
                     addMessageToChatbox(message.content, sender);
                 });
-                currentConversationId = conversationId; // Update current ID after successful load
+                currentConversationId = conversationId;
                 setActiveConversationInSidebar(conversationId);
             } else {
                 console.log("No messages found for this conversation.");
-                // Keep chatbox clear or add a message like "Start typing..."
             }
         } catch (error) {
-            const loadingIndicator = chatBox.lastChild; // Try removing indicator again on error
-            if (loadingIndicator && loadingIndicator.textContent === 'Loading messages...') {
-                 chatBox.removeChild(loadingIndicator);
-            }
+            if (loadingIndicator && chatBox.contains(loadingIndicator)) chatBox.removeChild(loadingIndicator);
             console.error('Failed to fetch messages:', error);
-            addMessageToChatbox('Could not load messages for this conversation.', 'system');
-            currentConversationId = null; // Reset on error
+            addMessageToChatbox(`Could not load messages: ${error.message}`, 'system');
+            currentConversationId = null;
             setActiveConversationInSidebar(null);
         }
     }
@@ -294,26 +264,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addMessageToChatbox(messageText, 'user');
         userInput.value = '';
-        addMessageToChatbox('...', 'bot'); // Typing indicator
+        addMessageToChatbox('...', 'bot');
         const typingIndicator = chatBox.lastChild;
 
         try {
             const response = await fetch('/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                // Send message *without* conversation_id if currentConversationId is null
-                // Backend will create a new one
                 body: JSON.stringify({ message: messageText }),
             });
 
-            if (typingIndicator) chatBox.removeChild(typingIndicator); // Remove indicator
+            if (typingIndicator && chatBox.contains(typingIndicator)) chatBox.removeChild(typingIndicator);
 
             if (!response.ok) {
                 let errorMsg = `Error: ${response.status}`;
                 try { errorMsg = (await response.json()).error || errorMsg; } catch (e) {}
-                addMessageToChatbox(errorMsg, 'bot');
-                console.error('Chat request failed:', errorMsg);
-                return;
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
@@ -321,29 +287,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (data.response) {
                 addMessageToChatbox(data.response, 'bot');
             } else if (data.error) {
-                addMessageToChatbox(`Error: ${data.error}`, 'bot');
+                throw new Error(data.error);
             }
 
-            // If a new conversation was created by the backend
             if (data.new_conversation_id) {
                 currentConversationId = data.new_conversation_id;
                 console.log(`Backend created new conversation: ${currentConversationId}`);
-                // Update the session on the backend to track this new ID
                 await fetch('/set_active_conversation', {
                      method: 'POST',
                      headers: { 'Content-Type': 'application/json' },
                      body: JSON.stringify({ conversation_id: currentConversationId }),
                 });
-                // Reload the conversation list to show the new one
                 await loadConversationList();
-                setActiveConversationInSidebar(currentConversationId); // Highlight the new one
+                setActiveConversationInSidebar(currentConversationId);
             }
 
         } catch (error) {
-            if (typingIndicator && chatBox.contains(typingIndicator)) {
-                chatBox.removeChild(typingIndicator);
-            }
-            addMessageToChatbox('Failed to connect. Please try again.', 'bot');
+            if (typingIndicator && chatBox.contains(typingIndicator)) chatBox.removeChild(typingIndicator);
+            addMessageToChatbox(`Error: ${error.message}`, 'bot');
             console.error('Error sending message:', error);
         }
     }
@@ -353,35 +314,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleEditConversation(listItem, titleSpan, conversationId) {
         listItem.classList.add('editing');
         const currentTitle = titleSpan.textContent;
-
-        // Replace span with input field
         const input = document.createElement('input');
         input.type = 'text';
         input.value = currentTitle;
         input.classList.add('edit-conversation-input');
-
-        // Replace titleSpan with input
         titleSpan.replaceWith(input);
-        input.focus(); // Focus the input field
-        input.select(); // Select existing text
+        input.focus();
+        input.select();
 
-        // Save on Enter or Blur
         const saveChanges = async () => {
             const newTitle = input.value.trim();
-            listItem.classList.remove('editing'); // Exit editing mode visually
-
-            // If title hasn't changed or is empty, revert without API call
+            listItem.classList.remove('editing');
             if (newTitle === currentTitle || !newTitle) {
-                input.replaceWith(titleSpan); // Put the original span back
-                titleSpan.textContent = currentTitle; // Ensure original text is there
+                input.replaceWith(titleSpan);
+                titleSpan.textContent = currentTitle;
                 return;
             }
-
-            // Optimistically update UI
             titleSpan.textContent = newTitle;
             input.replaceWith(titleSpan);
-
-            // Call API to save changes
             try {
                 const response = await fetch(`/rename_conversation/${conversationId}`, {
                     method: 'PUT',
@@ -390,61 +340,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 if (!response.ok) {
                     console.error("Failed to rename conversation on backend");
-                    // Revert UI on failure
                     titleSpan.textContent = currentTitle;
                     addMessageToChatbox(`Error renaming conversation: ${await response.text()}`, 'system');
                 } else {
                     console.log(`Conversation ${conversationId} renamed to "${newTitle}"`);
-                    // Optionally refresh list if order might change, but likely not needed
-                    // await loadConversationList();
                 }
             } catch (error) {
                 console.error("Error renaming conversation:", error);
-                titleSpan.textContent = currentTitle; // Revert UI
+                titleSpan.textContent = currentTitle;
                 addMessageToChatbox('Error connecting to server for rename.', 'system');
             }
         };
 
         input.addEventListener('blur', saveChanges);
         input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                input.blur(); // Trigger saveChanges via blur
-            } else if (e.key === 'Escape') {
+            if (e.key === 'Enter') input.blur();
+            else if (e.key === 'Escape') {
                 listItem.classList.remove('editing');
-                input.replaceWith(titleSpan); // Revert on Escape
+                input.replaceWith(titleSpan);
                 titleSpan.textContent = currentTitle;
             }
         });
     }
 
     function handleDeleteConversation(listItem, conversationId, conversationTitle) {
-        // Simple confirmation dialog (replace with a styled modal later if desired)
-        if (!confirm(`Are you sure you want to delete "${conversationTitle}"?\nThis action cannot be undone.`)) {
-            return;
-        }
-
+        if (!confirm(`Are you sure you want to delete "${conversationTitle}"?\nThis action cannot be undone.`)) return;
         console.log(`Attempting to delete conversation: ${conversationId}`);
-
-        // Call API to delete
         fetch(`/delete_conversation/${conversationId}`, { method: 'DELETE' })
             .then(response => {
-                if (!response.ok) {
-                    return response.json().then(err => { throw new Error(err.error || 'Failed to delete'); });
-                }
-                return response.json(); // Contains success message
+                if (!response.ok) return response.json().then(err => { throw new Error(err.error || 'Failed to delete'); });
+                return response.json();
             })
             .then(data => {
                 console.log(data.message);
-                // Remove item from UI
                 listItem.remove();
-                // If the deleted conversation was the active one, start a new chat context
-                if (currentConversationId === conversationId) {
-                    handleNewChat(); // Clears chatbox and resets currentConversationId
-                }
-                // Check if list is now empty
-                if (conversationList.children.length === 0) {
-                     displayConversations([]); // Show "No conversations" message
-                }
+                if (currentConversationId === conversationId) handleNewChat();
+                if (conversationList.children.length === 0) displayConversations([]);
             })
             .catch(error => {
                 console.error("Error deleting conversation:", error);
@@ -455,24 +386,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Handlers ---
 
     async function handleConversationSelect(conversationId) {
-        if (conversationId === currentConversationId) {
-            console.log("Conversation already selected.");
-            return; // Don't reload if already active
-        }
+        if (conversationId === currentConversationId) return;
         console.log(`Switching to conversation: ${conversationId}`);
-        // Update backend session first
         try {
             const response = await fetch('/set_active_conversation', {
                  method: 'POST',
                  headers: { 'Content-Type': 'application/json' },
                  body: JSON.stringify({ conversation_id: conversationId }),
             });
-            if (!response.ok) {
-                 console.error("Failed to set active conversation on backend");
-                 // Handle error display?
-                 return;
-            }
-             // If backend update is successful, load messages
+            if (!response.ok) throw new Error("Failed to set active conversation on backend");
             await loadConversationMessages(conversationId);
         } catch(error) {
              console.error("Error setting active conversation:", error);
@@ -484,35 +406,132 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Starting new chat...");
         try {
              const response = await fetch('/start_new_conversation', { method: 'POST' });
-             if (!response.ok) {
-                 console.error("Failed to signal new conversation to backend");
-                 addMessageToChatbox('Could not start a new chat session.', 'system');
-                 return;
-             }
-             // If backend is ready, clear frontend state
+             if (!response.ok) throw new Error("Failed to signal new conversation to backend");
              currentConversationId = null;
              clearChatbox();
-             setActiveConversationInSidebar(null); // De-highlight sidebar
-             userInput.focus(); // Focus input for new message
-             // Optional: Add a placeholder message
-             // addMessageToChatbox("New chat started. Ask me anything!", 'system');
+             setActiveConversationInSidebar(null);
+             userInput.focus();
         } catch (error) {
              console.error("Error starting new chat:", error);
              addMessageToChatbox('Error starting new chat.', 'system');
         }
     }
 
-    // --- Initial Setup ---
+    // --- Settings Menu/Modal Logic ---
 
-    sendButton.addEventListener('click', sendMessage);
-    userInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            sendMessage();
+    function toggleSettingsPopoverLevel1() {
+        if (!settingsPopoverLevel1) return;
+        const isVisible = settingsPopoverLevel1.classList.toggle('visible');
+        settingsPopoverLevel1.style.display = isVisible ? 'block' : 'none';
+        // *** FIX: Removed hideAllPopovers() call from here ***
+    }
+
+    async function fetchAndPopulateSettings() {
+        console.log("Fetching user settings data...");
+        try {
+            const response = await fetch('/api/get_user_settings'); // New API endpoint
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            // Call the function in settings.js to populate the forms
+            if (typeof window.populateSettingsForms === 'function') {
+                window.populateSettingsForms(data.user, data.config);
+            } else {
+                console.error("populateSettingsForms function not found in settings.js");
+            }
+        } catch (error) {
+            console.error("Failed to fetch or populate settings:", error);
+            // Optionally display an error in the modal or as a system message
+            if (settingsModalMain) {
+                 const errorElement = settingsModalMain.querySelector('#settings-load-error'); // Add an element for this
+                 if (errorElement) errorElement.textContent = `Error loading settings: ${error.message}`;
+            }
         }
-    });
-    newChatButton.addEventListener('click', handleNewChat);
+    }
 
-    // Load the list of conversations when the page loads
+
+    function openSettingsModal(targetTabId = 'account') { // Default to account tab
+        if (!settingsModalOverlay || !settingsModalMain) return;
+
+        fetchAndPopulateSettings(); // Fetch data when opening
+
+        // Activate the correct tab based on the clicked Level 1 link
+        const tabs = settingsModalMain.querySelectorAll('.settings-tab');
+        let activated = false;
+        tabs.forEach(tab => {
+            if (tab.id === targetTabId) {
+                tab.classList.add('active');
+                activated = true;
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+        // Fallback if targetTabId doesn't match any tab
+        if (!activated && tabs.length > 0) {
+            tabs[0].classList.add('active');
+        }
+
+
+        settingsModalOverlay.style.display = 'flex';
+        settingsModalOverlay.classList.add('visible');
+        document.body.classList.add('settings-modal-open'); // Optional: Add class to body
+    }
+
+    function closeSettingsModal() {
+        if (settingsModalOverlay) {
+            settingsModalOverlay.style.display = 'none';
+            settingsModalOverlay.classList.remove('visible');
+            document.body.classList.remove('settings-modal-open'); // Optional: Remove class from body
+        }
+    }
+
+    // --- Event Listener Setup ---
+
+    // Existing Chat Listeners
+    if (sendButton) sendButton.addEventListener('click', sendMessage);
+    if (userInput) userInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    if (newChatButton) newChatButton.addEventListener('click', handleNewChat);
+
+    // Settings Listeners
+    if (openSettingsButton) {
+        openSettingsButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent document click listener from closing it immediately
+            toggleSettingsPopoverLevel1();
+        });
+    }
+    if (settingsPopoverLevel1) {
+        settingsPopoverLevel1.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                const targetModal = e.target.dataset.targetModal;
+                const targetTab = e.target.dataset.targetTab;
+
+                if (targetModal === 'settings-modal-main') {
+                    e.preventDefault(); // Prevent default link behavior only if opening modal
+                    toggleSettingsPopoverLevel1(); // Hide level 1 popover
+                    openSettingsModal(targetTab); // Open level 2 modal, passing target tab
+                }
+                // Allow default behavior for other links (like logout)
+            }
+        });
+    }
+
+    if (closeSettingsButton) {
+        closeSettingsButton.addEventListener('click', closeSettingsModal);
+    }
+    if (settingsModalOverlay) {
+        // Close modal if clicking directly on the overlay background
+        settingsModalOverlay.addEventListener('click', (event) => {
+            if (event.target === settingsModalOverlay) {
+                closeSettingsModal();
+            }
+        });
+    }
+
+    // --- Initialization ---
     loadConversationList();
 
 });

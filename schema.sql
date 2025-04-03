@@ -5,15 +5,17 @@ DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS conversations;
 DROP TABLE IF EXISTS users;
 
--- Create the users table (unchanged)
+-- Create the users table (modified)
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
+    profile_picture_url TEXT, -- URL to the profile picture (nullable)
+    system_prompt TEXT,       -- Custom system prompt for the user (nullable)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create the conversations table
+-- Create the conversations table (unchanged)
 CREATE TABLE conversations (
     conversation_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
@@ -22,7 +24,7 @@ CREATE TABLE conversations (
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Delete conversations if user is deleted
 );
 
--- Create the messages table (modified)
+-- Create the messages table (unchanged)
 CREATE TABLE messages (
     message_id INTEGER PRIMARY KEY AUTOINCREMENT,
     conversation_id INTEGER NOT NULL,

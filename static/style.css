@@ -17,8 +17,12 @@
 
     --border-color: #2d3748;     /* Subtle borders */
     --border-focus: #63b3ed;     /* Border color on focus */
+    --border-focus-rgb: 99, 179, 237; /* RGB for focus shadow */
+    --border-color-light: #4a5568; /* Lighter border for dashed lines etc. */
+
 
     --accent-primary: #4299e1;   /* Primary accent (buttons, active states) - Blue */
+    --accent-primary-rgb: 66, 153, 225; /* RGB for accent opacity */
     --accent-primary-hover: #3182ce;
     --accent-secondary: #e53e3e; /* Secondary accent (logout, delete) - Red */
     --accent-secondary-hover: #c53030;
@@ -40,10 +44,11 @@
 
     --border-radius-sm: 4px;
     --border-radius-md: 8px;
-    --border-radius-lg: 18px; /* For messages */
+    --border-radius-lg: 12px; /* Adjusted for modal/tabs */
 
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* Larger shadow for modal */
 }
 
 /* 2. Global Styles */
@@ -65,6 +70,12 @@ body {
     line-height: 1.5;
     overflow: hidden; /* Prevent body scroll */
 }
+
+/* Special body style for when settings modal is open */
+body.settings-modal-open {
+    /* Keep main app layout, but ensure modal is centered */
+}
+
 
 a {
     color: var(--text-accent);
@@ -88,7 +99,9 @@ button {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="url"],
+textarea { /* Added url and textarea */
     font-family: inherit;
     padding: 0.7em 1em;
     border: 1px solid var(--border-color);
@@ -97,19 +110,29 @@ input[type="password"] {
     color: var(--text-primary);
     font-size: 0.95em;
     transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    width: 100%; /* Make inputs/textarea full width by default */
 }
 
 input[type="text"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="url"]:focus,
+textarea:focus {
     outline: none;
     border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px rgba(var(--border-focus), 0.3); /* Subtle focus ring */
+    box-shadow: 0 0 0 2px rgba(var(--border-focus-rgb), 0.3); /* Use RGB for opacity */
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
     color: var(--text-secondary);
     opacity: 0.8;
 }
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
 
 /* 3. Layout Styles */
 #app-container {
@@ -216,11 +239,24 @@ input::placeholder {
     white-space: normal; /* Allow wrapping if needed */
     /* Padding: Top Right Bottom Left */
     padding: 10px 5px 10px 12px; /* <- padding-left: 12px está aqui */
-    white-space: nowrap;
-    padding-right: 5px; /* Space before button */
-    /* Ensure title doesn't prevent hover on the whole item */
-    pointer-events: none; /* Title span itself isn't clickable */
 }
+
+.settings-link { /* Style for the gear icon */
+    color: var(--text-secondary);
+    font-size: 1.4em; /* Make icon larger */
+    text-decoration: none;
+    line-height: 1; /* Adjust line height for icon */
+    transition: color 0.2s ease-in-out;
+    padding: 5px; /* Add some clickable area */
+    margin-left: 5px;
+    border-radius: var(--border-radius-sm);
+}
+.settings-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-hover);
+    text-decoration: none;
+}
+
 #conversation-list li:hover .conversation-title,
 #conversation-list li.active .conversation-title {
      pointer-events: auto; /* Allow clicking title when item is hovered/active */
@@ -265,7 +301,6 @@ input::placeholder {
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-md);
     z-index: 10; /* Ensure popover is above other items */
-    z-index: 10;
     padding: 5px;
     min-width: 130px; /* Ensure enough width */
 }
@@ -304,7 +339,6 @@ input::placeholder {
 .popover-button.delete-button:hover {
     color: var(--accent-secondary); /* Red hint on hover for delete */
 }
-
 /* Inline Edit Input */
 .edit-conversation-input {
     flex-grow: 1; /* Take available space */
@@ -319,6 +353,51 @@ input::placeholder {
     line-height: inherit;
 }
 
+/* Settings Level 1 Popover */
+.settings-popover {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: calc(100% + 5px); /* Position below the gear icon */
+    right: 0; /* Align to the right of the wrapper */
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 100; /* Ensure it's above other elements */
+    min-width: 180px; /* Minimum width */
+    padding: 8px 0; /* Padding top/bottom */
+}
+
+.settings-popover.visible {
+    display: block;
+}
+
+.settings-popover ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.settings-popover li a {
+    display: block;
+    padding: 8px 15px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+.settings-popover li a:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.settings-popover li hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 5px 0;
+}
 
 #conversation-list li.active {
     background-color: var(--bg-active);
@@ -555,3 +634,182 @@ input::placeholder {
     color: var(--flash-info-text);
     border-color: var(--flash-info-border);
 }
+
+/* 10. Settings Page (Tabbed Modal) Styles */
+
+/* Overlay for the modal */
+#settings-page-overlay { /* Renamed from #settings-modal-overlay */
+    display: none; /* Hidden by default */
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    /* Use flexbox to center the modal content */
+    justify-content: center;
+    align-items: center;
+}
+
+#settings-page-overlay.visible {
+    display: flex; /* Show using flex */
+}
+
+/* The main modal container */
+.settings-modal {
+    /* display: flex; */ /* No longer needed for sidebar layout */
+    width: 80%;
+    max-width: 750px; /* Adjusted max-width as sidebar is removed */
+    min-height: 450px; /* Adjusted min-height */
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius-lg); /* Larger radius */
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg); /* Larger shadow */
+    color: var(--text-primary);
+    overflow: hidden; /* Prevent content spill */
+    position: relative; /* For close button positioning */
+    /* Removed margin: auto; as centering is handled by overlay */
+    max-height: 85vh; /* Limit height */
+    display: flex; /* Use flex for header/content structure */
+    flex-direction: column; /* Stack header and content vertically */
+}
+
+/* Sidebar Navigation Styles Removed */
+
+
+/* Main Content Area within Modal */
+.settings-content {
+    flex-grow: 1; /* Take remaining vertical space */
+    padding: 30px 40px; /* Adjusted padding */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+/* Scrollbar for settings content */
+.settings-content::-webkit-scrollbar { width: 8px; }
+.settings-content::-webkit-scrollbar-track { background: transparent; }
+.settings-content::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 10px; border: 2px solid var(--bg-secondary); }
+.settings-content::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
+
+
+.settings-tab {
+    display: none; /* Hide tabs by default */
+}
+.settings-tab.active {
+    display: block; /* Show active tab */
+}
+.settings-tab h3 { /* Section titles within tabs */
+     margin-top: 0;
+     margin-bottom: 25px;
+     font-size: 1.4em;
+     color: var(--text-primary);
+     font-weight: 600;
+     border-bottom: 1px solid var(--border-color);
+     padding-bottom: 15px;
+}
+
+/* Sections within Tabs */
+.settings-section {
+    margin-bottom: 35px;
+    padding-bottom: 0;
+    border-bottom: none; /* Remove bottom border within tabs */
+}
+ .settings-section:last-child {
+     margin-bottom: 0;
+ }
+.settings-section h4 { /* Sub-section titles (e.g., Change Password) */
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    font-weight: 500;
+    border-bottom: 1px dashed var(--border-color-light);
+    padding-bottom: 10px;
+}
+
+/* Form Styles within Modal (reusing global input/textarea styles) */
+.settings-content .form-group {
+    margin-bottom: 20px;
+}
+.settings-content .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    font-weight: 500;
+}
+/* Input/Textarea styles are inherited from global */
+
+.settings-content .form-group .help-text {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    margin-top: 5px;
+}
+.settings-content .form-error {
+    color: var(--flash-error-text);
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: block;
+}
+.settings-content .form-success {
+     color: var(--flash-success-text);
+     font-size: 0.9em;
+     margin-top: 10px;
+     display: block;
+}
+
+/* Buttons within Modal */
+.settings-content .settings-button {
+    padding: 10px 20px;
+    background-color: var(--accent-primary);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+    margin-right: 10px; /* Space between buttons */
+    margin-top: 5px; /* Space above buttons */
+}
+.settings-content .settings-button:hover {
+    background-color: var(--accent-primary-hover);
+}
+.settings-content .delete-button {
+     background-color: var(--accent-secondary);
+}
+ .settings-content .delete-button:hover {
+     background-color: var(--accent-secondary-hover);
+ }
+
+ /* Close Button (Positioned on Modal) */
+ .close-settings-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+    z-index: 10; /* Ensure it's above sidebar/content */
+ }
+ .close-settings-btn:hover {
+     color: var(--text-primary);
+ }
+
+/* Remove redundant styles from previous modal implementation */
+#settings-modal-content,
+#settings-modal-header,
+#settings-modal-body,
+#settings-modal-close-button {
+    /* These specific IDs might not be needed anymore if using the new structure */
+    /* Commenting out or removing might be necessary after testing */
+    /* display: none; */ /* Example: Hide old structure if conflicting */
+}
+
+/* Ensure flash messages inside modal are styled if needed */
+/* .flash-messages { ... } */ /* Already defined globally */

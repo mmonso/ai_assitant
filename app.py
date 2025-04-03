@@ -4,7 +4,8 @@ from flask import Flask, request, jsonify, render_template, session, redirect, u
 import google.generativeai as genai
 from dotenv import load_dotenv
 import db_utils # Import our database utility functions
-
+import re # For username validation
+import bcrypt # Needed for password check
 # Load environment variables from .env file
 load_dotenv()
 
@@ -17,6 +18,18 @@ except KeyError:
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', secrets.token_hex(16))
+
+# Configuration (Consider moving to a config file)
+USERNAME_MIN_LENGTH = 3
+USERNAME_MAX_LENGTH = 20
+USERNAME_REGEX = re.compile(r"^[a-zA-Z0-9_]+$") # Alphanumeric and underscore
+PASSWORD_MIN_LENGTH = 8
+# Profile picture upload settings (if implementing local storage)
+# UPLOAD_FOLDER = 'static/avatars'
+# ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Remove duplicate configuration block
 
 # --- Helper Function ---
 def generate_title_from_message(message):
@@ -36,9 +49,25 @@ def index():
     if 'user_id' not in session:
         flash("Please log in to access the chat.", "info")
         return redirect(url_for('login'))
-    # Clear active conversation on main page load? Or rely on "New Chat"?
-    # session.pop('current_conversation_id', None) # Optional: Force new chat on load
-    return render_template('index.html')
+
+    user_id = session['user_id']
+    user_details = db_utils.get_user_details(user_id)
+    if not user_details:
+        # Handle case where user details might be missing (shouldn't happen if logged in)
+        flash("Error retrieving user details. Please log in again.", "error")
+        session.clear() # Clear potentially corrupted session
+        return redirect(url_for('login'))
+
+    # Pass configuration constants needed by index.html (including the modal)
+    config = {
+        'USERNAME_MIN_LENGTH': USERNAME_MIN_LENGTH,
+        'USERNAME_MAX_LENGTH': USERNAME_MAX_LENGTH,
+        'PASSWORD_MIN_LENGTH': PASSWORD_MIN_LENGTH,
+        # Add other config values if needed by the modal in index.html
+    }
+
+    # Pass user and config to the main index template
+    return render_template('index.html', user=user_details, config=config)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -88,7 +117,34 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for('login'))
 
-# --- API Routes for Chat Functionality ---
+# Removed /settings GET route, modal is now part of index.html
+
+
+# --- API Route to Fetch Settings Data ---
+
+@app.route('/api/get_user_settings', methods=['GET'])
+def get_user_settings():
+    """API endpoint to fetch current user settings for the modal."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+
+    user_id = session['user_id']
+    user_details = db_utils.get_user_details(user_id)
+
+    if not user_details:
+        return jsonify({"error": "Failed to retrieve user details"}), 500
+
+    # Prepare config data to send to frontend
+    config_data = {
+        'USERNAME_MIN_LENGTH': USERNAME_MIN_LENGTH,
+        'USERNAME_MAX_LENGTH': USERNAME_MAX_LENGTH,
+        'PASSWORD_MIN_LENGTH': PASSWORD_MIN_LENGTH,
+    }
+
+    return jsonify({"user": user_details, "config": config_data}), 200
+
+
+# --- API Routes for Chat Functionality --- (Keep existing chat APIs)
 
 @app.route('/start_new_conversation', methods=['POST'])
 def start_new_conversation():
@@ -97,6 +153,145 @@ def start_new_conversation():
         return jsonify({"error": "Authentication required"}), 401
     session.pop('current_conversation_id', None)
     print("Cleared current_conversation_id from session.")
+# --- Settings / Profile API Routes --- # Renamed comment slightly
+
+# Note: The API routes below handle the actual saving of settings data.
+# The /settings GET route above just displays the page.
+
+@app.route('/api/settings/profile', methods=['PUT'])
+def update_profile():
+    """API endpoint to update username and system prompt."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+
+    data = request.get_json()
+    user_id = session['user_id']
+    errors = {}
+    success_messages = []
+
+    # --- Update Username ---
+    new_username = data.get('username')
+    if new_username is not None: # Check if username field was included
+        current_details = db_utils.get_user_details(user_id)
+        if new_username != current_details.get('username'): # Only update if changed
+            if not (USERNAME_MIN_LENGTH <= len(new_username) <= USERNAME_MAX_LENGTH):
+                 errors['username'] = f"Username must be between {USERNAME_MIN_LENGTH} and {USERNAME_MAX_LENGTH} characters."
+            elif not USERNAME_REGEX.match(new_username):
+                 errors['username'] = "Username can only contain letters, numbers, and underscores."
+            else:
+                success = db_utils.update_username(user_id, new_username)
+                if success:
+                    session['username'] = new_username # Update session username
+                    success_messages.append("Username updated.")
+                elif success is False: # Explicit check for False (username taken)
+                     errors['username'] = "Username already taken."
+                else: # Null indicates DB error
+                     errors['username'] = "Database error updating username."
+
+    # --- Update System Prompt ---
+    new_system_prompt = data.get('system_prompt')
+    if new_system_prompt is not None: # Check if field was included
+         # Basic validation (e.g., length limit) could be added here
+         success = db_utils.update_system_prompt(user_id, new_system_prompt)
+         if success:
+              success_messages.append("System prompt updated.")
+         else:
+              errors['system_prompt'] = "Database error updating system prompt."
+
+    # --- Update Profile Picture (URL only for now) ---
+    # For actual upload, need file handling logic (see commented config)
+    new_profile_picture_url = data.get('profile_picture_url')
+    if new_profile_picture_url is not None:
+         # Add validation for URL format if needed
+         success = db_utils.update_profile_picture(user_id, new_profile_picture_url)
+         if success:
+              success_messages.append("Profile picture URL updated.")
+         else:
+              errors['profile_picture'] = "Database error updating profile picture URL."
+
+
+    if errors:
+        return jsonify({"errors": errors}), 400
+    else:
+        # Fetch updated details to send back
+        updated_details = db_utils.get_user_details(user_id)
+        return jsonify({
+            "message": "Profile updated successfully." if not success_messages else " ".join(success_messages),
+            "user": updated_details # Send back updated user info
+        }), 200
+
+
+@app.route('/api/settings/password', methods=['PUT'])
+def change_password():
+    """API endpoint to change the user's password."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+
+    data = request.get_json()
+    current_password = data.get('current_password')
+    new_password = data.get('new_password')
+    confirm_password = data.get('confirm_password')
+    user_id = session['user_id']
+
+    # Validation
+    if not current_password or not new_password or not confirm_password:
+        return jsonify({"errors": {"form": "All password fields are required."}}), 400
+    if new_password != confirm_password:
+        return jsonify({"errors": {"confirm_password": "New passwords do not match."}}), 400
+    if len(new_password) < PASSWORD_MIN_LENGTH:
+         return jsonify({"errors": {"new_password": f"Password must be at least {PASSWORD_MIN_LENGTH} characters long."}}), 400
+
+    # Verify current password
+    try:
+        with db_utils.get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT password_hash FROM users WHERE user_id = ?", (user_id,))
+            user_data = cursor.fetchone()
+            if not user_data or not bcrypt.checkpw(current_password.encode('utf-8'), user_data['password_hash']):
+                return jsonify({"errors": {"current_password": "Current password incorrect."}}), 400
+    except Exception as e:
+         print(f"Error verifying current password for user {user_id}: {e}")
+         return jsonify({"errors": {"form": "Error verifying current password."}}), 500
+
+    # Update to new password
+    success = db_utils.update_password(user_id, new_password)
+    if success:
+        # Optionally force logout after password change for security
+        # session.pop('user_id', None)
+        # session.pop('username', None)
+        # session.pop('current_conversation_id', None)
+        return jsonify({"message": "Password updated successfully."}), 200
+    else:
+        return jsonify({"errors": {"form": "Failed to update password due to a database error."}}), 500
+
+
+@app.route('/api/settings/delete_account', methods=['DELETE'])
+def delete_account():
+    """API endpoint to delete the user's account."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+
+    user_id = session['user_id']
+
+    # Optional: Add password confirmation for deletion
+    # if not request.is_json: return jsonify({"error": "Request must be JSON"}), 400
+    # data = request.get_json()
+    # password = data.get('password')
+    # if not verify_password(user_id, password): # You'd need a verify_password helper
+    #     return jsonify({"error": "Incorrect password"}), 403
+
+    success = db_utils.delete_user(user_id)
+    if success:
+        # Clear session completely after deletion
+        session.clear()
+        return jsonify({"message": "Account deleted successfully."}), 200
+    else:
+        return jsonify({"error": "Failed to delete account due to a database error."}), 500
+
     return jsonify({"message": "Ready for new conversation"}), 200
 
 @app.route('/set_active_conversation', methods=['POST'])
@@ -210,6 +405,13 @@ def get_conversation_messages():
 
     user_id = session['user_id']
     try:
+        # --- Get User's Custom System Prompt (if any) ---
+        user_details = db_utils.get_user_details(user_id)
+        system_instruction = None
+        if user_details and user_details.get('system_prompt'):
+            system_instruction = user_details['system_prompt']
+            print(f"Using custom system prompt for user {user_id}") # Keep this line
+        # Fetch messages (moved this down slightly, no functional change)
         messages = db_utils.get_conversation_messages(conversation_id, user_id)
         if messages is None:
             # This handles cases where the conversation doesn't exist or user doesn't own it
@@ -220,9 +422,9 @@ def get_conversation_messages():
         return jsonify({"error": "Failed to retrieve messages"}), 500
 
 
-@app.route('/chat', methods=['POST'])
+@app.route('/chat', methods=['POST']) # This route definition should remain
 def chat():
-    """Handles chatbot requests within a specific or new conversation."""
+    """Handles chatbot requests, potentially using user's system prompt."""
     if 'user_id' not in session:
         return jsonify({"error": "Authentication required"}), 401
 
@@ -238,6 +440,14 @@ def chat():
         return jsonify({"error": "Missing 'message' in request body"}), 400
 
     try:
+        # --- Get User's Custom System Prompt (if any) ---
+        # This needs to be fetched *before* initializing the model
+        user_details_chat = db_utils.get_user_details(user_id) # Fetch user details once here
+        system_instruction_chat = None
+        if user_details_chat and user_details_chat.get('system_prompt'):
+             system_instruction_chat = user_details_chat['system_prompt']
+             print(f"Chat route: Using custom system prompt for user {user_id}")
+
         # --- Determine or Create Conversation ---
         conversation_id = session.get('current_conversation_id')
         is_new_conversation = False
@@ -264,7 +474,12 @@ def chat():
 
         # --- Call Gemini API ---
         model_name = "gemini-1.5-flash"
-        model = genai.GenerativeModel(model_name)
+        model_args = {}
+        # Use the system prompt fetched earlier in this route's scope
+        if system_instruction_chat:
+             model_args['system_instruction'] = system_instruction_chat
+
+        model = genai.GenerativeModel(model_name, **model_args)
         chat_session = model.start_chat(history=gemini_history)
         response = chat_session.send_message(user_message)
         bot_response = response.text
