@@ -130,11 +130,13 @@ input::placeholder {
 
 #main-content {
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+    display: flex; /* Use flex to center the wrapper */
+    justify-content: center; /* Center horizontally */
+    /* align-items: center; */ /* Remove or comment out if vertical centering isn't desired */
     height: 100%;
     background-color: var(--bg-primary);
     overflow: hidden; /* Prevent main content scroll */
+    padding: 0 20px; /* Add some padding if needed when screen is narrow */
 }
 
 /* 4. Sidebar Styles */
@@ -208,7 +210,19 @@ input::placeholder {
 #conversation-list::-webkit-scrollbar-thumb:hover { background-color: var(--text-secondary); }
 
 
-/* 5. Main Content Styles */
+/* 5. Main Content & Chat Area Wrapper Styles */
+
+.chat-area-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%; /* Take full width within the centered flex item */
+    max-width: 700px; /* Set the desired max width */
+    height: 100%; /* Fill the height of the main content area */
+    background-color: var(--bg-secondary); /* Give wrapper a slightly different bg if needed */
+    border-left: 1px solid var(--border-color); /* Optional borders */
+    border-right: 1px solid var(--border-color); /* Optional borders */
+    box-shadow: var(--shadow-md); /* Optional shadow */
+}
 .main-header {
     display: flex;
     justify-content: space-between;
@@ -288,6 +302,7 @@ input::placeholder {
     color: var(--text-primary); /* Use primary text for bot too */
     align-self: flex-start;
     border-bottom-left-radius: var(--border-radius-sm);
+    max-width: 90%; /* Override the default message max-width */
 }
 
 .system-message { /* For errors or info */

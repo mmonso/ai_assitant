@@ -11,9 +11,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addMessageToChatbox(message, sender) {
         const messageElement = document.createElement('div');
-        // Add 'system' class for potential system messages (like errors)
         messageElement.classList.add('message', `${sender}-message`);
-        messageElement.textContent = message;
+
+        if (sender === 'bot') {
+            // 1. Parse Markdown using marked
+            const rawHtml = marked.parse(message, { gfm: true, breaks: true }); // Enable GitHub Flavored Markdown & line breaks
+
+            // 2. Sanitize HTML using DOMPurify
+            const cleanHtml = DOMPurify.sanitize(rawHtml);
+
+            // 3. Set innerHTML
+            messageElement.innerHTML = cleanHtml;
+
+            // 4. Apply Syntax Highlighting to code blocks within this message
+            messageElement.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+        } else {
+            // For user or system messages, just set text content
+            messageElement.textContent = message;
+        }
         chatBox.appendChild(messageElement);
         chatBox.scrollTop = chatBox.scrollHeight; // Scroll down
     }
