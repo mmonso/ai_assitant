@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const openSettingsButton = document.getElementById('open-settings-button');
     const settingsPopoverLevel1 = document.getElementById('settings-popover-level1');
     const settingsModalPlaceholder = document.getElementById('settings-modal-placeholder');
+    const fontSelector = document.getElementById('font-selector'); // Added font selector
+    const fontSizeSelector = document.getElementById('font-size-selector'); // New
+    const lineSpacingSelector = document.getElementById('line-spacing-selector'); // New
 
     // --- Initialize Managers ---
     convManager.initConversationManager(conversationList, chatBox, userInput);
@@ -158,6 +161,47 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pass the event and settings popover element to the helper
         ui.hideAllPopovers(e, settingsPopoverLevel1);
     });
+
+    // Font Selector Logic
+    if (fontSelector) {
+        fontSelector.addEventListener('change', (e) => {
+            const selectedFont = e.target.value;
+            document.body.style.fontFamily = selectedFont;
+            console.log(`Font changed to: ${selectedFont}`);
+            // TODO: Implement dynamic loading for Google Fonts if needed
+            // Example: Check if font needs loading and add a <link> element to <head>
+        });
+
+        // Optional: Apply initial font from selector if it's not the default
+        // This could also be handled by setting the default font in base.css
+        // document.body.style.fontFamily = fontSelector.value;
+    }
+
+    // Font Size Selector Logic
+    if (fontSizeSelector) {
+        fontSizeSelector.addEventListener('change', (e) => {
+            const selectedSize = e.target.value;
+            document.body.style.fontSize = selectedSize;
+            console.log(`Font size changed to: ${selectedSize}`);
+            // Optional: Save this preference (e.g., localStorage or backend)
+        });
+        // Optional: Apply initial size
+        // document.body.style.fontSize = fontSizeSelector.value;
+    }
+
+    // Line Spacing Selector Logic
+    if (lineSpacingSelector) {
+        lineSpacingSelector.addEventListener('change', (e) => {
+            const selectedSpacing = e.target.value;
+            if (chatBox) chatBox.style.setProperty('--chat-line-height', selectedSpacing); // Use CSS variable
+            console.log(`CSS variable --chat-line-height set to: ${selectedSpacing}`);
+            // Optional: Save this preference
+        });
+        // Optional: Apply initial spacing
+        // document.body.style.lineHeight = lineSpacingSelector.value; // Old way
+        // Apply initial spacing to chatBox
+        if (chatBox) chatBox.style.setProperty('--chat-line-height', lineSpacingSelector.value); // Use CSS variable
+    }
 
 
     // --- Initialization ---

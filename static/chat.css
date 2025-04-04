@@ -61,7 +61,7 @@
     border-radius: var(--border-radius-lg);
     max-width: 75%; /* Max width */
     word-wrap: break-word;
-    line-height: 1.45;
+    line-height: var(--chat-line-height, 1.45); /* Use variable set by JS */
     box-shadow: var(--shadow-sm);
 }
 

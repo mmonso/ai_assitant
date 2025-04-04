@@ -45,3 +45,33 @@
 /* Specific scrollbar for sidebar (thinner) */
 #sidebar::-webkit-scrollbar { width: 6px; }
 #sidebar::-webkit-scrollbar-thumb { border: 1px solid var(--bg-secondary); } /* Adjust border to match sidebar bg */
+
+/* --- Font Selector Styling --- */
+#font-selector {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    padding: 5px 8px; /* Adjust padding */
+    font-size: 0.9em; /* Slightly smaller font */
+    cursor: pointer;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+    height: 32px; /* Match button height if needed */
+    margin-right: 5px; /* Add some space before the settings button */
+}
+
+#font-selector:hover {
+    border-color: var(--border-focus);
+    background-color: var(--bg-hover);
+}
+
+#font-selector:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(var(--border-focus-rgb), 0.3);
+}
+
+#font-selector option {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}

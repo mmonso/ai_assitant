@@ -66,8 +66,8 @@ body {
     font-family: var(--font-sans);
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 17px; /* Increased from 16px */
+    line-height: 1.7;
     overflow: hidden; /* Prevent body scroll */
 }
 
