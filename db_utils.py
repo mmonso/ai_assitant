@@ -86,8 +86,12 @@ def update_username(user_id, new_username):
             cursor = conn.cursor()
             cursor.execute("UPDATE users SET username = ? WHERE user_id = ?", (new_username, user_id))
             conn.commit()
-            print(f"Username updated for user_id {user_id}")
-            return True
+            if cursor.rowcount > 0:
+                print(f"Username updated for user_id {user_id}")
+                return True
+            else:
+                print(f"Warning: Username update for user_id {user_id} affected 0 rows.")
+                return False # Indicate no rows affected (user might not exist?)
     except sqlite3.IntegrityError:
         print(f"Error: New username '{new_username}' is already taken.")
         return False # Indicate username conflict
@@ -103,8 +107,12 @@ def update_password(user_id, new_password):
             cursor = conn.cursor()
             cursor.execute("UPDATE users SET password_hash = ? WHERE user_id = ?", (new_hashed_password, user_id))
             conn.commit()
-            print(f"Password updated for user_id {user_id}")
-            return True
+            if cursor.rowcount > 0:
+                print(f"Password updated for user_id {user_id}")
+                return True
+            else:
+                print(f"Warning: Password update for user_id {user_id} affected 0 rows.")
+                return False
     except sqlite3.Error as e:
         print(f"Database error updating password for user_id {user_id}: {e}")
         return False
@@ -116,8 +124,12 @@ def update_profile_picture(user_id, picture_url):
             cursor = conn.cursor()
             cursor.execute("UPDATE users SET profile_picture_url = ? WHERE user_id = ?", (picture_url, user_id))
             conn.commit()
-            print(f"Profile picture URL updated for user_id {user_id}")
-            return True
+            if cursor.rowcount > 0:
+                print(f"Profile picture URL updated for user_id {user_id}")
+                return True
+            else:
+                print(f"Warning: Profile picture URL update for user_id {user_id} affected 0 rows.")
+                return False
     except sqlite3.Error as e:
         print(f"Database error updating profile picture URL for user_id {user_id}: {e}")
         return False
@@ -129,8 +141,13 @@ def update_system_prompt(user_id, prompt):
             cursor = conn.cursor()
             cursor.execute("UPDATE users SET system_prompt = ? WHERE user_id = ?", (prompt, user_id))
             conn.commit()
-            print(f"System prompt updated for user_id {user_id}")
-            return True
+            if cursor.rowcount > 0:
+                print(f"System prompt updated for user_id {user_id}")
+                return True
+            else:
+                 # This is the likely scenario if the prompt isn't saving
+                 print(f"Warning: System prompt update for user_id {user_id} affected 0 rows. Prompt not saved.")
+                 return False
     except sqlite3.Error as e:
         print(f"Database error updating system prompt for user_id {user_id}: {e}")
         return False
@@ -143,8 +160,12 @@ def delete_user(user_id):
             # Foreign key constraints with ON DELETE CASCADE handle conversations/messages
             cursor.execute("DELETE FROM users WHERE user_id = ?", (user_id,))
             conn.commit()
-            print(f"User {user_id} and associated data deleted successfully.")
-            return True
+            if cursor.rowcount > 0:
+                print(f"User {user_id} and associated data deleted successfully.")
+                return True
+            else:
+                print(f"Warning: Delete user for user_id {user_id} affected 0 rows.")
+                return False # Indicate user not found
     except sqlite3.Error as e:
         print(f"Database error deleting user {user_id}: {e}")
         return False

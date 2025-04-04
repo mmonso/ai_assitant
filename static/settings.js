@@ -36,7 +36,7 @@ function displayErrors(form, errors) {
      }
  }
 
-// --- Function to Populate Forms (Called by script.js) ---
+// --- Function to Populate Forms (Called indirectly via settings_manager.js) ---
 function populateSettingsForms(userData, configData) {
     console.log("Populating settings forms with data:", userData, configData);
     const profileForm = document.getElementById('profile-form');
@@ -96,26 +96,22 @@ function populateSettingsForms(userData, configData) {
         el.textContent = '';
     });
 }
-// Expose the function to the global scope so script.js can call it
+// Expose the function to the global scope (for settings_manager.js)
 window.populateSettingsForms = populateSettingsForms;
 
 
-// --- Event Listeners (Run when DOM is ready) ---
+// --- Event Listener using Event Delegation ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Get form references (ensure these IDs exist in the modal within index.html)
-    const profileForm = document.getElementById('profile-form');
-    const passwordForm = document.getElementById('password-form');
-    const promptForm = document.getElementById('prompt-form');
-    const deleteForm = document.getElementById('delete-form');
+    // Attach one listener to a static parent (e.g., document.body or a modal container)
+    document.body.addEventListener('submit', async (e) => {
+        // Check if the submitted element is one of our forms
+        const submittedForm = e.target;
 
-    // --- Form Submission Logic (Remains largely the same) ---
-
-    // Profile Form Submission
-    if (profileForm) {
-        profileForm.addEventListener('submit', async (e) => {
+        // Profile Form Submission
+        if (submittedForm.id === 'profile-form') {
             e.preventDefault();
-            clearErrors(profileForm);
-            const formData = new FormData(profileForm);
+            clearErrors(submittedForm);
+            const formData = new FormData(submittedForm);
             const data = Object.fromEntries(formData.entries());
 
             try {
@@ -126,28 +122,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const result = await response.json();
                 if (!response.ok) {
-                    displayErrors(profileForm, result.errors || { form: result.error || 'An unknown error occurred.' });
+                    displayErrors(submittedForm, result.errors || { form: result.error || 'An unknown error occurred.' });
                 } else {
-                    displaySuccess(profileForm, result.message || 'Profile updated successfully.');
+                    displaySuccess(submittedForm, result.message || 'Profile updated successfully.');
                     // Optionally update username display elsewhere if needed
                 }
             } catch (error) {
                 console.error('Error updating profile:', error);
-                displayErrors(profileForm, { form: 'Failed to connect to server.' });
+                displayErrors(submittedForm, { form: 'Failed to connect to server.' });
             }
-        });
-    }
+        }
 
-    // Password Form Submission
-    if (passwordForm) {
-        passwordForm.addEventListener('submit', async (e) => {
+        // Password Form Submission
+        else if (submittedForm.id === 'password-form') {
             e.preventDefault();
-            clearErrors(passwordForm);
-            const formData = new FormData(passwordForm);
+            clearErrors(submittedForm);
+            const formData = new FormData(submittedForm);
             const data = Object.fromEntries(formData.entries());
 
              if (data.new_password !== data.confirm_password) {
-                 displayErrors(passwordForm, { confirm_password: "New passwords do not match." });
+                 displayErrors(submittedForm, { confirm_password: "New passwords do not match." });
                  return;
              }
 
@@ -159,25 +153,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const result = await response.json();
                 if (!response.ok) {
-                    displayErrors(passwordForm, result.errors || { 'password-form': result.error || 'An unknown error occurred.' });
+                    displayErrors(submittedForm, result.errors || { 'password-form': result.error || 'An unknown error occurred.' });
                 } else {
-                    displaySuccess(passwordForm, result.message || 'Password updated successfully.');
-                    passwordForm.reset(); // Clear password fields on success
+                    displaySuccess(submittedForm, result.message || 'Password updated successfully.');
+                    submittedForm.reset(); // Clear password fields on success
                 }
             } catch (error) {
                 console.error('Error changing password:', error);
-                displayErrors(passwordForm, { 'password-form': 'Failed to connect to server.' });
+                displayErrors(submittedForm, { 'password-form': 'Failed to connect to server.' });
             }
-        });
-    }
+        }
 
-     // Prompt Form Submission
-     if (promptForm) {
-         promptForm.addEventListener('submit', async (e) => {
+         // Prompt Form Submission
+         else if (submittedForm.id === 'prompt-form') {
              e.preventDefault();
-             clearErrors(promptForm);
-             const formData = new FormData(promptForm);
+             clearErrors(submittedForm);
+             const formData = new FormData(submittedForm);
              const data = Object.fromEntries(formData.entries());
+             console.log("Submitting prompt form data:", data); // Add log here
 
              try {
                  const response = await fetch('/api/settings/profile', { // Uses profile endpoint
@@ -187,22 +180,20 @@ document.addEventListener('DOMContentLoaded', () => {
                  });
                  const result = await response.json();
                  if (!response.ok) {
-                     displayErrors(promptForm, result.errors || { form: result.error || 'An unknown error occurred.' });
+                     displayErrors(submittedForm, result.errors || { form: result.error || 'An unknown error occurred.' });
                  } else {
-                     displaySuccess(promptForm, result.message || 'System prompt updated successfully.');
+                     displaySuccess(submittedForm, result.message || 'System prompt updated successfully.');
                  }
              } catch (error) {
                  console.error('Error updating prompt:', error);
-                 displayErrors(promptForm, { form: 'Failed to connect to server.' });
+                 displayErrors(submittedForm, { form: 'Failed to connect to server.' });
              }
-         });
-     }
+         }
 
-    // Delete Account Form Submission
-    if (deleteForm) {
-        deleteForm.addEventListener('submit', async (e) => {
+        // Delete Account Form Submission
+        else if (submittedForm.id === 'delete-form') {
             e.preventDefault();
-            clearErrors(deleteForm);
+            clearErrors(submittedForm);
 
             if (!confirm('ARE YOU ABSOLUTELY SURE?\n\nDeleting your account is permanent and cannot be undone. All your conversations and messages will be lost.')) {
                 return;
@@ -212,18 +203,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('/api/settings/delete_account', { method: 'DELETE' });
                 const result = await response.json();
                 if (!response.ok) {
-                     displayErrors(deleteForm, { form: result.error || 'Failed to delete account.' });
+                     displayErrors(submittedForm, { form: result.error || 'Failed to delete account.' });
                 } else {
                     alert(result.message || 'Account deleted successfully.');
                     window.location.href = '/login'; // Redirect on success
                 }
             } catch (error) {
                 console.error('Error deleting account:', error);
-                displayErrors(deleteForm, { form: 'Failed to connect to server.' });
+                displayErrors(submittedForm, { form: 'Failed to connect to server.' });
             }
-        });
-    }
+        }
+    });
 
-    // Tab switching and close button logic removed - handled by script.js
+    // Tab switching and close button logic removed - handled by settings_manager.js
 
 });

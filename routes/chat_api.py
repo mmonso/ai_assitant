@@ -1,7 +1,7 @@
 import os
 from flask import Blueprint, request, jsonify, session
 import google.generativeai as genai
-import db_utils # Assuming db_utils is accessible
+import db_utils
 
 # Define the blueprint
 chat_api_bp = Blueprint('chat_api', __name__, url_prefix='/api/chat') # Optional prefix for API routes
@@ -23,7 +23,7 @@ def start_new_conversation():
     if 'user_id' not in session:
         return jsonify({"error": "Authentication required"}), 401
     session.pop('current_conversation_id', None)
-    print("Cleared current_conversation_id from session.")
+    # print("Cleared current_conversation_id from session.") # Removed log
     return jsonify({"message": "Ready for new conversation"}), 200 # Return success
 
 @chat_api_bp.route('/set_active', methods=['POST']) # Renamed route slightly
@@ -54,7 +54,7 @@ def set_active_conversation():
          return jsonify({"error": "Conversation not found or access denied"}), 404
 
     session['current_conversation_id'] = conversation_id # Store as integer
-    print(f"Set active conversation to: {conversation_id}")
+    # print(f"Set active conversation to: {conversation_id}") # Removed log
     return jsonify({"message": f"Active conversation set to {conversation_id}"}), 200
 
 
@@ -165,18 +165,30 @@ def chat():
         return jsonify({"error": "Request must be JSON"}), 400
 
     data = request.get_json()
-    user_message = data.get('message')
+    original_user_message = data.get('message') # Store original message
 
-    if not user_message:
+    if not original_user_message:
         return jsonify({"error": "Missing 'message' in request body"}), 400
 
     try:
         # --- Get User's Custom System Prompt (if any) ---
         user_details_chat = db_utils.get_user_details(user_id)
         system_instruction_chat = None
+        model_args = {} # Initialize model args
+        message_to_send = original_user_message # Start with original message
+
         if user_details_chat and user_details_chat.get('system_prompt'):
-             system_instruction_chat = user_details_chat['system_prompt']
-             print(f"Chat route: Using custom system prompt for user {user_id}")
+             system_instruction_chat = user_details_chat['system_prompt'].strip() # Ensure no extra whitespace
+             if system_instruction_chat: # Check if not empty after stripping
+                 model_args['system_instruction'] = system_instruction_chat
+                 # Prepend system prompt to the user message for reinforcement
+                 message_to_send = f"IMPORTANT SYSTEM PROMPT (Follow these instructions carefully):\n{system_instruction_chat}\n\nUSER MESSAGE:\n{original_user_message}"
+                 # print(f"Chat route: Using custom system prompt: '{system_instruction_chat}' (Prepended to message)") # Removed log
+             # else: # Removed log
+                 # print("Chat route: Custom system prompt is empty after stripping.")
+        # else: # Removed log
+             # print("Chat route: No custom system prompt found for user.")
+
 
         # --- Determine or Create Conversation ---
         conversation_id = session.get('current_conversation_id')
@@ -187,7 +199,7 @@ def chat():
                 return jsonify({"error": "Failed to create new conversation"}), 500
             session['current_conversation_id'] = conversation_id
             is_new_conversation = True
-            print(f"Started new conversation: {conversation_id}")
+            # print(f"Started new conversation: {conversation_id}") # Removed log
             history_raw = [] # No history for new conversation
         else:
             # Fetch history for the existing conversation
@@ -204,9 +216,6 @@ def chat():
 
         # --- Call Gemini API ---
         model_name = "gemini-1.5-flash" # Consider making this configurable
-        model_args = {}
-        if system_instruction_chat:
-             model_args['system_instruction'] = system_instruction_chat
 
         # Ensure API key is configured (it should be from app.py, but double-check context)
         if not os.environ.get("GEMINI_API_KEY"):
@@ -214,21 +223,28 @@ def chat():
              return jsonify({"error": "Chat service not configured"}), 500
         # genai.configure should have been called in app.py
 
+        # print(f"Chat route: Initializing model with args: {model_args}") # Removed log
+
+        # Instantiate the model *inside* the request with latest system prompt
         model = genai.GenerativeModel(model_name, **model_args)
         chat_session = model.start_chat(history=gemini_history)
-        response = chat_session.send_message(user_message)
-        bot_response = response.text
 
-        # --- Save Messages to DB ---
-        user_msg_id = db_utils.add_message(conversation_id, 'user', user_message)
+        # Send the potentially modified message (with prepended prompt)
+        # print(f"Chat route: Sending message to Gemini:\n---\n{message_to_send}\n---") # Removed log
+        response = chat_session.send_message(message_to_send)
+        bot_response = response.text
+        # print(f"Chat route: Received response from Gemini:\n---\n{bot_response}\n---") # Removed log
+
+        # --- Save Messages to DB (Save the *original* user message) ---
+        user_msg_id = db_utils.add_message(conversation_id, 'user', original_user_message)
         assistant_msg_id = db_utils.add_message(conversation_id, 'assistant', bot_response)
 
         # --- Auto-generate Title for New Conversation ---
         title = None # Initialize title
         if is_new_conversation and user_msg_id:
-            title = generate_title_from_message(user_message)
+            title = generate_title_from_message(original_user_message) # Use original for title
             db_utils.set_conversation_title(conversation_id, user_id, title)
-            print(f"Auto-generated title for conversation {conversation_id}: {title}")
+            # print(f"Auto-generated title for conversation {conversation_id}: {title}") # Removed log
 
         # Return response and potentially the new conversation ID if it was created
         response_data = {"response": bot_response}
