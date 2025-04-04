@@ -1,0 +1,169 @@
+/* --- Sidebar Styles --- */
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+#new-chat-button {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    font-size: 0.85em;
+    border-radius: var(--border-radius-sm);
+}
+
+#new-chat-button:hover {
+    background-color: var(--bg-tertiary);
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+}
+
+#conversation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#conversation-list li {
+    padding: 0; /* Remove padding from li itself */
+    margin-bottom: 4px;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    font-size: 0.9em;
+    position: relative; /* Make li the positioning context for popover */
+    color: var(--text-secondary);
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+}
+
+#conversation-list li:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+#conversation-list li .conversation-item-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative; /* Needed for popover positioning */
+    padding-right: 8px; /* Add padding to push button from right edge */
+}
+
+#conversation-list li .conversation-title {
+    flex-grow: 1;
+    white-space: normal; /* Allow wrapping */
+    padding: 10px 5px 10px 12px;
+}
+
+#conversation-list li:hover .conversation-title,
+#conversation-list li.active .conversation-title {
+     pointer-events: auto; /* Allow clicking title when item is hovered/active */
+}
+
+
+#conversation-list li .conversation-actions-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 5px;
+    margin-left: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    line-height: 1;
+    border-radius: var(--border-radius-sm);
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+#conversation-list li:hover .conversation-actions-button,
+#conversation-list li .actions-popover.visible + .conversation-actions-button /* Keep visible if popover is open */
+ {
+    opacity: 1; /* Show on hover */
+}
+
+#conversation-list li .conversation-actions-button:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* Popover Styles - Appended to Body */
+.actions-popover {
+    display: none; /* Hidden by default */
+    position: fixed; /* Position relative to viewport */
+    background-color: var(--bg-secondary); /* Match sidebar */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 10; /* Ensure popover is above other items */
+    padding: 5px;
+    min-width: 130px; /* Ensure enough width */
+}
+
+.actions-popover.visible {
+    display: block; /* Show when class is added */
+}
+
+.popover-button {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    padding: 8px 10px;
+    width: 100%;
+    text-align: left;
+    font-size: 0.9em;
+    border-radius: var(--border-radius-sm);
+}
+
+.popover-button .icon {
+    margin-right: 8px;
+    font-size: 1.1em; /* Slightly larger icon */
+    display: inline-block;
+    width: 1.2em; /* Ensure alignment */
+    text-align: center;
+}
+
+
+.popover-button:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.popover-button.delete-button:hover {
+    color: var(--accent-secondary); /* Red hint on hover for delete */
+}
+
+/* Inline Edit Input */
+.edit-conversation-input {
+    flex-grow: 1; /* Take available space */
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-focus); /* Indicate editing */
+    color: var(--text-primary);
+    padding: 2px 5px; /* Minimal padding */
+    margin: 0; /* Reset margin */
+    font-size: inherit; /* Match list item font size */
+    border-radius: var(--border-radius-sm);
+    height: auto; /* Adjust height */
+    line-height: inherit;
+}
+
+#conversation-list li.active {
+    background-color: var(--bg-active);
+    color: var(--text-primary);
+    font-weight: 500;
+}

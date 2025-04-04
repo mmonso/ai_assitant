@@ -1,0 +1,160 @@
+/* --- Base Styles --- */
+
+/* 1. Variables */
+:root {
+    --font-sans: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean sans-serif */
+
+    /* Dark Palette (Deep Blue/Gray Tones) */
+    --bg-primary: #0a0f18;       /* Deepest background (body) */
+    --bg-secondary: #101827;     /* Slightly lighter (sidebar, headers) */
+    --bg-tertiary: #1c2536;      /* Lighter elements (inputs, messages) */
+    --bg-hover: #2a3447;         /* Hover states */
+    --bg-active: #3a5f80;        /* Active/selected state */
+
+    --text-primary: #e1e8f0;     /* Main text (light gray/blue) */
+    --text-secondary: #a0aec0;   /* Subtler text (placeholders, secondary info) */
+    --text-accent: #63b3ed;      /* Accent text (links) */
+
+    --border-color: #2d3748;     /* Subtle borders */
+    --border-focus: #63b3ed;     /* Border color on focus */
+    --border-focus-rgb: 99, 179, 237; /* RGB for focus shadow */
+    --border-color-light: #4a5568; /* Lighter border for dashed lines etc. */
+
+
+    --accent-primary: #4299e1;   /* Primary accent (buttons, active states) - Blue */
+    --accent-primary-rgb: 66, 153, 225; /* RGB for accent opacity */
+    --accent-primary-hover: #3182ce;
+    --accent-secondary: #e53e3e; /* Secondary accent (logout, delete) - Red */
+    --accent-secondary-hover: #c53030;
+
+    /* Message Specific */
+    --user-message-bg: #1a3a5c;   /* Slightly distinct user message bg */
+    --bot-message-bg: #1c2536;    /* Same as tertiary bg */
+
+    /* Flash Messages */
+    --flash-success-bg: #1c4532;
+    --flash-success-text: #9ae6b4;
+    --flash-success-border: #2f6f4f;
+    --flash-error-bg: #521b1b;
+    --flash-error-text: #feb2b2;
+    --flash-error-border: #9b2c2c;
+    --flash-info-bg: #1a3852;
+    --flash-info-text: #a0d3e8;
+    --flash-info-border: #2b6cb0;
+
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px; /* Adjusted for modal/tabs */
+
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1); /* Larger shadow for modal */
+}
+
+/* 2. Global Styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 16px;
+    line-height: 1.5;
+    overflow: hidden; /* Prevent body scroll */
+}
+
+/* Special body style for when settings modal is open */
+body.settings-modal-open {
+    /* Keep main app layout, but ensure modal is centered */
+}
+
+
+a {
+    color: var(--text-accent);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: var(--accent-primary);
+    text-decoration: underline;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    padding: 0.6em 1.2em;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="url"],
+textarea { /* Added url and textarea */
+    font-family: inherit;
+    padding: 0.7em 1em;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 0.95em;
+    transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    width: 100%; /* Make inputs/textarea full width by default */
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="url"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(var(--border-focus-rgb), 0.3); /* Use RGB for opacity */
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* --- Global Scrollbar Styling (Optional) --- */
+
+/* General scrollbar track */
+::-webkit-scrollbar {
+    width: 8px; /* Default width */
+    height: 8px; /* Default height for horizontal */
+}
+::-webkit-scrollbar-track {
+    background: transparent; /* Track background */
+}
+
+/* General scrollbar thumb */
+::-webkit-scrollbar-thumb {
+    background-color: var(--border-color); /* Thumb color */
+    border-radius: 10px;
+    border: 2px solid var(--bg-primary); /* Creates padding around thumb */
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary); /* Thumb color on hover */
+}
+
+/* Specific overrides can be placed in component CSS if needed */
+/* Example: Thinner scrollbar for sidebar */
+/* #sidebar::-webkit-scrollbar { width: 6px; } */
+/* #sidebar::-webkit-scrollbar-thumb { border: 1px solid var(--bg-secondary); } */

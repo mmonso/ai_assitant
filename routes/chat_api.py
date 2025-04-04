@@ -35,18 +35,25 @@ def set_active_conversation():
         return jsonify({"error": "Request must be JSON"}), 400
 
     data = request.get_json()
-    conversation_id = data.get('conversation_id')
+    conversation_id_str = data.get('conversation_id') # Get potential string from JSON
 
-    if not conversation_id:
+    if not conversation_id_str:
         return jsonify({"error": "Missing 'conversation_id'"}), 400
 
-    # Optional: Verify the user actually owns this conversation ID
+    try:
+        # Explicitly convert to integer for comparison and session storage
+        conversation_id = int(conversation_id_str)
+    except (ValueError, TypeError):
+         return jsonify({"error": "Invalid 'conversation_id' format"}), 400
+
+    # Verify the user actually owns this conversation ID
     user_id = session['user_id']
     user_convs = db_utils.get_conversations(user_id)
+    # Compare int to int (conv['conversation_id'] is int from DB)
     if not any(conv['conversation_id'] == conversation_id for conv in user_convs):
          return jsonify({"error": "Conversation not found or access denied"}), 404
 
-    session['current_conversation_id'] = conversation_id
+    session['current_conversation_id'] = conversation_id # Store as integer
     print(f"Set active conversation to: {conversation_id}")
     return jsonify({"message": f"Active conversation set to {conversation_id}"}), 200
 

@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gemini Chatbot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Base Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='base.css') }}">
+    <!-- Layout Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='layout.css') }}">
+    <!-- Component Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='sidebar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='chat.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='settings.css') }}">
     <!-- highlight.js CSS theme (e.g., github-dark) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 </head>
@@ -57,7 +64,7 @@
     <!-- Syntax Highlighting Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <!-- Your custom script (must come AFTER libraries) -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='script.js') }}"></script>
     <!-- Settings modal HTML removed, handled by /settings route -->
     <script src="{{ url_for('static', filename='settings.js') }}"></script>
 

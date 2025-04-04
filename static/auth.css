@@ -1,0 +1,90 @@
+/* --- Authentication Page Styles --- */
+
+.auth-container {
+    max-width: 450px;
+    margin: 60px auto;
+    padding: 30px 40px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--bg-secondary);
+    box-shadow: var(--shadow-md);
+}
+
+.auth-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.auth-container label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.auth-container input[type="text"],
+.auth-container input[type="password"] {
+    width: 100%;
+    margin-bottom: 20px;
+    /* Inherits base input styles */
+}
+
+.auth-container button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--accent-primary);
+    color: white;
+    font-size: 1em;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.auth-container button[type="submit"]:hover {
+    background-color: var(--accent-primary-hover);
+}
+
+.auth-container .switch-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9em;
+    color: var(--text-secondary);
+}
+
+.auth-container .switch-link a {
+    font-weight: 500;
+    /* Inherits base link styles */
+}
+
+/* Flash Message Styles */
+.flash-messages {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0; /* Add margin below */
+}
+
+.flash-messages li {
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95em;
+    border: 1px solid transparent; /* Base border */
+}
+
+.flash-messages .success {
+    background-color: var(--flash-success-bg);
+    color: var(--flash-success-text);
+    border-color: var(--flash-success-border);
+}
+.flash-messages .error {
+    background-color: var(--flash-error-bg);
+    color: var(--flash-error-text);
+    border-color: var(--flash-error-border);
+}
+.flash-messages .info {
+    background-color: var(--flash-info-bg);
+    color: var(--flash-info-text);
+    border-color: var(--flash-info-border);
+}
