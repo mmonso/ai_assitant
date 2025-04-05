@@ -5,64 +5,78 @@
         <main class="settings-content">
             <!-- Account Tab -->
             <div id="account" class="settings-tab active"> <!-- Default active might be handled by JS -->
-                <h3>Account</h3>
+                <h3>Account Settings</h3>
+                <div class="settings-sub-layout"> <!-- New container for two columns -->
+                    <nav class="settings-sub-nav"> <!-- Left navigation -->
+                        <ul>
+                            <li><button class="sub-nav-button active" data-target="account-profile-section">Profile</button></li>
+                            <li><button class="sub-nav-button" data-target="account-password-section">Change Password</button></li>
+                            <li><button class="sub-nav-button" data-target="account-delete-section">Delete Account</button></li>
+                        </ul>
+                    </nav>
+                    <div class="settings-sub-content"> <!-- Right content area -->
+                        <!-- Profile Settings -->
+                        <section id="account-profile-section" class="settings-section account-section active"> <!-- Added ID and common class, active by default -->
+                            <form id="profile-form">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input type="text" id="username" name="username" value="{{ user.username }}" required minlength="{{ config.USERNAME_MIN_LENGTH }}" maxlength="{{ config.USERNAME_MAX_LENGTH }}">
+                                    <span class="form-error" id="username-error"></span>
+                                    <p class="help-text">Allowed characters: letters, numbers, underscore. Length: {{ config.USERNAME_MIN_LENGTH }}-{{ config.USERNAME_MAX_LENGTH }}.</p>
+                                </div>
+                                <hr class="form-separator"> <!-- Added separator -->
+                                <div class="form-group">
+                                    <label for="profile_picture_url">Profile Picture URL (Optional)</label>
+                                    <input type="url" id="profile_picture_url" name="profile_picture_url" value="{{ user.profile_picture_url or '' }}" placeholder="https://example.com/avatar.png">
+                                    <span class="form-error" id="profile_picture_url-error"></span>
+                                </div>
+                                <hr class="form-separator"> <!-- Added separator -->
+                                <div class="form-group">
+                                    <label for="user_info">About Me (Optional)</label>
+                                    <textarea id="user_info" name="user_info" rows="5" placeholder="e.g., I am a software developer living in Brazil, interested in Python and AI. I prefer concise answers.">{{ user.user_info or '' }}</textarea>
+                                    <span class="form-error" id="user_info-error"></span>
+                                    <p class="help-text">Provide some background information about yourself or your preferences. This context will be sent to the AI with your messages.</p>
+                                </div>
+                                 <button type="submit" class="settings-button">Save Profile</button>
+                                 <span class="form-success" id="profile-success"></span>
+                            </form>
+                        </section>
 
-                <!-- Profile Settings -->
-                <section class="settings-section">
-                    <h4>Profile</h4>
-                    <form id="profile-form">
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <!-- Value needs to be populated, either by JS fetch or Flask context -->
-                            <input type="text" id="username" name="username" value="{{ user.username }}" required minlength="{{ config.USERNAME_MIN_LENGTH }}" maxlength="{{ config.USERNAME_MAX_LENGTH }}">
-                            <span class="form-error" id="username-error"></span>
-                            <p class="help-text">Allowed characters: letters, numbers, underscore. Length: {{ config.USERNAME_MIN_LENGTH }}-{{ config.USERNAME_MAX_LENGTH }}.</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="profile_picture_url">Profile Picture URL (Optional)</label>
-                            <input type="url" id="profile_picture_url" name="profile_picture_url" value="{{ user.profile_picture_url or '' }}" placeholder="https://example.com/avatar.png">
-                            <span class="form-error" id="profile_picture_url-error"></span>
-                        </div>
-                         <button type="submit" class="settings-button">Save Profile</button>
-                         <span class="form-success" id="profile-success"></span>
-                    </form>
-                </section>
+                        <!-- Password Change -->
+                        <section id="account-password-section" class="settings-section account-section"> <!-- Added ID and common class -->
+                            <form id="password-form">
+                                <div class="form-group">
+                                    <label for="current_password">Current Password</label>
+                                    <input type="password" id="current_password" name="current_password" required>
+                                     <span class="form-error" id="current_password-error"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="new_password">New Password</label>
+                                    <input type="password" id="new_password" name="new_password" required minlength="{{ config.PASSWORD_MIN_LENGTH }}">
+                                     <span class="form-error" id="new_password-error"></span>
+                                     <p class="help-text">Minimum length: {{ config.PASSWORD_MIN_LENGTH }} characters.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm_password">Confirm New Password</label>
+                                    <input type="password" id="confirm_password" name="confirm_password" required>
+                                     <span class="form-error" id="confirm_password-error"></span>
+                                </div>
+                                <button type="submit" class="settings-button">Change Password</button>
+                                <span class="form-success" id="password-success"></span>
+                                 <span class="form-error" id="password-form-error"></span> <!-- General form error -->
+                            </form>
+                        </section>
 
-                <!-- Password Change -->
-                <section class="settings-section">
-                    <h4>Change Password</h4>
-                    <form id="password-form">
-                        <div class="form-group">
-                            <label for="current_password">Current Password</label>
-                            <input type="password" id="current_password" name="current_password" required>
-                             <span class="form-error" id="current_password-error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="new_password">New Password</label>
-                            <input type="password" id="new_password" name="new_password" required minlength="{{ config.PASSWORD_MIN_LENGTH }}">
-                             <span class="form-error" id="new_password-error"></span>
-                             <p class="help-text">Minimum length: {{ config.PASSWORD_MIN_LENGTH }} characters.</p>
-                        </div>
-                        <div class="form-group">
-                            <label for="confirm_password">Confirm New Password</label>
-                            <input type="password" id="confirm_password" name="confirm_password" required>
-                             <span class="form-error" id="confirm_password-error"></span>
-                        </div>
-                        <button type="submit" class="settings-button">Change Password</button>
-                        <span class="form-success" id="password-success"></span>
-                         <span class="form-error" id="password-form-error"></span> <!-- General form error -->
-                    </form>
-                </section>
-
-                <!-- Delete Account -->
-                <section class="settings-section">
-                    <h4>Delete Account</h4>
-                    <p class="help-text" style="color: var(--flash-error-text);">Warning: Deleting your account is permanent and will remove all your conversations and messages.</p>
-                    <form id="delete-form">
-                        <button type="submit" class="settings-button delete-button">Delete My Account</button>
-                         <span class="form-error" id="delete-error"></span>
-                    </form>
-                </section>
+                        <!-- Delete Account -->
+                        <section id="account-delete-section" class="settings-section account-section"> <!-- Added ID and common class -->
+                            <p class="help-text" style="color: var(--flash-error-text);">Warning: Deleting your account is permanent and will remove all your conversations and messages.</p>
+                            <form id="delete-form">
+                                <button type="submit" class="settings-button delete-button">Delete My Account</button>
+                                 <span class="form-error" id="delete-error"></span>
+                            </form>
+                        </section>
+                    </div> <!-- End settings-sub-content -->
+                </div> <!-- End settings-sub-layout -->
             </div>
 
             <!-- Chat Settings Tab -->

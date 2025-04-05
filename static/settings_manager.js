@@ -9,6 +9,8 @@ let settingsModalPlaceholder = null;
 let settingsModalOverlay = null;
 let settingsModalMain = null;
 let closeSettingsButton = null;
+// let accountSubLayoutMinHeight = 0; // Remove variable, use data attribute instead
+let accountSubLayoutMinHeight = 0; // Variable to store the calculated min-height
 
 /**
  * Initializes the settings manager with necessary DOM elements.
@@ -139,7 +141,63 @@ export async function openSettingsModal(targetTabId = 'account') {
     // Fallback if targetTabId doesn't match any tab
     if (!activated && tabs.length > 0) {
         tabs[0].classList.add('active');
+        targetTabId = tabs[0].id; // Update targetTabId if fallback occurred
     }
+
+    // --- Calculate and store min-height for account sub-layout as data attribute ---
+    if (targetTabId === 'account' && settingsModalMain) {
+        // Ensure styles are applied and layout is calculated
+        requestAnimationFrame(() => { // Use rAF to wait for layout calculation
+            const accountTab = settingsModalMain.querySelector('#account');
+            const subLayout = accountTab?.querySelector('.settings-sub-layout');
+            const profileSection = accountTab?.querySelector('#account-profile-section');
+
+            if (subLayout && profileSection && profileSection.classList.contains('active')) {
+                // Temporarily ensure the container is visible if needed for measurement
+                // This might not be strictly necessary with rAF, but safer
+                const initialDisplay = accountTab.style.display;
+                const initialVisibility = accountTab.style.visibility;
+                accountTab.style.display = 'flex'; // Ensure it's displayed for measurement
+                accountTab.style.visibility = 'hidden'; // Keep it hidden visually during measurement
+
+                const calculatedHeight = subLayout.offsetHeight;
+                console.log(`Calculated account sub-layout height: ${calculatedHeight}px`);
+
+                // Store height as data attribute if valid
+                if (calculatedHeight > 0) {
+                    subLayout.dataset.minHeight = calculatedHeight;
+                    // Apply immediately as minHeight style as well
+                    subLayout.style.minHeight = `${calculatedHeight}px`;
+                } else {
+                    console.warn("Calculated height was 0, not setting data attribute.");
+                    delete subLayout.dataset.minHeight; // Remove potentially invalid attribute
+                    subLayout.style.minHeight = ''; // Clear style
+                }
+
+                // Restore original display properties
+                accountTab.style.display = initialDisplay;
+                accountTab.style.visibility = initialVisibility;
+
+            } else {
+                 console.warn("Could not find account sub-layout or profile section wasn't active for height calculation.");
+                 // Ensure attribute is removed if calculation fails
+                 const existingSubLayout = settingsModalMain.querySelector('#account .settings-sub-layout');
+                 if (existingSubLayout) {
+                     delete existingSubLayout.dataset.minHeight;
+                     existingSubLayout.style.minHeight = '';
+                 }
+            }
+        });
+    } else {
+         // Ensure attribute is removed if not opening to account tab
+         const existingSubLayout = settingsModalMain?.querySelector('#account .settings-sub-layout');
+         if (existingSubLayout) {
+             delete existingSubLayout.dataset.minHeight;
+             existingSubLayout.style.minHeight = '';
+         }
+    }
+    // --- End height calculation ---
+
 
     // Show the modal
     settingsModalOverlay.style.display = 'flex';

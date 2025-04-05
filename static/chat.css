@@ -37,6 +37,8 @@
 #chat-box {
     flex-grow: 1;
     overflow-y: auto;
+    background-color: transparent; /* Make chat area background transparent */
+    border: none; /* Remove any border */
     padding: 25px;
     display: flex;
     flex-direction: column;
@@ -49,8 +51,8 @@
 #input-area {
     display: flex;
     padding: 15px 25px;
-    border-top: 1px solid var(--border-color);
-    background-color: var(--bg-primary); /* Match body */
+    border-top: 1px solid var(--border-color); /* Restore border */
+    background-color: var(--bg-primary); /* Restore background */
     flex-shrink: 0; /* Prevent shrinking */
     gap: 10px;
 }
@@ -73,7 +75,7 @@
 }
 
 .bot-message {
-    background-color: var(--bot-message-bg);
+    background-color: transparent; /* Make bot message background transparent */
     color: var(--text-primary); /* Use primary text for bot too */
     align-self: flex-start;
     border-bottom-left-radius: var(--border-radius-sm);
@@ -96,15 +98,17 @@
 /* Input Area Styles */
 #user-input {
     flex-grow: 1;
-    background-color: var(--bg-secondary); /* Slightly different from tertiary */
-    border-color: var(--border-color);
+    background-color: var(--bg-secondary); /* Restore background */
+    border: 1px solid var(--border-color); /* Restore border */
     padding: 12px 18px; /* Match message padding */
     border-radius: var(--border-radius-md); /* Consistent radius */
+    color: var(--text-primary);
 }
 
 #user-input:focus {
-     border-color: var(--border-focus);
-     background-color: var(--bg-tertiary); /* Lighten on focus */
+    border-color: var(--border-focus); /* Restore focus border */
+    background-color: var(--bg-tertiary); /* Restore focus background */
+    outline: none; /* Keep outline removal for consistency */
 }
 
 #send-button {

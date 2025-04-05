@@ -53,6 +53,8 @@ function populateSettingsForms(userData, configData) {
     if (profileForm) {
         const usernameInput = profileForm.querySelector('#username');
         const profilePicInput = profileForm.querySelector('#profile_picture_url');
+        const userInfoInput = profileForm.querySelector('#user_info'); // Get the new textarea
+
         if (usernameInput) {
             usernameInput.value = userData.username || '';
             // Update length attributes if they come from config
@@ -66,6 +68,9 @@ function populateSettingsForms(userData, configData) {
         }
         if (profilePicInput) {
             profilePicInput.value = userData.profile_picture_url || '';
+        }
+        if (userInfoInput) { // Populate the user_info textarea
+            userInfoInput.value = userData.user_info || '';
         }
     }
 
@@ -214,6 +219,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // --- Account Sub-Navigation Click Handler ---
+    document.body.addEventListener('click', (e) => {
+        const button = e.target.closest('.sub-nav-button');
+        // Ensure the click is on a sub-nav button AND within the account tab
+        if (button && button.closest('#account')) {
+            const targetId = button.dataset.target;
+            const targetSection = document.getElementById(targetId);
+            const subNavContainer = button.closest('.settings-sub-nav');
+            const subLayout = button.closest('.settings-sub-layout'); // Get the sub-layout container
+            const subContentContainer = subLayout?.querySelector('.settings-sub-content');
+
+            if (!targetSection || !subNavContainer || !subLayout || !subContentContainer) { // Check subLayout too
+                console.error("Could not find target section or containers for sub-navigation.");
+                return;
+            }
+
+            // Apply the minimum height stored in the data attribute
+            const storedMinHeight = subLayout.dataset.minHeight;
+            if (storedMinHeight && parseInt(storedMinHeight, 10) > 0) {
+                subLayout.style.minHeight = `${storedMinHeight}px`;
+                console.log(`Applied min-height: ${storedMinHeight}px`);
+            } else {
+                // Fallback or remove existing minHeight if attribute is missing/invalid
+                subLayout.style.minHeight = ''; // Or set to a default like '300px' if preferred
+                console.log("Applied fallback min-height (cleared).");
+            }
+
+            // Remove active class from all buttons in this nav
+            subNavContainer.querySelectorAll('.sub-nav-button').forEach(btn => btn.classList.remove('active'));
+            // Remove active class from all sections in this content area
+            subContentContainer.querySelectorAll('.account-section').forEach(sec => sec.classList.remove('active'));
+
+            // Add active class to the clicked button and target section
+            button.classList.add('active');
+            targetSection.classList.add('active');
+        }
+    });
+
 
     // Tab switching and close button logic removed - handled by settings_manager.js
 

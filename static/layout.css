@@ -36,10 +36,10 @@
     width: 100%; /* Take full width within the centered flex item */
     max-width: 700px; /* Set the desired max width */
     height: 100%; /* Fill the height of the main content area */
-    background-color: var(--bg-secondary); /* Give wrapper a slightly different bg if needed */
-    border-left: 1px solid var(--border-color); /* Optional borders */
-    border-right: 1px solid var(--border-color); /* Optional borders */
-    box-shadow: var(--shadow-md); /* Optional shadow */
+    background-color: transparent; /* Make wrapper transparent */
+    /* border-left: 1px solid var(--border-color); */ /* Remove border */
+    /* border-right: 1px solid var(--border-color); */ /* Remove border */
+    /* box-shadow: var(--shadow-md); */ /* Remove shadow */
 }
 
 /* Specific scrollbar for sidebar (thinner) */

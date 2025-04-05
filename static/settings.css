@@ -94,15 +94,16 @@
 .settings-modal {
     width: 80%;
     max-width: 750px; /* Adjusted max-width */
-    min-height: 450px; /* Adjusted min-height */
+    min-height: 450px; /* Use min-height */
+    /* height: 75vh; */
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius-lg); /* Larger radius */
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg); /* Larger shadow */
     color: var(--text-primary);
-    overflow: hidden; /* Prevent content spill */
+    overflow: hidden; /* Hide overflow at modal level */
     position: relative; /* For close button positioning */
-    max-height: 85vh; /* Limit height */
+    max-height: 85vh; /* Use max-height */
     display: flex; /* Use flex for header/content structure */
     flex-direction: column; /* Stack header and content vertically */
     transform: scale(0.95); /* Start slightly smaller for transition */
@@ -118,9 +119,10 @@
 
 /* Main Content Area within Modal */
 .settings-content {
-    flex-grow: 1; /* Take remaining vertical space */
+    flex-grow: 1; /* Allow content area to fill modal height */
     padding: 30px 40px; /* Adjusted padding */
-    overflow-y: auto; /* Allow scrolling if content overflows */
+    overflow-y: auto; /* THIS is the main scroll container */
+    min-height: 0; /* Allow shrinking within flex context */
 }
 
 /* Scrollbar for settings content (using global styles from base.css) */
@@ -130,7 +132,8 @@
     display: none; /* Hide tabs by default */
 }
 .settings-tab.active {
-    display: block; /* Show active tab */
+    display: block; /* Tab is just a block container */
+    /* Remove any height/flex properties */
 }
 .settings-tab h3 { /* Section titles within tabs */
      margin-top: 0;
@@ -144,7 +147,7 @@
 
 /* Sections within Tabs */
 .settings-section {
-    margin-bottom: 35px;
+    margin-bottom: 25px; /* Reduced space between major sections */
     padding-bottom: 0;
     border-bottom: none; /* Remove bottom border within tabs */
 }
@@ -157,13 +160,77 @@
     font-size: 1.1em;
     color: var(--text-secondary);
     font-weight: 500;
-    border-bottom: 1px dashed var(--border-color-light);
-    padding-bottom: 10px;
+    /* border-bottom: 1px dashed var(--border-color-light); */ /* Removed dashed line */
+    padding-bottom: 10px; /* Keep padding for spacing */
 }
+/* --- Sub-layout for Account Settings --- */
+.settings-sub-layout {
+    display: flex;
+    gap: 30px; /* Space between nav and content */
+    /* Remove height/flex properties */
+}
+
+.settings-sub-nav {
+    flex: 0 0 180px; /* Fixed width for the left navigation */
+    border-right: 1px solid var(--border-color);
+    padding-right: 20px;
+}
+
+.settings-sub-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.settings-sub-nav li {
+    margin-bottom: 5px;
+}
+
+.sub-nav-button {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    background: none;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    color: var(--text-secondary);
+    text-align: left;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sub-nav-button:hover {
+    background-color: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.sub-nav-button.active {
+    background-color: var(--accent-primary-muted); /* Use a muted accent for active state */
+    color: var(--accent-primary);
+    font-weight: 500;
+}
+
+.settings-sub-content {
+    flex: 1; /* Take remaining horizontal space */
+    min-width: 0; /* Prevent content from overflowing horizontally */
+    /* Remove height/overflow properties */
+    padding-bottom: 10px; /* Add some padding at the bottom */
+}
+
+/* Hide non-active account sections */
+.account-section {
+    display: none;
+}
+.account-section.active {
+    display: block;
+}
+/* --- End Sub-layout --- */
+
 
 /* Form Styles within Modal (reusing global input/textarea styles) */
 .settings-content .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px; /* Reduced default bottom margin */
 }
 .settings-content .form-group label {
     display: block;
@@ -172,12 +239,20 @@
     font-size: 0.9em;
     font-weight: 500;
 }
+
+/* Style for the horizontal separator within forms */
+.form-separator {
+    border: none;
+    border-top: 1px solid var(--border-color-light);
+    margin: 20px 0; /* Add vertical space around the separator */
+}
+
 /* Input/Textarea styles are inherited from global */
 
 .settings-content .form-group .help-text {
     font-size: 0.85em;
     color: var(--text-secondary);
-    margin-top: 5px;
+    margin-top: 2px; /* Reduced top margin to bring help text closer */
 }
 .settings-content .form-error {
     color: var(--flash-error-text);

@@ -31,8 +31,8 @@ def create_user(username, password):
             cursor = conn.cursor()
             # Insert user with null for new fields initially
             cursor.execute("""
-                INSERT INTO users (username, password_hash, profile_picture_url, system_prompt)
-                VALUES (?, ?, NULL, NULL)
+                INSERT INTO users (username, password_hash, profile_picture_url, system_prompt, user_info)
+                VALUES (?, ?, NULL, NULL, NULL)
             """, (username, hashed_password))
             conn.commit()
             print(f"User '{username}' created successfully.")
@@ -69,7 +69,7 @@ def get_user_details(user_id):
         with get_db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT user_id, username, profile_picture_url, system_prompt
+                SELECT user_id, username, profile_picture_url, system_prompt, user_info
                 FROM users
                 WHERE user_id = ?
             """, (user_id,))
@@ -151,6 +151,23 @@ def update_system_prompt(user_id, prompt):
     except sqlite3.Error as e:
         print(f"Database error updating system prompt for user_id {user_id}: {e}")
         return False
+def update_user_info(user_id, user_info_json):
+    """Updates the user_info JSON string for a user."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("UPDATE users SET user_info = ? WHERE user_id = ?", (user_info_json, user_id))
+            conn.commit()
+            if cursor.rowcount > 0:
+                print(f"User info updated for user_id {user_id}")
+                return True
+            else:
+                print(f"Warning: User info update for user_id {user_id} affected 0 rows.")
+                return False
+    except sqlite3.Error as e:
+        print(f"Database error updating user info for user_id {user_id}: {e}")
+        return False
+
 
 def delete_user(user_id):
     """Deletes a user and all associated data (conversations, messages) via CASCADE."""
@@ -290,6 +307,7 @@ if __name__ == '__main__':
         update_password(user1_id, "newpassword456")
         update_profile_picture(user1_id, "/static/avatars/user1.png")
         update_system_prompt(user1_id, "You are a helpful pirate assistant.")
+        update_user_info(user1_id, '{"role": "Captain", "ship": "The Black Pearl"}') # Test user_info
 
         details1_updated = get_user_details(user1_id)
         print(f"User 1 Details after update: {details1_updated}")

@@ -12,6 +12,7 @@ CREATE TABLE users (
     password_hash TEXT NOT NULL,
     profile_picture_url TEXT, -- URL to the profile picture (nullable)
     system_prompt TEXT,       -- Custom system prompt for the user (nullable)
+    user_info TEXT,           -- JSON object containing user-specific info (nullable)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

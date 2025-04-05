@@ -63,6 +63,20 @@ def update_profile():
          else:
               errors['profile_picture_url'] = "Database error updating profile picture URL." # Changed key
 
+    # --- Update User Info (as JSON string) ---
+    if 'user_info' in data:
+        new_user_info = data['user_info']
+        # Basic validation: Ensure it's a string (or null).
+        # More complex validation (is it valid JSON?) could be added here or on the client-side.
+        if isinstance(new_user_info, str) or new_user_info is None:
+            success = db_utils.update_user_info(user_id, new_user_info)
+            if success:
+                success_messages.append("User info updated.")
+                updated_fields['user_info'] = new_user_info
+            else:
+                errors['user_info'] = "Database error updating user info."
+        else:
+            errors['user_info'] = "User info must be provided as a string (JSON format)."
 
     if errors:
         return jsonify({"errors": errors}), 400

@@ -1,5 +1,6 @@
 import os
 from flask import Blueprint, request, jsonify, session
+# import json # Removed, no longer parsing user_info
 import google.generativeai as genai
 import db_utils
 
@@ -188,6 +189,14 @@ def chat():
                  # print("Chat route: Custom system prompt is empty after stripping.")
         # else: # Removed log
              # print("Chat route: No custom system prompt found for user.")
+
+        # --- Add User Info (if available) ---
+        user_info_str = user_details_chat.get('user_info')
+        user_info_str = user_details_chat.get('user_info')
+        if user_info_str and user_info_str.strip(): # Check if not None and not empty after stripping whitespace
+            formatted_user_info = f"\n\nADDITIONAL USER INFORMATION (Provided by User):\n{user_info_str.strip()}\n"
+            message_to_send = f"{formatted_user_info}\n{message_to_send}" # Prepend user info
+            # print(f"Chat route: Prepended user info: {formatted_user_info}") # Removed log
 
 
         # --- Determine or Create Conversation ---
