@@ -25,7 +25,7 @@
     /* align-items: center; */ /* Remove or comment out if vertical centering isn't desired */
     height: 100%;
     background-color: var(--bg-primary);
-    overflow-y: auto; /* Allow main content to scroll */
+    overflow-y: scroll; /* Always show scrollbar track to prevent layout shift */
     padding: 0 20px; /* Add some padding if needed when screen is narrow */
 }
 
@@ -37,9 +37,6 @@
     max-width: 800px; /* Set the desired max width */
     /* height: 100%; <- Removed to fix input area positioning */
     background-color: transparent; /* Make wrapper transparent */
-    /* border-left: 1px solid var(--border-color); */ /* Remove border */
-    /* border-right: 1px solid var(--border-color); */ /* Remove border */
-    /* box-shadow: var(--shadow-md); */ /* Remove shadow */
 }
 
 /* Specific scrollbar for sidebar (thinner) */

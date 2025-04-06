@@ -24,7 +24,7 @@
     /* overflow-y: auto; <- Removed, scrolling handled by #main-content */
     background-color: transparent; /* Make chat area background transparent */
     border: none; /* Remove any border */
-    padding: 25px 25px 80px 25px; /* Reduced bottom padding */
+    padding: 25px 25px 10px 25px; /* Further reduced bottom padding */
     display: flex;
     flex-direction: column;
     gap: 20px; /* Space between messages */
@@ -35,12 +35,10 @@
 
 #input-area {
     display: flex;
-    padding: 35px 25px; /* Further increased vertical padding */
-    border-top: 1px solid var(--border-color); /* Restore border */
+    padding: 0px 25px 50px 25px; /* Reduced top padding */
     background-color: var(--bg-primary); /* Restore background */
     flex-shrink: 0; /* Prevent shrinking */
     gap: 10px;
-    /* margin-bottom: 30px; <- Removed, sticky positioning handles bottom spacing */
     position: sticky;
     bottom: 0;
     z-index: 1; /* Ensure it stays above chat content */
@@ -64,6 +62,7 @@
 }
 
 .bot-message {
+    padding: 12px 0px;
     background-color: transparent; /* Make bot message background transparent */
     color: var(--text-primary); /* Use primary text for bot too */
     align-self: flex-start;
@@ -86,28 +85,17 @@
 
 /* Input Area Styles */
 #user-input { /* Now a textarea */
+
     flex-grow: 1;
     background-color: var(--bg-secondary); /* Restore background */
     border: 1px solid var(--border-color); /* Restore border */
-    padding: 12px 18px; /* Match message padding */
-    border-radius: 50px; /* Fully rounded */
+    padding: 12px 17px; /* Adjust left padding to align text with bot message */
+    border-radius: 30px; /* Fully rounded */
     color: var(--text-primary);
     line-height: 1.5; /* Ensure consistent line height for calculations */
     max-height: 280px; /* Approx 10 lines + padding */
     overflow-y: auto; /* Show scrollbar when max-height is reached */
 }
-
-#user-input:focus {
-    border-color: var(--border-focus); /* Restore focus border */
-    background-color: var(--bg-tertiary); /* Restore focus background */
-    outline: none; /* Keep outline removal for consistency */
-}
-
-#user-input:hover {
-    background-color: var(--bg-secondary); /* Keep original background on hover */
-    border-color: var(--border-color); /* Keep original border on hover */
-}
-
 
 /* Code Block Styling (within bot messages) */
 .bot-message pre {
