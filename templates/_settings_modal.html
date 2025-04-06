@@ -99,7 +99,54 @@
                  <!-- Add more chat-related settings here -->
             </div>
 
-             <!-- Add more tabs here as needed -->
+            <!-- Theme Settings Tab -->
+            <div id="theme" class="settings-tab">
+                <h3>Theme Settings</h3>
+                <section class="settings-section">
+                    <div class="form-group">
+                        <label for="font-selector">Font Family</label>
+                        <select id="font-selector" title="Select Font">
+                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Default (Segoe UI)</option>
+                            <option value="'Poppins', sans-serif">Poppins</option>
+                            <option value="'Raleway', sans-serif">Raleway</option>
+                            <option value="'Noto Sans', sans-serif" selected>Noto Sans</option> <!-- Set Noto Sans as selected -->
+                            <option value="'Roboto Slab', serif">Roboto Slab</option>
+                            <option value="'Inter', sans-serif">Inter</option>
+                            <option value="'Open Sans', sans-serif">Open Sans</option>
+                            <option value="'Nunito Sans', sans-serif">Nunito Sans</option>
+                            <option value="'Merriweather', serif">Merriweather</option>
+                            <option value="'Lora', serif">Lora</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="font-size-selector">Base Font Size</label>
+                        <select id="font-size-selector" title="Select Font Size">
+                            <option value="12px">12px</option>
+                            <option value="13px">13px</option>
+                            <option value="14px">14px</option>
+                            <option value="15px">15px</option>
+                            <option value="16px">16px</option>
+                            <option value="17px" selected>17px (Default)</option> <!-- Set 17px as selected -->
+                            <option value="18px">18px</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="line-spacing-selector">Chat Line Spacing</label>
+                        <select id="line-spacing-selector" title="Select Line Spacing">
+                            <option value="1.2">1.2</option>
+                            <option value="1.3">1.3</option>
+                            <option value="1.4">1.4</option>
+                            <option value="1.5">1.5 (Default)</option> <!-- JS should set selected based on current value -->
+                            <option value="1.6">1.6</option>
+                            <option value="1.7">1.7</option>
+                            <option value="1.8">1.8</option>
+                            <option value="1.9">1.9</option>
+                            <option value="2.0">2.0</option>
+                        </select>
+                    </div>
+                </section>
+            </div>
+
 
         </main>
     </div>

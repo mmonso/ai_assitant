@@ -32,46 +32,8 @@
         </div>
         <div id="main-content">
             <div class="chat-area-wrapper"> <!-- New wrapper -->
-                <div class="main-header">
-                    <h1>Gemini Chatbot</h1>
-                    <!-- Optional: Display username if passed from Flask -->
-                    <!-- {% if username %}<span>Welcome, {{ username }}!</span>{% endif %} -->
-                    <div style="display: flex; align-items: center; gap: 15px; position: relative;"> <!-- Wrapper for buttons, added position:relative -->
-                        <!-- Font Selector Dropdown -->
-                        <select id="font-selector" title="Select Font">
-                            <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Default (Segoe UI)</option>
-                            <option value="'Poppins', sans-serif">Poppins</option>
-                            <option value="'Raleway', sans-serif">Raleway</option>
-                            <option value="'Noto Sans', sans-serif">Noto Sans</option>
-                            <option value="'Roboto Slab', serif">Roboto Slab</option>
-                            <option value="'Inter', sans-serif">Inter</option>
-                            <option value="'Open Sans', sans-serif">Open Sans</option>
-                            <option value="'Nunito Sans', sans-serif">Nunito Sans</option>
-                            <option value="'Merriweather', serif">Merriweather</option>
-                            <option value="'Lora', serif">Lora</option>
-                        </select>
-                        <!-- Font Size Selector Dropdown -->
-                        <select id="font-size-selector" title="Select Font Size">
-                            <option value="12px">12px</option>
-                            <option value="13px">13px</option>
-                            <option value="14px" selected>14px (Default)</option>
-                            <option value="15px">15px</option>
-                            <option value="16px">16px</option>
-                            <option value="17px">17px</option>
-                            <option value="18px">18px</option>
-                        </select>
-                        <!-- Line Spacing Selector Dropdown -->
-                        <select id="line-spacing-selector" title="Select Line Spacing">
-                            <option value="1.2">1.2</option>
-                            <option value="1.3">1.3</option>
-                            <option value="1.4">1.4</option>
-                            <option value="1.5" selected>1.5 (Default)</option>
-                            <option value="1.6">1.6</option> <!-- Added 1.6 for more options -->
-                            <option value="1.7">1.7</option>
-                            <option value="1.8">1.8</option>
-                            <option value="1.9">1.9</option>
-                            <option value="2.0">2.0</option>
-                        </select>
+                <!-- Main Header Removed -->
+                        <!-- Font/Theme selectors removed from here -->
                         <button id="open-settings-button" class="settings-link" title="Settings">&#9881;</button> <!-- Back to button -->
                         <!-- Level 1 Settings Popover -->
                         <div id="settings-popover-level1" class="settings-popover">
@@ -79,19 +41,16 @@
                                 <li><a href="#" data-target-modal="settings-modal-main" data-target-tab="account">Account Settings</a></li>
                                 <li><a href="#" data-target-modal="settings-modal-main" data-target-tab="chat">Chat Settings</a></li>
                                 <!-- Add other top-level options here -->
+                                <li><a href="#" data-target-modal="settings-modal-main" data-target-tab="theme">Theme Settings</a></li> <!-- New Theme Settings Link -->
                                 <li><hr></li>
                                 <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
                             </ul>
                         </div>
-                        <!-- Logout button moved inside popover -->
-                    </div>
-                </div>
                 <div id="chat-box">
                     <!-- Chat messages will appear here -->
                 </div>
                 <div id="input-area">
-                    <input type="text" id="user-input" placeholder="Type your message...">
-                    <button id="send-button">Send</button>
+                    <textarea id="user-input" placeholder="Type your message..." rows="1"></textarea> <!-- Changed to textarea -->
                 </div>
             </div> <!-- End new wrapper -->
         </div>

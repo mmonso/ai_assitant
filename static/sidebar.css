@@ -64,7 +64,9 @@
 
 #conversation-list li .conversation-title {
     flex-grow: 1;
-    white-space: normal; /* Allow wrapping */
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden; /* Hide overflow */
+    text-overflow: ellipsis; /* Show ellipsis */
     padding: 10px 5px 10px 12px;
 }
 

@@ -25,7 +25,7 @@
     /* align-items: center; */ /* Remove or comment out if vertical centering isn't desired */
     height: 100%;
     background-color: var(--bg-primary);
-    overflow: hidden; /* Prevent main content scroll */
+    overflow-y: auto; /* Allow main content to scroll */
     padding: 0 20px; /* Add some padding if needed when screen is narrow */
 }
 
@@ -34,8 +34,8 @@
     display: flex;
     flex-direction: column;
     width: 100%; /* Take full width within the centered flex item */
-    max-width: 700px; /* Set the desired max width */
-    height: 100%; /* Fill the height of the main content area */
+    max-width: 800px; /* Set the desired max width */
+    /* height: 100%; <- Removed to fix input area positioning */
     background-color: transparent; /* Make wrapper transparent */
     /* border-left: 1px solid var(--border-color); */ /* Remove border */
     /* border-right: 1px solid var(--border-color); */ /* Remove border */

@@ -1,20 +1,5 @@
 /* --- Chat Area Styles --- */
 
-.main-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-color);
-    flex-shrink: 0; /* Prevent shrinking */
-}
-
-.main-header h1 {
-    margin: 0;
-    font-size: 1.2em;
-    font-weight: 600;
-}
 
 /* Gear icon link is handled in settings.css */
 /* Logout button styles (if needed separately, though now in popover) */
@@ -36,10 +21,10 @@
 
 #chat-box {
     flex-grow: 1;
-    overflow-y: auto;
+    /* overflow-y: auto; <- Removed, scrolling handled by #main-content */
     background-color: transparent; /* Make chat area background transparent */
     border: none; /* Remove any border */
-    padding: 25px;
+    padding: 25px 25px 80px 25px; /* Reduced bottom padding */
     display: flex;
     flex-direction: column;
     gap: 20px; /* Space between messages */
@@ -50,11 +35,15 @@
 
 #input-area {
     display: flex;
-    padding: 15px 25px;
+    padding: 35px 25px; /* Further increased vertical padding */
     border-top: 1px solid var(--border-color); /* Restore border */
     background-color: var(--bg-primary); /* Restore background */
     flex-shrink: 0; /* Prevent shrinking */
     gap: 10px;
+    /* margin-bottom: 30px; <- Removed, sticky positioning handles bottom spacing */
+    position: sticky;
+    bottom: 0;
+    z-index: 1; /* Ensure it stays above chat content */
 }
 
 /* Chat Message Styles */
@@ -96,13 +85,16 @@
 
 
 /* Input Area Styles */
-#user-input {
+#user-input { /* Now a textarea */
     flex-grow: 1;
     background-color: var(--bg-secondary); /* Restore background */
     border: 1px solid var(--border-color); /* Restore border */
     padding: 12px 18px; /* Match message padding */
-    border-radius: var(--border-radius-md); /* Consistent radius */
+    border-radius: 50px; /* Fully rounded */
     color: var(--text-primary);
+    line-height: 1.5; /* Ensure consistent line height for calculations */
+    max-height: 280px; /* Approx 10 lines + padding */
+    overflow-y: auto; /* Show scrollbar when max-height is reached */
 }
 
 #user-input:focus {
@@ -111,18 +103,11 @@
     outline: none; /* Keep outline removal for consistency */
 }
 
-#send-button {
-    background-color: var(--accent-primary);
-    color: white;
-    padding: 10px 20px;
-    font-weight: 600;
-    border-radius: var(--border-radius-md);
-    flex-shrink: 0; /* Prevent shrinking */
+#user-input:hover {
+    background-color: var(--bg-secondary); /* Keep original background on hover */
+    border-color: var(--border-color); /* Keep original border on hover */
 }
 
-#send-button:hover {
-    background-color: var(--accent-primary-hover);
-}
 
 /* Code Block Styling (within bot messages) */
 .bot-message pre {

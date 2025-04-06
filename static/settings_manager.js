@@ -63,6 +63,54 @@ async function fetchAndPopulateSettings() {
 }
 
 /**
+* Attaches event listeners to the theme setting controls within the modal.
+*/
+function attachThemeEventListeners() {
+   if (!settingsModalMain) return; // Ensure modal content is loaded
+
+   const fontSelector = settingsModalMain.querySelector('#font-selector');
+   const fontSizeSelector = settingsModalMain.querySelector('#font-size-selector');
+   const lineSpacingSelector = settingsModalMain.querySelector('#line-spacing-selector');
+   const chatBox = document.getElementById('chat-box'); // Get chatBox reference
+
+   // Font Selector Logic
+   if (fontSelector) {
+       fontSelector.addEventListener('change', (e) => {
+           const selectedFont = e.target.value;
+           document.body.style.fontFamily = selectedFont;
+           console.log(`Font changed to: ${selectedFont}`);
+           // TODO: Save preference
+       });
+       // Apply initial font
+       document.body.style.fontFamily = fontSelector.value;
+   }
+
+   // Font Size Selector Logic
+   if (fontSizeSelector) {
+       fontSizeSelector.addEventListener('change', (e) => {
+           const selectedSize = e.target.value;
+           document.body.style.fontSize = selectedSize;
+           console.log(`Font size changed to: ${selectedSize}`);
+           // TODO: Save preference
+       });
+       // Apply initial size
+       document.body.style.fontSize = fontSizeSelector.value;
+   }
+
+   // Line Spacing Selector Logic
+   if (lineSpacingSelector && chatBox) {
+       lineSpacingSelector.addEventListener('change', (e) => {
+           const selectedSpacing = e.target.value;
+           chatBox.style.setProperty('--chat-line-height', selectedSpacing);
+           console.log(`CSS variable --chat-line-height set to: ${selectedSpacing}`);
+           // TODO: Save preference
+       });
+       // Apply initial spacing
+       chatBox.style.setProperty('--chat-line-height', lineSpacingSelector.value);
+   }
+}
+
+/**
  * Opens the settings modal, loading its content dynamically if needed.
  * @param {string} [targetTabId='account'] - The ID of the tab to activate initially.
  */
@@ -103,6 +151,9 @@ export async function openSettingsModal(targetTabId = 'account') {
 
             console.log("Settings modal HTML loaded and elements found.");
 
+            // Attach theme listeners now that modal elements exist
+            attachThemeEventListeners();
+
             // Trigger form event listeners setup in settings.js if needed.
             // This might require settings.js to expose an init function or be refactored.
             // For now, we assume settings.js listeners are attached via DOMContentLoaded
@@ -119,7 +170,10 @@ export async function openSettingsModal(targetTabId = 'account') {
          settingsModalMain = settingsModalOverlay.querySelector('#settings-modal-main');
          closeSettingsButton = settingsModalOverlay.querySelector('#close-settings-button');
          console.log("Settings modal already loaded.");
-    }
+
+         // Attach theme listeners even if modal was already loaded (in case of script reload/state loss)
+         attachThemeEventListeners();
+     }
 
     // Ensure elements are valid before proceeding
     if (!settingsModalOverlay || !settingsModalMain) {

@@ -16,20 +16,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsPopoverLevel1 = document.getElementById('settings-popover-level1');
     const settingsModalPlaceholder = document.getElementById('settings-modal-placeholder');
     const fontSelector = document.getElementById('font-selector'); // Added font selector
-    const fontSizeSelector = document.getElementById('font-size-selector'); // New
-    const lineSpacingSelector = document.getElementById('line-spacing-selector'); // New
+    // const fontSizeSelector = document.getElementById('font-size-selector'); // Moved to settings_manager
+    // const lineSpacingSelector = document.getElementById('line-spacing-selector'); // Moved to settings_manager
 
     // --- Initialize Managers ---
     convManager.initConversationManager(conversationList, chatBox, userInput);
     settingsManager.initSettingsManager(settingsPopoverLevel1, settingsModalPlaceholder);
 
     // --- Main Send Message Logic ---
-    async function handleSendMessage() {
+    async function handleSendMessage(fromEnterKey = false) { // Added flag
         const messageText = userInput.value.trim();
         if (!messageText || !chatBox || !userInput) return;
 
         ui.addMessageToChatbox(messageText, 'user', chatBox);
         userInput.value = '';
+
+        // Reset textarea height after sending if sent via Enter key
+        if (fromEnterKey) {
+            resetTextareaHeight(userInput);
+        }
         ui.addMessageToChatbox('...', 'bot', chatBox); // Typing indicator
         const typingIndicator = chatBox.lastChild;
 
@@ -63,11 +68,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
+    // Auto-resize Textarea
+    function autoResizeTextarea(textarea) {
+        // Temporarily reset height to calculate scrollHeight accurately
+        textarea.style.height = 'auto';
+        // Set height based on content, respecting max-height from CSS
+        textarea.style.height = textarea.scrollHeight + 'px';
+    }
+
+    // Reset Textarea Height (e.g., after sending)
+    function resetTextareaHeight(textarea) {
+        textarea.style.height = 'auto'; // Let CSS determine initial height based on rows=1
+    }
+
+    if (userInput) {
+        userInput.addEventListener('input', () => {
+            autoResizeTextarea(userInput);
+        });
+    }
+
     // Send Button and Enter Key
-    if (sendButton) sendButton.addEventListener('click', handleSendMessage);
-    if (userInput) userInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') handleSendMessage();
-    });
+    // if (sendButton) sendButton.addEventListener('click', handleSendMessage); // Listener removed as button is removed
+    if (userInput) {
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Prevent newline in textarea
+                handleSendMessage(true); // Pass flag indicating sent via Enter
+            }
+            // Shift+Enter will naturally add a newline and trigger the 'input' event for resizing
+        });
+    }
 
     // New Chat Button
     if (newChatButton) newChatButton.addEventListener('click', convManager.handleNewChat);
@@ -162,46 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ui.hideAllPopovers(e, settingsPopoverLevel1);
     });
 
-    // Font Selector Logic
-    if (fontSelector) {
-        fontSelector.addEventListener('change', (e) => {
-            const selectedFont = e.target.value;
-            document.body.style.fontFamily = selectedFont;
-            console.log(`Font changed to: ${selectedFont}`);
-            // TODO: Implement dynamic loading for Google Fonts if needed
-            // Example: Check if font needs loading and add a <link> element to <head>
-        });
-
-        // Optional: Apply initial font from selector if it's not the default
-        // This could also be handled by setting the default font in base.css
-        // document.body.style.fontFamily = fontSelector.value;
-    }
-
-    // Font Size Selector Logic
-    if (fontSizeSelector) {
-        fontSizeSelector.addEventListener('change', (e) => {
-            const selectedSize = e.target.value;
-            document.body.style.fontSize = selectedSize;
-            console.log(`Font size changed to: ${selectedSize}`);
-            // Optional: Save this preference (e.g., localStorage or backend)
-        });
-        // Optional: Apply initial size
-        // document.body.style.fontSize = fontSizeSelector.value;
-    }
-
-    // Line Spacing Selector Logic
-    if (lineSpacingSelector) {
-        lineSpacingSelector.addEventListener('change', (e) => {
-            const selectedSpacing = e.target.value;
-            if (chatBox) chatBox.style.setProperty('--chat-line-height', selectedSpacing); // Use CSS variable
-            console.log(`CSS variable --chat-line-height set to: ${selectedSpacing}`);
-            // Optional: Save this preference
-        });
-        // Optional: Apply initial spacing
-        // document.body.style.lineHeight = lineSpacingSelector.value; // Old way
-        // Apply initial spacing to chatBox
-        if (chatBox) chatBox.style.setProperty('--chat-line-height', lineSpacingSelector.value); // Use CSS variable
-    }
+    // Theme selector logic (font, size, spacing) moved to settings_manager.js
 
 
     // --- Initialization ---

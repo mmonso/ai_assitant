@@ -42,9 +42,9 @@
     --flash-info-text: #a0d3e8;
     --flash-info-border: #2b6cb0;
 
-    --border-radius-sm: 4px;
-    --border-radius-md: 8px;
-    --border-radius-lg: 12px; /* Adjusted for modal/tabs */
+    --border-radius-sm: 8px;  /* Increased */
+    --border-radius-md: 16px; /* Increased */
+    --border-radius-lg: 24px; /* Increased */
 
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
@@ -63,10 +63,10 @@ html, body {
 }
 
 body {
-    font-family: var(--font-sans);
+    font-family: 'Noto Sans', sans-serif; /* Default to Noto Sans */
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-size: 17px; /* Increased from 16px */
+    font-size: 17px; /* Set default size to 17px */
     line-height: 1.7;
     overflow: hidden; /* Prevent body scroll */
 }
@@ -100,8 +100,9 @@ button {
 
 input[type="text"],
 input[type="password"],
-input[type="url"],
-textarea { /* Added url and textarea */
+input[type="url"], /* Added url */
+textarea,
+select { /* Added select */
     font-family: inherit;
     padding: 0.7em 1em;
     border: 1px solid var(--border-color);
@@ -115,11 +116,12 @@ textarea { /* Added url and textarea */
 
 input[type="text"]:focus,
 input[type="password"]:focus,
-input[type="url"]:focus,
-textarea:focus {
+input[type="url"]:focus, /* Added url */
+textarea:focus,
+select:focus { /* Added select */
     outline: none;
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px rgba(var(--border-focus-rgb), 0.3); /* Use RGB for opacity */
+    border-color: var(--border-focus); /* Keep border color change */
+    /* box-shadow: 0 0 0 2px rgba(var(--border-focus-rgb), 0.3); */ /* Removed focus glow */
 }
 
 input::placeholder,
@@ -129,16 +131,16 @@ textarea::placeholder {
 }
 
 textarea {
-    min-height: 100px;
-    resize: vertical;
+    /* min-height: 100px; */ /* Removed default min-height */
+    resize: none; /* Disable manual resizing */
 }
 
 /* --- Global Scrollbar Styling (Optional) --- */
 
 /* General scrollbar track */
 ::-webkit-scrollbar {
-    width: 8px; /* Default width */
-    height: 8px; /* Default height for horizontal */
+    width: 12px; /* Increased width */
+    height: 12px; /* Increased height for horizontal */
 }
 ::-webkit-scrollbar-track {
     background: transparent; /* Track background */
