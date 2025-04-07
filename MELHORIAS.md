@@ -4,11 +4,11 @@
 
 *   **[CONCLUÍDO] Refatorar `routes/chat_api.py -> chat()`:**
     *   Quebrar a função `chat()` em funções menores com responsabilidade única (ex: `_preparar_payload_gemini`, `_buscar_ou_criar_conversa`, `_salvar_turno_chat`, `_gerar_titulo_conversa_se_necessario`).
-*   **Melhorar Tratamento de Erros e Logging:**
-    *   Substituir `print()` pelo módulo `logging` padrão do Python.
-    *   Capturar exceções mais específicas.
-    *   Considerar levantar exceções customizadas em `db_utils.py`.
-    *   Retornar mensagens de erro genéricas para o cliente e logar detalhes no servidor.
+*   **[CONCLUÍDO] Melhorar Tratamento de Erros e Logging:**
+    *   [CONCLUÍDO] Substituir `print()` pelo módulo `logging` padrão do Python.
+    *   (Pendente) Capturar exceções mais específicas.
+    *   (Pendente) Considerar levantar exceções customizadas em `db_utils.py`.
+    *   (Pendente) Retornar mensagens de erro genéricas para o cliente e logar detalhes no servidor.
 *   **Mover Lógica de DB das Rotas:**
     *   Criar funções em `db_utils.py` que encapsulem verificações de propriedade e operações de DB (ex: `excluir_conversa(conversation_id, user_id)`).
 *   **Centralizar Configurações:**
