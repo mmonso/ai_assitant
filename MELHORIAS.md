@@ -9,8 +9,8 @@
     *   (Pendente) Capturar exceções mais específicas.
     *   (Pendente) Considerar levantar exceções customizadas em `db_utils.py`.
     *   (Pendente) Retornar mensagens de erro genéricas para o cliente e logar detalhes no servidor.
-*   **Mover Lógica de DB das Rotas:**
-    *   Criar funções em `db_utils.py` que encapsulem verificações de propriedade e operações de DB (ex: `excluir_conversa(conversation_id, user_id)`).
+*   **[CONCLUÍDO] Mover Lógica de DB das Rotas:**
+    *   [CONCLUÍDO] Criar funções em `db_utils.py` que encapsulem verificações de propriedade e operações de DB (ex: `delete_conversation(conversation_id, user_id)`).
 *   **Centralizar Configurações:**
     *   Mover constantes (nome do modelo Gemini, nome do arquivo DB) para `config.py` ou variáveis de ambiente.
 *   **Remover Código de Teste de `db_utils.py`:**

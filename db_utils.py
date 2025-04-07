@@ -271,6 +271,38 @@ def set_conversation_title(conversation_id, user_id, title):
         log.error(f"Database error setting title for conversation {conversation_id}: {e}", exc_info=True)
         return False
 
+def delete_conversation(conversation_id, user_id):
+    """Deletes a specific conversation after verifying ownership. Returns status."""
+    # Possible return values: True (success), 'not_found', 'permission_denied', False (db_error)
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            # 1. Verify ownership
+            cursor.execute("SELECT user_id FROM conversations WHERE conversation_id = ?", (conversation_id,))
+            conversation = cursor.fetchone()
+
+            if not conversation:
+                log.warning(f"Attempt to delete non-existent conversation {conversation_id} by user {user_id}.")
+                return 'not_found'
+            if conversation['user_id'] != user_id:
+                log.warning(f"Permission denied: User {user_id} attempted to delete conversation {conversation_id} owned by user {conversation['user_id']}.")
+                return 'permission_denied'
+
+            # 2. Delete conversation (CASCADE should handle messages)
+            cursor.execute("DELETE FROM conversations WHERE conversation_id = ?", (conversation_id,))
+            conn.commit()
+
+            if cursor.rowcount > 0:
+                log.info(f"Conversation {conversation_id} deleted successfully by user {user_id}.")
+                return True
+            else:
+                # Should not happen if ownership check passed, but log just in case
+                log.error(f"Conversation {conversation_id} deletion affected 0 rows after ownership check passed for user {user_id}.")
+                return False # Indicate unexpected DB state
+    except sqlite3.Error as e:
+        log.error(f"Database error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+        return False # Indicate general DB error
+
 # --- Message Management (largely unchanged) ---
 
 def add_message(conversation_id, role, content):

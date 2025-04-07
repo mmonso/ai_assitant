@@ -212,38 +212,36 @@ def rename_conversation(conversation_id):
         log.error(f"Error renaming conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
         return jsonify({"error": "An internal error occurred during rename"}), 500
 
-@chat_api_bp.route('/delete/<int:conversation_id>', methods=['DELETE']) # Renamed route slightly
+@chat_api_bp.route('/delete/<int:conversation_id>', methods=['DELETE'])
 def delete_conversation(conversation_id):
-    """Deletes a specific conversation."""
+    """Deletes a specific conversation using db_utils."""
     if 'user_id' not in session:
         return jsonify({"error": "Authentication required"}), 401
 
     user_id = session['user_id']
+
     try:
-        # Verify ownership before deleting (important!)
-        with db_utils.get_db_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT user_id FROM conversations WHERE conversation_id = ?", (conversation_id,))
-            conversation = cursor.fetchone()
+        # Call the db_utils function which handles ownership check and deletion
+        delete_status = db_utils.delete_conversation(conversation_id, user_id)
 
-            if not conversation:
-                return jsonify({"error": "Conversation not found"}), 404
-            if conversation['user_id'] != user_id:
-                return jsonify({"error": "Permission denied"}), 403
-
-            # If checks pass, delete the conversation (cascading delete handles messages)
-            cursor.execute("DELETE FROM conversations WHERE conversation_id = ?", (conversation_id,))
-            conn.commit()
-
+        if delete_status is True:
             # Clear from session if it was the active one
             if session.get('current_conversation_id') == conversation_id:
                 session.pop('current_conversation_id', None)
-
+                log.info(f"Cleared active conversation {conversation_id} from session after deletion.")
             return jsonify({"message": "Conversation deleted successfully"}), 200
+        elif delete_status == 'not_found':
+            return jsonify({"error": "Conversation not found"}), 404
+        elif delete_status == 'permission_denied':
+            return jsonify({"error": "Permission denied"}), 403
+        else: # Includes False (DB error) or unexpected return values
+            # Error already logged by db_utils
+            return jsonify({"error": "An internal error occurred during deletion"}), 500
 
     except Exception as e:
-        log.error(f"Error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
-        return jsonify({"error": "An internal error occurred during deletion"}), 500
+        # Catch unexpected errors during the API call itself
+        log.error(f"Unexpected error in delete_conversation route for conv {conversation_id}, user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected internal error occurred"}), 500
 
 
 @chat_api_bp.route('/messages', methods=['GET']) # Renamed route slightly
