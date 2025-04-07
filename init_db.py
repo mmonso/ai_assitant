@@ -1,5 +1,10 @@
 import sqlite3
 import os
+import logging # Add logging import
+
+# Basic Logging Configuration for standalone script execution
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+log = logging.getLogger(__name__) # Get logger for this module
 
 DATABASE_NAME = 'chat_history.db'
 SCHEMA_FILE = 'schema.sql'
@@ -14,24 +19,26 @@ def initialize_database():
 
         # Always execute the schema to ensure it's up-to-date
         # This will drop existing tables and recreate them based on schema.sql
-        print(f"Applying schema from '{SCHEMA_FILE}' to database '{DATABASE_NAME}'...")
+        log.info(f"Applying schema from '{SCHEMA_FILE}' to database '{DATABASE_NAME}'...")
         try:
             with open(SCHEMA_FILE, 'r') as f:
                 schema_sql = f.read()
             cursor.executescript(schema_sql)
             conn.commit()
-            print(f"Schema applied successfully.")
+            log.info(f"Schema applied successfully.")
         except FileNotFoundError:
-            print(f"Error: Schema file '{SCHEMA_FILE}' not found.")
+            log.critical(f"CRITICAL ERROR: Schema file '{SCHEMA_FILE}' not found. Cannot initialize database.")
             raise # Re-raise the exception to stop execution
         except sqlite3.Error as e:
-            print(f"Error applying schema: {e}")
+            log.error(f"Error applying schema from '{SCHEMA_FILE}': {e}", exc_info=True)
             raise # Re-raise the exception
 
     except sqlite3.Error as e:
-        print(f"An error occurred during database initialization: {e}")
+        # This might catch connection errors before schema application starts
+        log.error(f"An error occurred during database initialization: {e}", exc_info=True)
     except FileNotFoundError:
-        print(f"Error: Schema file '{SCHEMA_FILE}' not found.")
+        # This catch block might be redundant if the inner one re-raises, but keep for safety
+        log.critical(f"CRITICAL ERROR: Schema file '{SCHEMA_FILE}' not found (caught in outer block).")
     finally:
         if conn:
             conn.close()

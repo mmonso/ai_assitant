@@ -3,6 +3,12 @@ import secrets # Still needed if default secret key generation is desired fallba
 from flask import Flask
 import google.generativeai as genai
 from dotenv import load_dotenv
+import logging
+
+# Basic Logging Configuration
+# TODO: Consider more advanced configuration (e.g., file handler, rotation) for production
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+log = logging.getLogger(__name__) # Get logger for this module
 
 # Import configurations from config.py
 import config
@@ -16,9 +22,9 @@ try:
     # Or keep loading directly from env here:
     gemini_api_key = os.environ["GEMINI_API_KEY"]
     genai.configure(api_key=gemini_api_key)
-    print("Gemini API Key configured successfully.")
+    log.info("Gemini API Key configured successfully.")
 except KeyError:
-    print("CRITICAL ERROR: GEMINI_API_KEY environment variable not set.")
+    log.critical("CRITICAL ERROR: GEMINI_API_KEY environment variable not set.")
     # Depending on deployment, might exit or just log error
     # exit(1) # Uncomment if startup should fail without key
 
@@ -48,5 +54,7 @@ if __name__ == '__main__':
     # Consider adding a check or command here if needed:
     # from init_db import init_db_command
     # init_db_command() # Or run manually before starting
-    print("Starting Flask app...")
-    app.run(host='0.0.0.0', port=5000, debug=True) # Debug=True reloads on changes
+    log.info("Starting Flask app...")
+    # Use debug=False for production logging, True enables Flask's reloader which can interfere
+    # with some logging setups if not handled carefully. For development, debug=True is fine.
+    app.run(host='0.0.0.0', port=5000, debug=True)

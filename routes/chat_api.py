@@ -1,8 +1,11 @@
 import os
+import logging # Add logging import
 from flask import Blueprint, request, jsonify, session
 # import json # Removed, no longer parsing user_info
 import google.generativeai as genai
 import db_utils
+
+log = logging.getLogger(__name__) # Get logger for this module
 
 # Define the blueprint
 chat_api_bp = Blueprint('chat_api', __name__, url_prefix='/api/chat') # Optional prefix for API routes
@@ -81,10 +84,11 @@ def _call_gemini_api(message_to_send, gemini_history, model_args):
     # TODO: Move model_name to config
     model_name = "gemini-1.5-flash"
 
-    # API key check (consider if still needed after app.py setup)
-    if not os.environ.get("GEMINI_API_KEY"):
-         print("Error: Gemini API Key not configured.") # Use logging
-         return None, "Chat service not configured"
+    # API key check (app.py should handle initial config, but this is a safeguard)
+    # This check might be redundant if app.py ensures configuration on startup
+    # if not os.environ.get("GEMINI_API_KEY"):
+    #      log.error("Gemini API Key not configured during API call.")
+    #      return None, "Chat service not configured"
 
     try:
         # Instantiate the model *inside* the request with latest system prompt
@@ -93,8 +97,7 @@ def _call_gemini_api(message_to_send, gemini_history, model_args):
         response = chat_session.send_message(message_to_send)
         return response.text, None # No error
     except Exception as e:
-        print(f"Error calling Gemini API: {e}") # Use logging
-        # import traceback; traceback.print_exc() # For detailed debug
+        log.error(f"Error calling Gemini API: {e}", exc_info=True)
         return None, f"Error communicating with AI model: {str(e)}"
 
 
@@ -104,12 +107,12 @@ def _save_chat_messages(conversation_id, original_user_message, bot_response):
         user_msg_id = db_utils.add_message(conversation_id, 'user', original_user_message)
         assistant_msg_id = db_utils.add_message(conversation_id, 'assistant', bot_response)
         if not user_msg_id or not assistant_msg_id:
-            # Handle potential DB error where add_message returns None
-             print(f"Error saving messages to DB for conversation {conversation_id}") # Use logging
-             return None, None, "Failed to save messages to database"
+            log.error(f"Failed to save one or both messages to DB for conversation {conversation_id}. UserMsgID: {user_msg_id}, AssistantMsgID: {assistant_msg_id}")
+            return None, None, "Failed to save messages to database"
+        # log.debug(f"Messages saved for conversation {conversation_id}. UserMsgID: {user_msg_id}, AssistantMsgID: {assistant_msg_id}")
         return user_msg_id, assistant_msg_id, None # No error
     except Exception as e:
-        print(f"Database error saving messages: {e}") # Use logging
+        log.error(f"Database error saving messages for conversation {conversation_id}: {e}", exc_info=True)
         return None, None, "Database error while saving messages"
 
 
@@ -121,12 +124,11 @@ def _handle_new_conversation_title(is_new_conversation, conversation_id, user_id
             title = _generate_title_from_message(original_user_message)
             success = db_utils.set_conversation_title(conversation_id, user_id, title)
             if not success:
-                 print(f"Failed to set title for new conversation {conversation_id}") # Use logging
-                 # Non-critical error, proceed without title maybe? Or return an error?
-                 # For now, just log it.
+                 # Log as warning since it might not be critical for chat flow
+                 log.warning(f"Failed to set auto-generated title for new conversation {conversation_id} for user {user_id}.")
         except Exception as e:
-            print(f"Error generating/saving title for conversation {conversation_id}: {e}") # Use logging
-            # Non-critical error
+            log.error(f"Error generating/saving title for new conversation {conversation_id}: {e}", exc_info=True)
+            # Non-critical error, chat response was already generated
     return title
 
 # --- API Routes ---
@@ -182,7 +184,7 @@ def get_conversation_list():
         conversations = db_utils.get_conversations(user_id)
         return jsonify({"conversations": conversations})
     except Exception as e:
-        print(f"Error fetching conversation list for user {user_id}: {e}")
+        log.error(f"Error fetching conversation list for user {user_id}: {e}", exc_info=True) # Log exception info
         return jsonify({"error": "Failed to retrieve conversation list"}), 500
 
 @chat_api_bp.route('/rename/<int:conversation_id>', methods=['PUT']) # Renamed route slightly
@@ -207,7 +209,7 @@ def rename_conversation(conversation_id):
         else:
             return jsonify({"error": "Failed to rename conversation. Not found or permission denied."}), 404
     except Exception as e:
-        print(f"Error renaming conversation {conversation_id}: {e}")
+        log.error(f"Error renaming conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
         return jsonify({"error": "An internal error occurred during rename"}), 500
 
 @chat_api_bp.route('/delete/<int:conversation_id>', methods=['DELETE']) # Renamed route slightly
@@ -240,7 +242,7 @@ def delete_conversation(conversation_id):
             return jsonify({"message": "Conversation deleted successfully"}), 200
 
     except Exception as e:
-        print(f"Error deleting conversation {conversation_id}: {e}")
+        log.error(f"Error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
         return jsonify({"error": "An internal error occurred during deletion"}), 500
 
 
@@ -263,7 +265,7 @@ def get_conversation_messages():
             return jsonify({"error": "Conversation not found or access denied"}), 404
         return jsonify({"messages": messages})
     except Exception as e:
-        print(f"Error fetching messages for conversation {conversation_id}: {e}")
+        log.error(f"Error fetching messages for conversation {conversation_id} user {user_id}: {e}", exc_info=True)
         return jsonify({"error": "Failed to retrieve messages"}), 500
 
 
@@ -320,6 +322,5 @@ def chat():
 
     except Exception as e:
         # Catch-all for unexpected errors during orchestration
-        print(f"Unexpected error in /send endpoint: {e}") # Use logging
-        # import traceback; traceback.print_exc() # For detailed debug
+        log.error(f"Unexpected error in /send endpoint for user {user_id}: {e}", exc_info=True)
         return jsonify({"error": "An unexpected internal error occurred"}), 500

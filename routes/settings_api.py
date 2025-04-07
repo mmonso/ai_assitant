@@ -1,9 +1,11 @@
+import logging # Add logging import
 from flask import Blueprint, request, jsonify, session
 import db_utils # Assuming db_utils is accessible
 from db_utils import update_user_theme # Import the new function
 import bcrypt
 import config # Import the config module
 
+log = logging.getLogger(__name__) # Get logger for this module
 # Define the blueprint
 settings_api_bp = Blueprint('settings_api', __name__, url_prefix='/api/settings')
 
@@ -80,13 +82,30 @@ def update_profile():
             errors['user_info'] = "User info must be provided as a string (JSON format)."
 
     if errors:
+        # Log the specific validation errors encountered
+        log.warning(f"Profile update validation failed for user {user_id}: {errors}")
         return jsonify({"errors": errors}), 400
+    elif not updated_fields:
+         # No errors, but nothing was actually updated (e.g., submitted same data)
+         log.info(f"Profile update request for user {user_id} resulted in no changes.")
+         # Return success but indicate no changes were made, or return a specific status?
+         # 200 OK with a specific message seems reasonable.
+         updated_details = db_utils.get_user_details(user_id) # Still fetch current details
+         return jsonify({
+             "message": "No profile information needed updating.",
+             "user": updated_details
+         }), 200
     else:
-        # Fetch updated details only if something actually changed
-        # Although the current implementation fetches regardless, this is conceptually better
-        final_message = "Profile updated successfully." if not success_messages else " ".join(success_messages)
+        # Errors is empty and updated_fields is not empty
+        final_message = "Profile updated successfully." if len(success_messages) == 1 else " ".join(success_messages)
+        log.info(f"Profile fields {list(updated_fields.keys())} updated successfully for user {user_id}.")
         # Fetch complete details to ensure frontend has latest state
         updated_details = db_utils.get_user_details(user_id)
+        if not updated_details:
+             log.error(f"Failed to fetch updated user details for user {user_id} after successful profile update.")
+             # This is an unexpected state, return an error
+             return jsonify({"error": "Profile updated, but failed to retrieve latest details."}), 500
+
         return jsonify({
             "message": final_message,
             "user": updated_details # Send back updated user info
@@ -125,16 +144,20 @@ def change_password():
             if not user_data or not bcrypt.checkpw(current_password.encode('utf-8'), user_data['password_hash']):
                 return jsonify({"errors": {"current_password": "Current password incorrect."}}), 400
     except Exception as e:
-         print(f"Error verifying current password for user {user_id}: {e}")
+         log.error(f"Error verifying current password hash for user {user_id}: {e}", exc_info=True)
          return jsonify({"errors": {"password-form": "Error verifying current password."}}), 500
 
     # Update to new password
     success = db_utils.update_password(user_id, new_password)
     if success:
+        log.info(f"Password updated successfully for user {user_id}.")
         # Optionally force logout after password change for security
-        # session.pop('user_id', None) ... etc
+        # session.clear()
+        # flash("Password changed. Please log in again.", "info")
         return jsonify({"message": "Password updated successfully."}), 200
     else:
+        # db_utils logs the specific DB error
+        log.error(f"Password update failed for user {user_id} at API level (db_utils returned False).")
         return jsonify({"errors": {"password-form": "Failed to update password due to a database error."}}), 500
 
 
@@ -160,10 +183,14 @@ def update_theme():
     success = update_user_theme(user_id, font_family, font_size, line_spacing)
 
     if success:
-         # You might want to store these in updated_fields if needed elsewhere
+         log.info(f"Theme settings updated for user {user_id}.")
+         # Fetch updated details to potentially reflect theme changes if needed by UI immediately
+         # updated_details = db_utils.get_user_details(user_id) # Optional
          return jsonify({"message": "Theme settings updated successfully."}), 200
+         # return jsonify({"message": "Theme settings updated successfully.", "user": updated_details}), 200 # If sending back details
     else:
-         # Add specific errors if the db_utils function provides them
+         # db_utils logs the specific DB error
+         log.error(f"Theme update failed for user {user_id} at API level (db_utils returned False).")
          return jsonify({"errors": {"theme-form": "Failed to update theme settings."}}), 500
 @settings_api_bp.route('/delete_account', methods=['DELETE'])
 def delete_account():
@@ -177,10 +204,15 @@ def delete_account():
 
     success = db_utils.delete_user(user_id)
     if success:
+        log.info(f"Account deleted successfully for user {user_id}.")
         # Clear session completely after deletion
         session.clear()
-        return jsonify({"message": "Account deleted successfully."}), 200
+        # Flash message might not be seen if redirect happens via JS based on response
+        # flash("Your account has been successfully deleted.", "success")
+        return jsonify({"message": "Account deleted successfully."}), 200 # Client-side should handle redirect
     else:
+        # db_utils logs the specific DB error
+        log.error(f"Account deletion failed for user {user_id} at API level (db_utils returned False).")
         return jsonify({"error": "Failed to delete account due to a database error."}), 500
 
 @settings_api_bp.route('/get_user_settings', methods=['GET']) # Moved from app.py
@@ -193,7 +225,10 @@ def get_user_settings():
     user_details = db_utils.get_user_details(user_id)
 
     if not user_details:
-        return jsonify({"error": "Failed to retrieve user details"}), 500
+        # This implies db_utils.get_user_details returned None
+        log.error(f"Failed to retrieve user details for user {user_id} in get_user_settings.")
+        # Return 404 as the user resource wasn't found by the ID in the session
+        return jsonify({"error": "Failed to retrieve user details (user not found)"}), 404
 
     # Prepare config data to send to frontend using config module
     config_data = {
