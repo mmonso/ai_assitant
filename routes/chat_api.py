@@ -7,13 +7,126 @@ import db_utils
 # Define the blueprint
 chat_api_bp = Blueprint('chat_api', __name__, url_prefix='/api/chat') # Optional prefix for API routes
 
-# --- Helper Function (Consider moving to a utils file if used elsewhere) ---
-def generate_title_from_message(message):
+# --- Helper Functions ---
+
+def _generate_title_from_message(message):
     """Generates a short title from the first user message."""
     words = message.split()
     title = " ".join(words[:5])
     if len(words) > 5:
         title += "..."
+    return title
+
+def _prepare_message_and_model_args(user_id, original_user_message):
+    """Fetches user details and prepares the message string and model arguments."""
+    user_details = db_utils.get_user_details(user_id)
+    system_instruction = None
+    model_args = {}
+    message_to_send = original_user_message
+
+    if user_details:
+        # Prepare system prompt
+        system_prompt_raw = user_details.get('system_prompt')
+        if system_prompt_raw:
+            system_instruction = system_prompt_raw.strip()
+            if system_instruction:
+                model_args['system_instruction'] = system_instruction
+                # Prepend system prompt for reinforcement
+                message_to_send = f"IMPORTANT SYSTEM PROMPT (Follow these instructions carefully):\n{system_instruction}\n\nUSER MESSAGE:\n{original_user_message}"
+
+        # Prepare user info
+        user_info_raw = user_details.get('user_info')
+        if user_info_raw and user_info_raw.strip():
+            formatted_user_info = f"\n\nADDITIONAL USER INFORMATION (Provided by User):\n{user_info_raw.strip()}\n"
+            # Prepend user info (potentially after system prompt)
+            message_to_send = f"{formatted_user_info}\n{message_to_send}"
+
+    return message_to_send, model_args
+
+
+def _get_or_create_conversation_context(user_id):
+    """Gets current conversation ID and history, or creates a new one."""
+    conversation_id = session.get('current_conversation_id')
+    is_new_conversation = False
+    history_raw = []
+
+    if not conversation_id:
+        conversation_id = db_utils.create_conversation(user_id)
+        if not conversation_id:
+            # Failed to create conversation
+            return None, False, None, "Failed to create new conversation"
+        session['current_conversation_id'] = conversation_id
+        is_new_conversation = True
+    else:
+        history_raw = db_utils.get_conversation_messages(conversation_id, user_id)
+        if history_raw is None:
+            # Failed to load history or access denied
+            session.pop('current_conversation_id', None) # Clear invalid ID
+            return None, False, None, "Failed to load conversation history or access denied"
+
+    return conversation_id, is_new_conversation, history_raw, None # No error
+
+
+def _format_history_for_gemini(history_raw):
+    """Formats conversation history for the Gemini API."""
+    gemini_history = []
+    for msg in history_raw:
+        role = 'model' if msg['role'] == 'assistant' else msg['role']
+        gemini_history.append({'role': role, 'parts': [{'text': msg['content']}]})
+    return gemini_history
+
+
+def _call_gemini_api(message_to_send, gemini_history, model_args):
+    """Calls the Gemini API and returns the response text."""
+    # TODO: Move model_name to config
+    model_name = "gemini-1.5-flash"
+
+    # API key check (consider if still needed after app.py setup)
+    if not os.environ.get("GEMINI_API_KEY"):
+         print("Error: Gemini API Key not configured.") # Use logging
+         return None, "Chat service not configured"
+
+    try:
+        # Instantiate the model *inside* the request with latest system prompt
+        model = genai.GenerativeModel(model_name, **model_args)
+        chat_session = model.start_chat(history=gemini_history)
+        response = chat_session.send_message(message_to_send)
+        return response.text, None # No error
+    except Exception as e:
+        print(f"Error calling Gemini API: {e}") # Use logging
+        # import traceback; traceback.print_exc() # For detailed debug
+        return None, f"Error communicating with AI model: {str(e)}"
+
+
+def _save_chat_messages(conversation_id, original_user_message, bot_response):
+    """Saves user and assistant messages to the database."""
+    try:
+        user_msg_id = db_utils.add_message(conversation_id, 'user', original_user_message)
+        assistant_msg_id = db_utils.add_message(conversation_id, 'assistant', bot_response)
+        if not user_msg_id or not assistant_msg_id:
+            # Handle potential DB error where add_message returns None
+             print(f"Error saving messages to DB for conversation {conversation_id}") # Use logging
+             return None, None, "Failed to save messages to database"
+        return user_msg_id, assistant_msg_id, None # No error
+    except Exception as e:
+        print(f"Database error saving messages: {e}") # Use logging
+        return None, None, "Database error while saving messages"
+
+
+def _handle_new_conversation_title(is_new_conversation, conversation_id, user_id, user_msg_id, original_user_message):
+    """Generates and saves title for a new conversation."""
+    title = None
+    if is_new_conversation and user_msg_id:
+        try:
+            title = _generate_title_from_message(original_user_message)
+            success = db_utils.set_conversation_title(conversation_id, user_id, title)
+            if not success:
+                 print(f"Failed to set title for new conversation {conversation_id}") # Use logging
+                 # Non-critical error, proceed without title maybe? Or return an error?
+                 # For now, just log it.
+        except Exception as e:
+            print(f"Error generating/saving title for conversation {conversation_id}: {e}") # Use logging
+            # Non-critical error
     return title
 
 # --- API Routes ---
@@ -154,9 +267,9 @@ def get_conversation_messages():
         return jsonify({"error": "Failed to retrieve messages"}), 500
 
 
-@chat_api_bp.route('/send', methods=['POST']) # Renamed route slightly
+@chat_api_bp.route('/send', methods=['POST'])
 def chat():
-    """Handles chatbot requests, potentially using user's system prompt."""
+    """Handles chatbot requests by orchestrating helper functions."""
     if 'user_id' not in session:
         return jsonify({"error": "Authentication required"}), 401
 
@@ -166,96 +279,38 @@ def chat():
         return jsonify({"error": "Request must be JSON"}), 400
 
     data = request.get_json()
-    original_user_message = data.get('message') # Store original message
+    original_user_message = data.get('message')
 
     if not original_user_message:
         return jsonify({"error": "Missing 'message' in request body"}), 400
 
     try:
-        # --- Get User's Custom System Prompt (if any) ---
-        user_details_chat = db_utils.get_user_details(user_id)
-        system_instruction_chat = None
-        model_args = {} # Initialize model args
-        message_to_send = original_user_message # Start with original message
+        # 1. Prepare message and model arguments based on user settings
+        message_to_send, model_args = _prepare_message_and_model_args(user_id, original_user_message)
 
-        if user_details_chat and user_details_chat.get('system_prompt'):
-             system_instruction_chat = user_details_chat['system_prompt'].strip() # Ensure no extra whitespace
-             if system_instruction_chat: # Check if not empty after stripping
-                 model_args['system_instruction'] = system_instruction_chat
-                 # Prepend system prompt to the user message for reinforcement
-                 message_to_send = f"IMPORTANT SYSTEM PROMPT (Follow these instructions carefully):\n{system_instruction_chat}\n\nUSER MESSAGE:\n{original_user_message}"
-                 # print(f"Chat route: Using custom system prompt: '{system_instruction_chat}' (Prepended to message)") # Removed log
-             # else: # Removed log
-                 # print("Chat route: Custom system prompt is empty after stripping.")
-        # else: # Removed log
-             # print("Chat route: No custom system prompt found for user.")
+        # 2. Get conversation context (ID, history) or create a new one
+        conversation_id, is_new_conversation, history_raw, context_error = _get_or_create_conversation_context(user_id)
+        if context_error:
+            status_code = 500 if "create" in context_error else 404
+            return jsonify({"error": context_error}), status_code
 
-        # --- Add User Info (if available) ---
-        user_info_str = user_details_chat.get('user_info')
-        user_info_str = user_details_chat.get('user_info')
-        if user_info_str and user_info_str.strip(): # Check if not None and not empty after stripping whitespace
-            formatted_user_info = f"\n\nADDITIONAL USER INFORMATION (Provided by User):\n{user_info_str.strip()}\n"
-            message_to_send = f"{formatted_user_info}\n{message_to_send}" # Prepend user info
-            # print(f"Chat route: Prepended user info: {formatted_user_info}") # Removed log
+        # 3. Format history for the Gemini API
+        gemini_history = _format_history_for_gemini(history_raw)
 
+        # 4. Call the Gemini API
+        bot_response, api_error = _call_gemini_api(message_to_send, gemini_history, model_args)
+        if api_error:
+            return jsonify({"error": api_error}), 500 # Internal server error for API issues
 
-        # --- Determine or Create Conversation ---
-        conversation_id = session.get('current_conversation_id')
-        is_new_conversation = False
-        if not conversation_id:
-            conversation_id = db_utils.create_conversation(user_id)
-            if not conversation_id:
-                return jsonify({"error": "Failed to create new conversation"}), 500
-            session['current_conversation_id'] = conversation_id
-            is_new_conversation = True
-            # print(f"Started new conversation: {conversation_id}") # Removed log
-            history_raw = [] # No history for new conversation
-        else:
-            # Fetch history for the existing conversation
-            history_raw = db_utils.get_conversation_messages(conversation_id, user_id)
-            if history_raw is None: # Check if fetch failed (e.g., access denied)
-                 session.pop('current_conversation_id', None) # Clear invalid ID from session
-                 return jsonify({"error": "Failed to load conversation history or access denied"}), 404
+        # 5. Save messages to the database
+        user_msg_id, assistant_msg_id, db_save_error = _save_chat_messages(conversation_id, original_user_message, bot_response)
+        if db_save_error:
+            return jsonify({"error": db_save_error}), 500
 
-        # --- Prepare History for API ---
-        gemini_history = []
-        for msg in history_raw:
-            role = 'model' if msg['role'] == 'assistant' else msg['role']
-            gemini_history.append({'role': role, 'parts': [{'text': msg['content']}]})
+        # 6. Handle title generation for new conversations
+        title = _handle_new_conversation_title(is_new_conversation, conversation_id, user_id, user_msg_id, original_user_message)
 
-        # --- Call Gemini API ---
-        model_name = "gemini-1.5-flash" # Consider making this configurable
-
-        # Ensure API key is configured (it should be from app.py, but double-check context)
-        if not os.environ.get("GEMINI_API_KEY"):
-             print("Error: Gemini API Key not configured.")
-             return jsonify({"error": "Chat service not configured"}), 500
-        # genai.configure should have been called in app.py
-
-        # print(f"Chat route: Initializing model with args: {model_args}") # Removed log
-
-        # Instantiate the model *inside* the request with latest system prompt
-        model = genai.GenerativeModel(model_name, **model_args)
-        chat_session = model.start_chat(history=gemini_history)
-
-        # Send the potentially modified message (with prepended prompt)
-        # print(f"Chat route: Sending message to Gemini:\n---\n{message_to_send}\n---") # Removed log
-        response = chat_session.send_message(message_to_send)
-        bot_response = response.text
-        # print(f"Chat route: Received response from Gemini:\n---\n{bot_response}\n---") # Removed log
-
-        # --- Save Messages to DB (Save the *original* user message) ---
-        user_msg_id = db_utils.add_message(conversation_id, 'user', original_user_message)
-        assistant_msg_id = db_utils.add_message(conversation_id, 'assistant', bot_response)
-
-        # --- Auto-generate Title for New Conversation ---
-        title = None # Initialize title
-        if is_new_conversation and user_msg_id:
-            title = generate_title_from_message(original_user_message) # Use original for title
-            db_utils.set_conversation_title(conversation_id, user_id, title)
-            # print(f"Auto-generated title for conversation {conversation_id}: {title}") # Removed log
-
-        # Return response and potentially the new conversation ID if it was created
+        # 7. Prepare and return the response
         response_data = {"response": bot_response}
         if is_new_conversation:
             response_data["new_conversation_id"] = conversation_id
@@ -264,7 +319,7 @@ def chat():
         return jsonify(response_data)
 
     except Exception as e:
-        print(f"Error in /chat endpoint: {e}")
-        # import traceback
-        # traceback.print_exc() # More detailed traceback for debugging
-        return jsonify({"error": "An internal error occurred", "details": str(e)}), 500
+        # Catch-all for unexpected errors during orchestration
+        print(f"Unexpected error in /send endpoint: {e}") # Use logging
+        # import traceback; traceback.print_exc() # For detailed debug
+        return jsonify({"error": "An unexpected internal error occurred"}), 500
