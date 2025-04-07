@@ -13,6 +13,9 @@ CREATE TABLE users (
     profile_picture_url TEXT, -- URL to the profile picture (nullable)
     system_prompt TEXT,       -- Custom system prompt for the user (nullable)
     user_info TEXT,           -- JSON object containing user-specific info (nullable)
+    font_family TEXT,         -- User's preferred font family (nullable)
+    font_size TEXT,           -- User's preferred font size (e.g., '14px', '1rem') (nullable)
+    line_spacing TEXT,        -- User's preferred line spacing (e.g., '1.5') (nullable)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

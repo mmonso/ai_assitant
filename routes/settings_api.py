@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify, session
 import db_utils # Assuming db_utils is accessible
+from db_utils import update_user_theme # Import the new function
 import bcrypt
 import config # Import the config module
 
@@ -137,6 +138,33 @@ def change_password():
         return jsonify({"errors": {"password-form": "Failed to update password due to a database error."}}), 500
 
 
+@settings_api_bp.route('/theme', methods=['PUT'])
+def update_theme():
+    """API endpoint to update user theme settings."""
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json:
+        return jsonify({"error": "Request must be JSON"}), 400
+
+    data = request.get_json()
+    user_id = session['user_id']
+    errors = {}
+    updated_fields = {}
+
+    # Extract theme data (add validation as needed)
+    font_family = data.get('font_family')
+    font_size = data.get('font_size')
+    line_spacing = data.get('line_spacing')
+
+    # Call the database function to update theme settings
+    success = update_user_theme(user_id, font_family, font_size, line_spacing)
+
+    if success:
+         # You might want to store these in updated_fields if needed elsewhere
+         return jsonify({"message": "Theme settings updated successfully."}), 200
+    else:
+         # Add specific errors if the db_utils function provides them
+         return jsonify({"errors": {"theme-form": "Failed to update theme settings."}}), 500
 @settings_api_bp.route('/delete_account', methods=['DELETE'])
 def delete_account():
     """API endpoint to delete the user's account."""

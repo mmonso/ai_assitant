@@ -103,9 +103,10 @@
             <div id="theme" class="settings-tab">
                 <h3>Theme Settings</h3>
                 <section class="settings-section">
+                    <form id="theme-form"> <!-- Add form tag -->
                     <div class="form-group">
                         <label for="font-selector">Font Family</label>
-                        <select id="font-selector" title="Select Font">
+                        <select id="font-selector" name="font_family" title="Select Font"> <!-- Add name attribute -->
                             <option value="'Segoe UI', Tahoma, Geneva, Verdana, sans-serif">Default (Segoe UI)</option>
                             <option value="'Poppins', sans-serif">Poppins</option>
                             <option value="'Raleway', sans-serif">Raleway</option>
@@ -120,7 +121,7 @@
                     </div>
                     <div class="form-group">
                         <label for="font-size-selector">Base Font Size</label>
-                        <select id="font-size-selector" title="Select Font Size">
+                        <select id="font-size-selector" name="font_size" title="Select Font Size"> <!-- Add name attribute -->
                             <option value="12px">12px</option>
                             <option value="13px">13px</option>
                             <option value="14px">14px</option>
@@ -132,7 +133,7 @@
                     </div>
                     <div class="form-group">
                         <label for="line-spacing-selector">Chat Line Spacing</label>
-                        <select id="line-spacing-selector" title="Select Line Spacing">
+                        <select id="line-spacing-selector" name="line_spacing" title="Select Line Spacing"> <!-- Add name attribute -->
                             <option value="1.2">1.2</option>
                             <option value="1.3">1.3</option>
                             <option value="1.4">1.4</option>
@@ -144,6 +145,10 @@
                             <option value="2.0">2.0</option>
                         </select>
                     </div>
+                        <button type="submit" class="settings-button">Save Theme</button>
+                        <span class="form-success" id="theme-success"></span>
+                        <span class="form-error" id="theme-form-error"></span> <!-- General form error -->
+                    </form> <!-- Close form tag -->
                 </section>
             </div>
 

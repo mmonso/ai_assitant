@@ -41,6 +41,7 @@ function populateSettingsForms(userData, configData) {
     console.log("Populating settings forms with data:", userData, configData);
     const profileForm = document.getElementById('profile-form');
     const promptForm = document.getElementById('prompt-form');
+    const themeForm = document.getElementById('theme-form'); // Get theme form
     // Password form doesn't need pre-population
 
     if (!userData || !configData) {
@@ -100,6 +101,25 @@ function populateSettingsForms(userData, configData) {
     document.querySelectorAll('#settings-modal-main .form-error, #settings-modal-main .form-success').forEach(el => {
         el.textContent = '';
     });
+
+    // Populate Theme Form (Placeholder - assumes theme settings are in userData or configData)
+    if (themeForm) {
+        const fontSelector = themeForm.querySelector('#font-selector');
+        const sizeSelector = themeForm.querySelector('#font-size-selector');
+        const spacingSelector = themeForm.querySelector('#line-spacing-selector');
+
+        // Example: Assuming settings are stored like userData.theme_settings.font_family
+        // if (fontSelector && userData?.theme_settings?.font_family) {
+        //     fontSelector.value = userData.theme_settings.font_family;
+        // }
+        // if (sizeSelector && userData?.theme_settings?.font_size) {
+        //     sizeSelector.value = userData.theme_settings.font_size;
+        // }
+        // if (spacingSelector && userData?.theme_settings?.line_spacing) {
+        //     spacingSelector.value = userData.theme_settings.line_spacing;
+        // }
+        // console.log("Populated theme form (placeholders active)"); // Add console log if needed
+    }
 }
 // Expose the function to the global scope (for settings_manager.js)
 window.populateSettingsForms = populateSettingsForms;
@@ -218,6 +238,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 displayErrors(submittedForm, { form: 'Failed to connect to server.' });
             }
         }
+        // Removed extra closing brace here
+
+        // Theme Form Submission
+        else if (submittedForm.id === 'theme-form') {
+            e.preventDefault();
+            clearErrors(submittedForm);
+            const formData = new FormData(submittedForm);
+            const data = Object.fromEntries(formData.entries());
+            console.log("Submitting theme form data:", data);
+
+            try {
+                // Assuming a PUT request to a new endpoint
+                const response = await fetch('/api/settings/theme', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data),
+                });
+                const result = await response.json();
+                if (!response.ok) {
+                    displayErrors(submittedForm, result.errors || { 'theme-form': result.error || 'An unknown error occurred.' });
+                } else {
+                    displaySuccess(submittedForm, result.message || 'Theme settings updated successfully.');
+                    // Optionally: Apply theme changes immediately without page reload
+                    // applyThemeSettings(data); // You would need to implement this function
+                }
+            } catch (error) {
+                console.error('Error updating theme settings:', error);
+                displayErrors(submittedForm, { 'theme-form': 'Failed to connect to server.' });
+            }
+        }
     });
 
     // --- Account Sub-Navigation Click Handler ---
@@ -258,6 +308,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+
+
+    // Function to apply theme settings dynamically (Example - Implement as needed)
+    /*
+    function applyThemeSettings(settings) {
+        if (settings.font_family) {
+            document.documentElement.style.setProperty('--font-family-base', settings.font_family);
+        }
+        if (settings.font_size) {
+            document.documentElement.style.setProperty('--font-size-base', settings.font_size);
+        }
+        if (settings.line_spacing) {
+            // Assuming you have a CSS variable for chat line height, e.g., --chat-line-height
+            document.documentElement.style.setProperty('--chat-line-height', settings.line_spacing);
+        }
+        console.log("Applied theme settings dynamically:", settings);
+    }
+    */
 
     // Tab switching and close button logic removed - handled by settings_manager.js
 

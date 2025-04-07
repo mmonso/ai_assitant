@@ -169,6 +169,32 @@ def update_user_info(user_id, user_info_json):
         return False
 
 
+def update_user_theme(user_id, font_family, font_size, line_spacing):
+    """Updates the theme settings for a user."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            # Update only the fields provided (assuming None means no change desired,
+            # but the API currently sends all fields from the form)
+            # A more robust approach might check if the values are actually different
+            # from the current DB values before updating.
+            cursor.execute("""
+                UPDATE users
+                SET font_family = ?, font_size = ?, line_spacing = ?
+                WHERE user_id = ?
+            """, (font_family, font_size, line_spacing, user_id))
+            conn.commit()
+            if cursor.rowcount > 0:
+                print(f"Theme settings updated for user_id {user_id}")
+                return True
+            else:
+                # This could happen if the user_id doesn't exist, which shouldn't
+                # occur if the user is logged in, but good to log.
+                print(f"Warning: Theme update for user_id {user_id} affected 0 rows.")
+                return False
+    except sqlite3.Error as e:
+        print(f"Database error updating theme settings for user_id {user_id}: {e}")
+        return False
 def delete_user(user_id):
     """Deletes a user and all associated data (conversations, messages) via CASCADE."""
     try:
