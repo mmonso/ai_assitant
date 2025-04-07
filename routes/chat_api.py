@@ -4,6 +4,11 @@ from flask import Blueprint, request, jsonify, session
 # import json # Removed, no longer parsing user_info
 import google.generativeai as genai
 import db_utils
+import config # Import config module
+from db_utils import ( # Import custom exceptions
+    DatabaseError, DatabaseOperationalError,
+    ConversationNotFoundError, PermissionDeniedError
+)
 
 log = logging.getLogger(__name__) # Get logger for this module
 
@@ -54,18 +59,30 @@ def _get_or_create_conversation_context(user_id):
     history_raw = []
 
     if not conversation_id:
-        conversation_id = db_utils.create_conversation(user_id)
-        if not conversation_id:
-            # Failed to create conversation
+        try:
+            conversation_id = db_utils.create_conversation(user_id)
+            session['current_conversation_id'] = conversation_id
+        except (DatabaseOperationalError, DatabaseError) as e:
+            # Failed to create conversation due to DB error
+            log.error(f"Failed to create new conversation for user {user_id}: {e}")
             return None, False, None, "Failed to create new conversation"
-        session['current_conversation_id'] = conversation_id
         is_new_conversation = True
     else:
-        history_raw = db_utils.get_conversation_messages(conversation_id, user_id)
-        if history_raw is None:
-            # Failed to load history or access denied
-            session.pop('current_conversation_id', None) # Clear invalid ID
-            return None, False, None, "Failed to load conversation history or access denied"
+        try:
+            history_raw = db_utils.get_conversation_messages(conversation_id, user_id)
+            # get_conversation_messages now raises exceptions instead of returning None
+        except PermissionDeniedError:
+             log.warning(f"Access denied for user {user_id} trying to load history for conversation {conversation_id}")
+             session.pop('current_conversation_id', None) # Clear invalid ID
+             return None, False, None, "Conversation not found or access denied" # Keep message generic
+        except ConversationNotFoundError:
+             log.warning(f"Conversation {conversation_id} not found when fetching history for user {user_id}")
+             session.pop('current_conversation_id', None) # Clear invalid ID
+             return None, False, None, "Conversation not found or access denied" # Keep message generic
+        except (DatabaseOperationalError, DatabaseError) as e:
+             log.error(f"Failed to load conversation history for conv {conversation_id}, user {user_id}: {e}")
+             session.pop('current_conversation_id', None) # Clear invalid ID
+             return None, False, None, "Failed to load conversation history"
 
     return conversation_id, is_new_conversation, history_raw, None # No error
 
@@ -81,8 +98,7 @@ def _format_history_for_gemini(history_raw):
 
 def _call_gemini_api(message_to_send, gemini_history, model_args):
     """Calls the Gemini API and returns the response text."""
-    # TODO: Move model_name to config
-    model_name = "gemini-1.5-flash"
+    model_name = config.GEMINI_MODEL_NAME # Use config value
 
     # API key check (app.py should handle initial config, but this is a safeguard)
     # This check might be redundant if app.py ensures configuration on startup
@@ -92,7 +108,7 @@ def _call_gemini_api(message_to_send, gemini_history, model_args):
 
     try:
         # Instantiate the model *inside* the request with latest system prompt
-        model = genai.GenerativeModel(model_name, **model_args)
+        model = genai.GenerativeModel(model_name, **model_args) # model_name is now from config
         chat_session = model.start_chat(history=gemini_history)
         response = chat_session.send_message(message_to_send)
         return response.text, None # No error
@@ -106,14 +122,14 @@ def _save_chat_messages(conversation_id, original_user_message, bot_response):
     try:
         user_msg_id = db_utils.add_message(conversation_id, 'user', original_user_message)
         assistant_msg_id = db_utils.add_message(conversation_id, 'assistant', bot_response)
-        if not user_msg_id or not assistant_msg_id:
-            log.error(f"Failed to save one or both messages to DB for conversation {conversation_id}. UserMsgID: {user_msg_id}, AssistantMsgID: {assistant_msg_id}")
-            return None, None, "Failed to save messages to database"
-        # log.debug(f"Messages saved for conversation {conversation_id}. UserMsgID: {user_msg_id}, AssistantMsgID: {assistant_msg_id}")
+        # add_message now raises exceptions on failure
         return user_msg_id, assistant_msg_id, None # No error
-    except Exception as e:
-        log.error(f"Database error saving messages for conversation {conversation_id}: {e}", exc_info=True)
-        return None, None, "Database error while saving messages"
+    except (DatabaseOperationalError, DatabaseError) as e:
+        # Error already logged by db_utils
+        return None, None, "Failed to save messages to database"
+    except Exception as e: # Catch unexpected errors
+        log.error(f"Unexpected error saving messages for conversation {conversation_id}: {e}", exc_info=True)
+        return None, None, "Unexpected error saving messages"
 
 
 def _handle_new_conversation_title(is_new_conversation, conversation_id, user_id, user_msg_id, original_user_message):
@@ -122,13 +138,18 @@ def _handle_new_conversation_title(is_new_conversation, conversation_id, user_id
     if is_new_conversation and user_msg_id:
         try:
             title = _generate_title_from_message(original_user_message)
+            # set_conversation_title returns False if not found/owned, raises on DB error
             success = db_utils.set_conversation_title(conversation_id, user_id, title)
             if not success:
                  # Log as warning since it might not be critical for chat flow
-                 log.warning(f"Failed to set auto-generated title for new conversation {conversation_id} for user {user_id}.")
-        except Exception as e:
-            log.error(f"Error generating/saving title for new conversation {conversation_id}: {e}", exc_info=True)
-            # Non-critical error, chat response was already generated
+                 # This case (not found/owned) shouldn't happen for a *new* conversation, but log if it does.
+                 log.warning(f"Failed to set auto-generated title for new conversation {conversation_id} for user {user_id} (returned False).")
+        except (DatabaseOperationalError, DatabaseError) as e:
+             # Log DB errors from set_conversation_title
+             log.error(f"Database error setting title for new conversation {conversation_id}: {e}", exc_info=True)
+             # Non-critical error for the chat flow itself, title just won't be set.
+        except Exception as e: # Catch other unexpected errors during title generation/saving
+            log.error(f"Unexpected error generating/saving title for new conversation {conversation_id}: {e}", exc_info=True)
     return title
 
 # --- API Routes ---
@@ -164,10 +185,14 @@ def set_active_conversation():
 
     # Verify the user actually owns this conversation ID
     user_id = session['user_id']
-    user_convs = db_utils.get_conversations(user_id)
-    # Compare int to int (conv['conversation_id'] is int from DB)
-    if not any(conv['conversation_id'] == conversation_id for conv in user_convs):
-         return jsonify({"error": "Conversation not found or access denied"}), 404
+    try:
+        # Verify the user actually owns this conversation ID
+        user_convs = db_utils.get_conversations(user_id) # Raises on DB error
+        if not any(conv['conversation_id'] == conversation_id for conv in user_convs):
+             return jsonify({"error": "Conversation not found or access denied"}), 404
+    except (DatabaseOperationalError, DatabaseError) as e:
+        log.error(f"Failed to verify conversation ownership for user {user_id}, conv {conversation_id}: {e}")
+        return jsonify({"error": "Failed to verify conversation details"}), 500
 
     session['current_conversation_id'] = conversation_id # Store as integer
     # print(f"Set active conversation to: {conversation_id}") # Removed log
@@ -181,11 +206,14 @@ def get_conversation_list():
         return jsonify({"error": "Authentication required"}), 401
     user_id = session['user_id']
     try:
-        conversations = db_utils.get_conversations(user_id)
+        conversations = db_utils.get_conversations(user_id) # Raises on DB error
         return jsonify({"conversations": conversations})
-    except Exception as e:
-        log.error(f"Error fetching conversation list for user {user_id}: {e}", exc_info=True) # Log exception info
+    except (DatabaseOperationalError, DatabaseError) as e:
+        # Error logged by db_utils
         return jsonify({"error": "Failed to retrieve conversation list"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error fetching conversation list for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 @chat_api_bp.route('/rename/<int:conversation_id>', methods=['PUT']) # Renamed route slightly
 def rename_conversation(conversation_id):
@@ -203,14 +231,19 @@ def rename_conversation(conversation_id):
 
     user_id = session['user_id']
     try:
+        # set_conversation_title returns False if not found/owned, raises on DB error
         success = db_utils.set_conversation_title(conversation_id, user_id, new_title.strip())
         if success:
             return jsonify({"message": "Conversation renamed successfully"}), 200
         else:
+            # This means conversation not found or permission denied
             return jsonify({"error": "Failed to rename conversation. Not found or permission denied."}), 404
-    except Exception as e:
-        log.error(f"Error renaming conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+    except (DatabaseOperationalError, DatabaseError) as e:
+        # Error logged by db_utils
         return jsonify({"error": "An internal error occurred during rename"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error renaming conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 @chat_api_bp.route('/delete/<int:conversation_id>', methods=['DELETE'])
 def delete_conversation(conversation_id):
@@ -221,23 +254,22 @@ def delete_conversation(conversation_id):
     user_id = session['user_id']
 
     try:
-        # Call the db_utils function which handles ownership check and deletion
-        delete_status = db_utils.delete_conversation(conversation_id, user_id)
+        # delete_conversation now raises exceptions on failure
+        db_utils.delete_conversation(conversation_id, user_id)
 
-        if delete_status is True:
-            # Clear from session if it was the active one
-            if session.get('current_conversation_id') == conversation_id:
-                session.pop('current_conversation_id', None)
-                log.info(f"Cleared active conversation {conversation_id} from session after deletion.")
-            return jsonify({"message": "Conversation deleted successfully"}), 200
-        elif delete_status == 'not_found':
-            return jsonify({"error": "Conversation not found"}), 404
-        elif delete_status == 'permission_denied':
-            return jsonify({"error": "Permission denied"}), 403
-        else: # Includes False (DB error) or unexpected return values
-            # Error already logged by db_utils
-            return jsonify({"error": "An internal error occurred during deletion"}), 500
+        # Clear from session if it was the active one
+        if session.get('current_conversation_id') == conversation_id:
+            session.pop('current_conversation_id', None)
+            log.info(f"Cleared active conversation {conversation_id} from session after deletion.")
+        return jsonify({"message": "Conversation deleted successfully"}), 200
 
+    except ConversationNotFoundError:
+        return jsonify({"error": "Conversation not found"}), 404
+    except PermissionDeniedError:
+        return jsonify({"error": "Permission denied"}), 403
+    except (DatabaseOperationalError, DatabaseError) as e:
+        # Error logged by db_utils
+        return jsonify({"error": "An internal error occurred during deletion"}), 500
     except Exception as e:
         # Catch unexpected errors during the API call itself
         log.error(f"Unexpected error in delete_conversation route for conv {conversation_id}, user {user_id}: {e}", exc_info=True)
@@ -256,15 +288,19 @@ def get_conversation_messages():
 
     user_id = session['user_id']
     try:
-        # Fetch messages (moved this down slightly, no functional change)
+        # get_conversation_messages raises exceptions on failure
         messages = db_utils.get_conversation_messages(conversation_id, user_id)
-        if messages is None:
-            # This handles cases where the conversation doesn't exist or user doesn't own it
-            return jsonify({"error": "Conversation not found or access denied"}), 404
         return jsonify({"messages": messages})
-    except Exception as e:
-        log.error(f"Error fetching messages for conversation {conversation_id} user {user_id}: {e}", exc_info=True)
+    except ConversationNotFoundError:
+         return jsonify({"error": "Conversation not found or access denied"}), 404 # Keep message generic
+    except PermissionDeniedError:
+         return jsonify({"error": "Conversation not found or access denied"}), 403 # Keep message generic
+    except (DatabaseOperationalError, DatabaseError) as e:
+        # Error logged by db_utils
         return jsonify({"error": "Failed to retrieve messages"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error fetching messages for conversation {conversation_id} user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 
 @chat_api_bp.route('/send', methods=['POST'])

@@ -1,25 +1,26 @@
 import sqlite3
 import os
 import logging # Add logging import
+import config # Import config module
 
 # Basic Logging Configuration for standalone script execution
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__) # Get logger for this module
 
-DATABASE_NAME = 'chat_history.db'
+# DATABASE_NAME = 'chat_history.db' # Moved to config.py
 SCHEMA_FILE = 'schema.sql'
 
 def initialize_database():
     """Initializes the SQLite database using the schema.sql file."""
-    db_exists = os.path.exists(DATABASE_NAME)
+    db_exists = os.path.exists(config.DATABASE_NAME) # Use config value
     conn = None
     try:
-        conn = sqlite3.connect(DATABASE_NAME)
+        conn = sqlite3.connect(config.DATABASE_NAME) # Use config value
         cursor = conn.cursor()
 
         # Always execute the schema to ensure it's up-to-date
         # This will drop existing tables and recreate them based on schema.sql
-        log.info(f"Applying schema from '{SCHEMA_FILE}' to database '{DATABASE_NAME}'...")
+        log.info(f"Applying schema from '{SCHEMA_FILE}' to database '{config.DATABASE_NAME}'...") # Use config value
         try:
             with open(SCHEMA_FILE, 'r') as f:
                 schema_sql = f.read()

@@ -2,18 +2,44 @@ import sqlite3
 import bcrypt
 import os
 import logging # Add logging import
+import config # Import config module
 from contextlib import contextmanager
 
 log = logging.getLogger(__name__) # Get logger for this module
 
-DATABASE_NAME = 'chat_history.db'
+# Custom Exceptions
+class DatabaseError(Exception):
+    """Base class for database-related errors."""
+    pass
 
+class UserNotFoundError(DatabaseError):
+    """Raised when a user is not found."""
+    pass
+
+class DuplicateUserError(DatabaseError):
+    """Raised when trying to create a user that already exists."""
+    pass
+
+class ConversationNotFoundError(DatabaseError):
+    """Raised when a conversation is not found."""
+    pass
+
+class PermissionDeniedError(DatabaseError):
+    """Raised when a user tries to access a resource they don't own."""
+    pass
+
+class DatabaseOperationalError(DatabaseError):
+    """Raised for general operational errors like connection issues, etc."""
+    pass
+
+
+# DATABASE_NAME = 'chat_history.db' # Moved to config.py
 @contextmanager
 def get_db_connection():
     """Provides a database connection context."""
     conn = None
     try:
-        conn = sqlite3.connect(DATABASE_NAME)
+        conn = sqlite3.connect(config.DATABASE_NAME) # Use config value
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA foreign_keys = ON")
         yield conn
@@ -43,10 +69,13 @@ def create_user(username, password):
             return user_id
     except sqlite3.IntegrityError:
         log.warning(f"Attempted to create user with existing username: '{username}'.")
-        return None
-    except sqlite3.Error as e:
-        log.error(f"Database error during user creation for username '{username}': {e}", exc_info=True)
-        return None
+        raise DuplicateUserError(f"Username '{username}' already exists.")
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error during user creation for username '{username}': {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error creating user '{username}'.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error during user creation for username '{username}': {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error creating user '{username}'.") from e
 
 def authenticate_user(username, password):
     """Authenticates a user based on username and password."""
@@ -63,9 +92,12 @@ def authenticate_user(username, password):
             else:
                 log.warning(f"Authentication failed for user '{username}'. Invalid username or password.")
                 return None
-    except sqlite3.Error as e:
-        log.error(f"Database error during authentication for user '{username}': {e}", exc_info=True)
-        return None
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error during authentication for user '{username}': {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error authenticating user '{username}'.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error during authentication for user '{username}': {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error authenticating user '{username}'.") from e
 
 def get_user_details(user_id):
     """Retrieves user details including settings."""
@@ -80,9 +112,12 @@ def get_user_details(user_id):
             user_details = cursor.fetchone()
             # log.debug(f"Retrieved details for user_id {user_id}") # Optional debug log
             return dict(user_details) if user_details else None
-    except sqlite3.Error as e:
-        log.error(f"Database error retrieving user details for user_id {user_id}: {e}", exc_info=True)
-        return None
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error retrieving user details for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error retrieving details for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error retrieving user details for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error retrieving details for user {user_id}.") from e
 
 def update_username(user_id, new_username):
     """Updates the username for a user, checking for uniqueness."""
@@ -100,10 +135,13 @@ def update_username(user_id, new_username):
                 return False
     except sqlite3.IntegrityError:
         log.warning(f"Failed to update username for user_id {user_id}: New username '{new_username}' is already taken.")
-        return False
-    except sqlite3.Error as e:
-        log.error(f"Database error updating username for user_id {user_id} to '{new_username}': {e}", exc_info=True)
-        return False
+        raise DuplicateUserError(f"Username '{new_username}' is already taken.")
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error updating username for user_id {user_id} to '{new_username}': {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error updating username for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error updating username for user_id {user_id} to '{new_username}': {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error updating username for user {user_id}.") from e
 
 def update_password(user_id, new_password):
     """Updates the password for a user."""
@@ -119,9 +157,12 @@ def update_password(user_id, new_password):
             else:
                 log.warning(f"Password update for user_id {user_id} affected 0 rows. User might not exist.")
                 return False
-    except sqlite3.Error as e:
-        log.error(f"Database error updating password for user_id {user_id}: {e}", exc_info=True)
-        return False
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error updating password for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error updating password for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error updating password for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error updating password for user {user_id}.") from e
 
 def update_profile_picture(user_id, picture_url):
     """Updates the profile picture URL for a user."""
@@ -136,9 +177,12 @@ def update_profile_picture(user_id, picture_url):
             else:
                 log.warning(f"Profile picture URL update for user_id {user_id} affected 0 rows. User might not exist.")
                 return False
-    except sqlite3.Error as e:
-        log.error(f"Database error updating profile picture URL for user_id {user_id}: {e}", exc_info=True)
-        return False
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error updating profile picture URL for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error updating profile picture for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error updating profile picture URL for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error updating profile picture for user {user_id}.") from e
 
 def update_system_prompt(user_id, prompt):
     """Updates the custom system prompt for a user."""
@@ -153,9 +197,12 @@ def update_system_prompt(user_id, prompt):
             else:
                  log.warning(f"System prompt update for user_id {user_id} affected 0 rows. User might not exist.")
                  return False
-    except sqlite3.Error as e:
-        log.error(f"Database error updating system prompt for user_id {user_id}: {e}", exc_info=True)
-        return False
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error updating system prompt for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error updating system prompt for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error updating system prompt for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error updating system prompt for user {user_id}.") from e
 def update_user_info(user_id, user_info_json):
     """Updates the user_info JSON string for a user."""
     try:
@@ -169,9 +216,12 @@ def update_user_info(user_id, user_info_json):
             else:
                 log.warning(f"User info update for user_id {user_id} affected 0 rows. User might not exist.")
                 return False
-    except sqlite3.Error as e:
-        log.error(f"Database error updating user info for user_id {user_id}: {e}", exc_info=True)
-        return False
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error updating user info for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error updating user info for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error updating user info for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error updating user info for user {user_id}.") from e
 
 
 def update_user_theme(user_id, font_family, font_size, line_spacing):
@@ -195,9 +245,12 @@ def update_user_theme(user_id, font_family, font_size, line_spacing):
             else:
                 log.warning(f"Theme update for user_id {user_id} affected 0 rows. User might not exist.")
                 return False
-    except sqlite3.Error as e:
-        log.error(f"Database error updating theme settings for user_id {user_id}: {e}", exc_info=True)
-        return False
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error updating theme settings for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error updating theme for user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error updating theme settings for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error updating theme for user {user_id}.") from e
 def delete_user(user_id):
     """Deletes a user and all associated data (conversations, messages) via CASCADE."""
     try:
@@ -212,9 +265,12 @@ def delete_user(user_id):
             else:
                 log.warning(f"Delete user for user_id {user_id} affected 0 rows. User might not exist.")
                 return False
-    except sqlite3.Error as e:
-        log.error(f"Database error deleting user {user_id}: {e}", exc_info=True)
-        return False
+    except sqlite3.OperationalError as e: # More specific error
+        log.error(f"Database operational error deleting user {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error deleting user {user_id}.") from e
+    except sqlite3.Error as e: # Catch other potential SQLite errors
+        log.error(f"Unexpected SQLite error deleting user {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error deleting user {user_id}.") from e
 
 
 # --- Conversation Management (largely unchanged) ---
@@ -230,9 +286,12 @@ def create_conversation(user_id, title=None):
             new_conversation_id = cursor.lastrowid
             log.info(f"Conversation created with ID: {new_conversation_id} for user_id: {user_id}")
             return new_conversation_id
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error creating conversation for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error creating conversation for user {user_id}.") from e
     except sqlite3.Error as e:
-        log.error(f"Database error creating conversation for user_id {user_id}: {e}", exc_info=True)
-        return None
+        log.error(f"Unexpected SQLite error creating conversation for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error creating conversation for user {user_id}.") from e
 
 def get_conversations(user_id):
     """Retrieves a list of conversations (id, title) for a user, newest first."""
@@ -248,9 +307,12 @@ def get_conversations(user_id):
             conversations = [dict(row) for row in cursor.fetchall()]
             # log.debug(f"Retrieved {len(conversations)} conversations for user_id {user_id}")
             return conversations
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error retrieving conversations for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error retrieving conversations for user {user_id}.") from e
     except sqlite3.Error as e:
-        log.error(f"Database error retrieving conversations for user_id {user_id}: {e}", exc_info=True)
-        return [] # Return empty list on error, as before
+        log.error(f"Unexpected SQLite error retrieving conversations for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error retrieving conversations for user {user_id}.") from e
 
 def set_conversation_title(conversation_id, user_id, title):
     """Sets or updates the title of a specific conversation, ensuring user owns it."""
@@ -267,13 +329,15 @@ def set_conversation_title(conversation_id, user_id, title):
                 # This is an expected case if the conversation doesn't exist or isn't owned by the user
                 log.warning(f"Failed to set title for conversation {conversation_id}: Not found or not owned by user {user_id}.")
                 return False
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error setting title for conversation {conversation_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error setting title for conversation {conversation_id}.") from e
     except sqlite3.Error as e:
-        log.error(f"Database error setting title for conversation {conversation_id}: {e}", exc_info=True)
-        return False
+        log.error(f"Unexpected SQLite error setting title for conversation {conversation_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error setting title for conversation {conversation_id}.") from e
 
 def delete_conversation(conversation_id, user_id):
-    """Deletes a specific conversation after verifying ownership. Returns status."""
-    # Possible return values: True (success), 'not_found', 'permission_denied', False (db_error)
+    """Deletes a specific conversation after verifying ownership. Raises exceptions on failure."""
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
@@ -283,10 +347,10 @@ def delete_conversation(conversation_id, user_id):
 
             if not conversation:
                 log.warning(f"Attempt to delete non-existent conversation {conversation_id} by user {user_id}.")
-                return 'not_found'
+                raise ConversationNotFoundError(f"Conversation {conversation_id} not found.")
             if conversation['user_id'] != user_id:
                 log.warning(f"Permission denied: User {user_id} attempted to delete conversation {conversation_id} owned by user {conversation['user_id']}.")
-                return 'permission_denied'
+                raise PermissionDeniedError(f"User {user_id} does not own conversation {conversation_id}.")
 
             # 2. Delete conversation (CASCADE should handle messages)
             cursor.execute("DELETE FROM conversations WHERE conversation_id = ?", (conversation_id,))
@@ -294,14 +358,17 @@ def delete_conversation(conversation_id, user_id):
 
             if cursor.rowcount > 0:
                 log.info(f"Conversation {conversation_id} deleted successfully by user {user_id}.")
-                return True
+                # No return value needed on success, lack of exception implies success
             else:
-                # Should not happen if ownership check passed, but log just in case
+                # Should not happen if ownership check passed, but raise an error if it does
                 log.error(f"Conversation {conversation_id} deletion affected 0 rows after ownership check passed for user {user_id}.")
-                return False # Indicate unexpected DB state
+                raise DatabaseOperationalError(f"Failed to delete conversation {conversation_id} despite ownership check.")
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error deleting conversation {conversation_id}.") from e
     except sqlite3.Error as e:
-        log.error(f"Database error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
-        return False # Indicate general DB error
+        log.error(f"Unexpected SQLite error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error deleting conversation {conversation_id}.") from e
 
 # --- Message Management (largely unchanged) ---
 
@@ -316,9 +383,16 @@ def add_message(conversation_id, role, content):
             msg_id = cursor.lastrowid
             # log.debug(f"Message added to conversation {conversation_id} with id {msg_id}")
             return msg_id
+    except sqlite3.IntegrityError as e:
+        log.error(f"Database integrity error adding message to conversation {conversation_id}: {e}", exc_info=True)
+        # Reraise as a more specific operational error, as the conversation likely doesn't exist
+        raise DatabaseOperationalError(f"Integrity error adding message to conversation {conversation_id} (likely conversation not found).") from e
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error adding message to conversation {conversation_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error adding message to conversation {conversation_id}.") from e
     except sqlite3.Error as e:
-        log.error(f"Database error adding message to conversation {conversation_id}: {e}", exc_info=True)
-        return None
+        log.error(f"Unexpected SQLite error adding message to conversation {conversation_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error adding message to conversation {conversation_id}.") from e
 
 def get_conversation_messages(conversation_id, user_id):
     """Retrieves the message history for a specific conversation, ensuring user owns it."""
@@ -344,9 +418,12 @@ def get_conversation_messages(conversation_id, user_id):
             history = [dict(row) for row in cursor.fetchall()]
             # log.debug(f"Retrieved {len(history)} messages for conversation {conversation_id}")
             return history
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error retrieving messages for conversation {conversation_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error retrieving messages for conversation {conversation_id}.") from e
     except sqlite3.Error as e:
-        log.error(f"Database error retrieving messages for conversation {conversation_id}: {e}", exc_info=True)
-        return None
+        log.error(f"Unexpected SQLite error retrieving messages for conversation {conversation_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error retrieving messages for conversation {conversation_id}.") from e
 
 # --- Example Usage (Updated) ---
 # --- Example Usage (Consider moving to a separate test suite) ---

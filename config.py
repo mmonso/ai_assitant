@@ -16,7 +16,10 @@ PASSWORD_MIN_LENGTH = 8
 SECRET_KEY = os.environ.get('FLASK_SECRET_KEY', 'a_default_secret_key_for_development_only') # Provide a default
 
 # Gemini Config (Optional: Keep here or load directly in app.py)
-# GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") # Keep API key loading here for clarity
+GEMINI_MODEL_NAME = os.environ.get("GEMINI_MODEL_NAME", "gemini-1.5-flash")
+
+# Database Config
+DATABASE_NAME = os.environ.get('DATABASE_NAME', 'chat_history.db')
 
 # Add other configurations as needed
-# e.g., DATABASE_URL = os.environ.get('DATABASE_URL', 'chat_history.db')

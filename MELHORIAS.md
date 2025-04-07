@@ -6,17 +6,17 @@
     *   Quebrar a função `chat()` em funções menores com responsabilidade única (ex: `_preparar_payload_gemini`, `_buscar_ou_criar_conversa`, `_salvar_turno_chat`, `_gerar_titulo_conversa_se_necessario`).
 *   **[CONCLUÍDO] Melhorar Tratamento de Erros e Logging:**
     *   [CONCLUÍDO] Substituir `print()` pelo módulo `logging` padrão do Python.
-    *   (Pendente) Capturar exceções mais específicas.
-    *   (Pendente) Considerar levantar exceções customizadas em `db_utils.py`.
-    *   (Pendente) Retornar mensagens de erro genéricas para o cliente e logar detalhes no servidor.
+    *   [CONCLUÍDO] Capturar exceções mais específicas (ex: `sqlite3.OperationalError`).
+    *   [CONCLUÍDO] Considerar levantar exceções customizadas em `db_utils.py` (Implementado: `DatabaseError`, `DuplicateUserError`, etc.).
+    *   [CONCLUÍDO] Retornar mensagens de erro genéricas para o cliente e logar detalhes no servidor (Implementado nas rotas ao capturar exceções customizadas).
 *   **[CONCLUÍDO] Mover Lógica de DB das Rotas:**
     *   [CONCLUÍDO] Criar funções em `db_utils.py` que encapsulem verificações de propriedade e operações de DB (ex: `delete_conversation(conversation_id, user_id)`).
-*   **Centralizar Configurações:**
-    *   Mover constantes (nome do modelo Gemini, nome do arquivo DB) para `config.py` ou variáveis de ambiente.
-*   **Remover Código de Teste de `db_utils.py`:**
-    *   Mover testes do bloco `if __name__ == '__main__':` para uma suíte de testes dedicada (ex: `pytest`).
-*   **Revisar Redundâncias:**
-    *   Remover código duplicado (ex: linhas 194-195 em `chat_api.py`).
+*   **[CONCLUÍDO] Centralizar Configurações:**
+    *   [CONCLUÍDO] Mover constantes (nome do modelo Gemini, nome do arquivo DB) para `config.py` ou variáveis de ambiente.
+*   **[CONCLUÍDO] Remover Código de Teste de `db_utils.py`:**
+    *   [CONCLUÍDO] Mover testes do bloco `if __name__ == '__main__':` para uma suíte de testes dedicada (ex: `pytest`). (Bloco comentado durante implementação do logging).
+*   **[CONCLUÍDO] Revisar Redundâncias:**
+    *   [CONCLUÍDO] Remover código duplicado (ex: linhas 194-195 em `chat_api.py`). (Verificado que foi corrigido em refatoração anterior).
 
 ## 2. Design (Ícones, Alinhamento, Cores - Sugestões Gerais)
 
