@@ -7,15 +7,24 @@
     right: 20px;      /* Distance from right */
     z-index: 101;     /* Ensure it's above most elements */
     color: var(--text-secondary);
-    font-size: 1.4em; /* Make icon larger */
+    /* font-size: 1.4em; */ /* Let SVG size control */
     text-decoration: none;
-    line-height: 1; /* Adjust line height for icon */
+    line-height: 1; /* Keep for alignment */
     transition: color 0.2s ease-in-out;
+    display: inline-flex; /* Align SVG and hidden text */
+    align-items: center;
+    justify-content: center;
     padding: 5px; /* Add some clickable area */
     /* margin-left: 5px; */ /* Removed margin as it's fixed positioned */
     border-radius: var(--border-radius-sm);
     background: none; /* Ensure button reset */
     border: none; /* Ensure button reset */
+    width: 32px; /* Explicit size */
+    height: 32px; /* Explicit size */
+}
+.settings-link svg { /* Style the SVG icon */
+    width: 1.1em; /* Control size via em */
+    height: 1.1em;
 }
 .settings-link:hover {
     color: var(--text-primary);
@@ -328,16 +337,24 @@
     right: 20px;
     background: none;
     border: none;
-    font-size: 1.8em;
+    /* font-size: 1.8em; */ /* Let SVG control size */
     color: var(--text-secondary);
     cursor: pointer;
-    padding: 5px;
-    line-height: 1;
+    padding: 8px; /* Adjust padding for larger click area */
+    line-height: 1; /* Keep for alignment */
+    display: inline-flex; /* Align SVG */
+    align-items: center;
+    justify-content: center;
     transition: color 0.2s ease;
     z-index: 10; /* Ensure it's above content */
  }
+ .close-settings-btn svg { /* Style the SVG */
+     width: 1.2em;
+     height: 1.2em;
+ }
  .close-settings-btn:hover {
      color: var(--text-primary);
+     background-color: var(--bg-hover); /* Add subtle hover background */
  }
 
 /* Remove redundant styles from previous modal implementation if any */

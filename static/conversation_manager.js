@@ -43,13 +43,28 @@ export function getCurrentConversationId() {
 export async function loadAndDisplayConversations() {
     if (!conversationListElement || !chatBoxElement) return;
     console.log("Manager: Loading and displaying conversations...");
+    // Optional: Show a spinner somewhere global or in the sidebar header?
+    // uiHelpers.showSpinner(sidebarHeaderElement); // Example
     try {
+        // Disable new chat button while loading
+        const newChatBtn = document.getElementById('new-chat-button');
+        uiHelpers.disableElement(newChatBtn);
+
         const conversations = await apiClient.loadConversationList();
         uiHelpers.displayConversations(conversations, conversationListElement, currentConversationId);
+
+        // Re-enable button after loading
+        uiHelpers.enableElement(newChatBtn);
     } catch (error) {
         console.error('Manager: Failed to load conversation list:', error);
         uiHelpers.addMessageToChatbox('Could not load conversation list.', 'system', chatBoxElement);
         uiHelpers.displayConversations([], conversationListElement, currentConversationId); // Display empty state
+    } finally {
+        // Optional: Hide global/sidebar spinner
+        // uiHelpers.hideSpinner(sidebarHeaderElement);
+        // Ensure button is enabled even if there was an error
+        const newChatBtn = document.getElementById('new-chat-button');
+        uiHelpers.enableElement(newChatBtn);
     }
 }
 
@@ -127,14 +142,21 @@ export function handleEditConversation(listItem) {
         input.replaceWith(titleSpan);
 
         // Attempt to save to backend
+        // Optional: Add visual feedback during save (e.g., disable input briefly, show spinner?)
+        input.disabled = true; // Disable input during save attempt
         try {
             await apiClient.renameConversation(conversationId, newTitle);
             console.log(`Manager: Conversation ${conversationId} renamed to "${newTitle}"`);
+            // Success: UI already updated optimistically
         } catch (error) {
             console.error("Manager: Error renaming conversation:", error);
             // Revert UI on error
             titleSpan.textContent = currentTitle;
             uiHelpers.addMessageToChatbox(`Error renaming conversation: ${error.message}`, 'system', chatBoxElement);
+        } finally {
+             // Re-enable input (or replace with span) even if save failed,
+             // but the replacement happens anyway outside the try/finally
+             // input.disabled = false; // Not strictly needed as it's replaced
         }
     };
 
@@ -168,10 +190,13 @@ export async function handleDeleteConversation(listItem) {
     }
 
     console.log(`Manager: Attempting to delete conversation: ${conversationId}`);
+    // Optional: Add visual feedback (e.g., dim the list item, show spinner)
+    listItem.style.opacity = '0.5';
+    listItem.style.pointerEvents = 'none'; // Prevent further interaction
     try {
         await apiClient.deleteConversation(conversationId);
         console.log(`Manager: Conversation ${conversationId} deleted.`);
-        listItem.remove(); // Remove from UI
+        listItem.remove(); // Remove from UI on success
 
         // If the deleted conversation was the active one, start a new chat
         if (currentConversationId === conversationId) {
@@ -184,6 +209,9 @@ export async function handleDeleteConversation(listItem) {
     } catch (error) {
         console.error("Manager: Error deleting conversation:", error);
         uiHelpers.addMessageToChatbox(`Error deleting conversation: ${error.message}`, 'system', chatBoxElement);
+        // Restore item appearance on error
+        listItem.style.opacity = '1';
+        listItem.style.pointerEvents = 'auto';
     }
 }
 
@@ -193,14 +221,22 @@ export async function handleDeleteConversation(listItem) {
 export async function handleNewChat() {
     if (!chatBoxElement || !conversationListElement || !userInputElement) return;
     console.log("Manager: Starting new chat...");
+    // Optional: Disable New Chat button briefly
+    const newChatBtn = document.getElementById('new-chat-button');
+    uiHelpers.disableElement(newChatBtn);
     try {
          await apiClient.startNewConversation(); // Signal backend
          setCurrentConversationId(null);
          uiHelpers.clearChatbox(chatBoxElement);
          uiHelpers.setActiveConversationInSidebar(null, conversationListElement);
          userInputElement.focus();
+         // Reset textarea height
+         userInputElement.style.height = 'auto';
     } catch (error) {
          console.error("Manager: Error starting new chat:", error);
          uiHelpers.addMessageToChatbox(`Error starting new chat: ${error.message}`, 'system', chatBoxElement);
+    } finally {
+        // Re-enable New Chat button
+        uiHelpers.enableElement(newChatBtn);
     }
 }

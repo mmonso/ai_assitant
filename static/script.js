@@ -3,7 +3,7 @@ import * as api from './api_client.js';
 import * as convManager from './conversation_manager.js';
 import * as settingsManager from './settings_manager.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => { // Make async
     console.log("Main script loaded.");
 
     // --- Get Main Element References ---
@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const fontSelector = document.getElementById('font-selector'); // Added font selector
     // const fontSizeSelector = document.getElementById('font-size-selector'); // Moved to settings_manager
     // const lineSpacingSelector = document.getElementById('line-spacing-selector'); // Moved to settings_manager
+    const sidebarSpinner = document.getElementById('sidebar-loading-spinner'); // Added spinner reference
+    const sidebarToggleButton = document.getElementById('sidebar-toggle-button'); // Added sidebar toggle button reference
+    const sidebar = document.getElementById('sidebar'); // Added sidebar reference
+    const sidebarOverlay = document.querySelector('.sidebar-overlay'); // Added overlay reference
 
     // --- Initialize Managers ---
     convManager.initConversationManager(conversationList, chatBox, userInput);
@@ -35,6 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (fromEnterKey) {
             resetTextareaHeight(userInput);
         }
+        // Disable input while processing
+        ui.disableElement(userInput);
+        // Optional: Show spinner on send button if it existed
+        // if (sendButton) ui.showSpinner(sendButton, true);
+
         ui.addMessageToChatbox('...', 'bot', chatBox); // Typing indicator
         const typingIndicator = chatBox.lastChild;
 
@@ -63,6 +72,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // Display error in chatbox
             ui.addMessageToChatbox(`Error: ${error.message}`, 'system', chatBox);
+        } finally {
+            // Re-enable input regardless of success or failure
+            ui.enableElement(userInput);
+            // Optional: Hide spinner on send button if it existed
+            // if (sendButton) ui.hideSpinner(sendButton, 'Send'); // Assuming 'Send' was original text
         }
     }
 
@@ -194,9 +208,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Theme selector logic (font, size, spacing) moved to settings_manager.js
 
+    // Sidebar Toggle Logic for Mobile
+    if (sidebarToggleButton && sidebar && sidebarOverlay) {
+        const toggleSidebar = () => {
+            const isVisible = sidebar.classList.toggle('sidebar-mobile-visible');
+            sidebarOverlay.classList.toggle('active', isVisible); // Sync overlay with sidebar
+            sidebarToggleButton.setAttribute('aria-expanded', isVisible);
+        };
+
+        sidebarToggleButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering document click listener immediately
+            toggleSidebar();
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+            if (sidebar.classList.contains('sidebar-mobile-visible')) {
+                toggleSidebar(); // Close sidebar if overlay is clicked
+            }
+        });
+
+        // Close sidebar if user clicks outside of it on mobile (but not on the toggle button)
+        document.addEventListener('click', (e) => {
+             if (window.innerWidth <= 768 && // Only on mobile view
+                 sidebar.classList.contains('sidebar-mobile-visible') &&
+                 !sidebar.contains(e.target) &&
+                 e.target !== sidebarToggleButton &&
+                 !sidebarToggleButton.contains(e.target))
+             {
+                 toggleSidebar();
+             }
+         });
+    } else {
+        console.warn("Sidebar toggle button, sidebar, or overlay element not found.");
+    }
 
     // --- Initialization ---
     console.log("Initializing conversation list...");
-    convManager.loadAndDisplayConversations();
+    if (sidebarSpinner) sidebarSpinner.style.display = 'flex'; // Ensure spinner is visible initially (flex for centering)
+
+    try {
+        await convManager.loadAndDisplayConversations(); // Wait for conversations to load
+        console.log("Conversation list initialized.");
+    } catch (error) {
+        console.error("Error initializing conversation list:", error);
+        // Optionally display an error message to the user in the sidebar
+        if (conversationList) {
+             const errorItem = document.createElement('li');
+             errorItem.textContent = 'Error loading conversations.';
+             errorItem.style.color = 'red'; // Basic styling
+             conversationList.appendChild(errorItem);
+        }
+    } finally {
+        // Hide spinner regardless of success or error
+        if (sidebarSpinner) sidebarSpinner.style.display = 'none';
+        console.log("Finished conversation list initialization attempt.");
+    }
 
 }); // End DOMContentLoaded

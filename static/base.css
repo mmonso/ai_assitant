@@ -160,3 +160,33 @@ textarea {
 /* Example: Thinner scrollbar for sidebar */
 /* #sidebar::-webkit-scrollbar { width: 6px; } */
 /* #sidebar::-webkit-scrollbar-thumb { border: 1px solid var(--bg-secondary); } */
+
+/* --- Loading Spinner --- */
+.loading-spinner {
+    display: inline-block;
+    border: 3px solid rgba(var(--text-secondary-rgb, 160, 174, 192), 0.3); /* Lighter border */
+    border-radius: 50%;
+    border-top-color: var(--text-primary); /* Spinner color */
+    width: 18px; /* Size */
+    height: 18px; /* Size */
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 8px; /* Space it out if needed */
+    vertical-align: middle; /* Align with text/buttons */
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Helper to hide elements visually but keep them accessible */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap; /* added line */
+    border: 0;
+}

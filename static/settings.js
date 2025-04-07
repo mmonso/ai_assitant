@@ -138,6 +138,15 @@ document.addEventListener('DOMContentLoaded', () => {
             clearErrors(submittedForm);
             const formData = new FormData(submittedForm);
             const data = Object.fromEntries(formData.entries());
+            const submitButton = submittedForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton ? submitButton.innerHTML : 'Save Changes';
+
+            // --- Add Loading State ---
+            if (submitButton) {
+                // Assuming uiHelpers is available (e.g., via global scope or future import)
+                window.uiHelpers?.disableElement(submitButton);
+                window.uiHelpers?.showSpinner(submitButton, true);
+            }
 
             try {
                 const response = await fetch('/api/settings/profile', {
@@ -151,10 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     displaySuccess(submittedForm, result.message || 'Profile updated successfully.');
                     // Optionally update username display elsewhere if needed
+                    // Example: document.querySelector('#sidebar-username').textContent = data.username;
                 }
             } catch (error) {
                 console.error('Error updating profile:', error);
                 displayErrors(submittedForm, { form: 'Failed to connect to server.' });
+            } finally {
+                 // --- Remove Loading State ---
+                 if (submitButton) {
+                     window.uiHelpers?.hideSpinner(submitButton, originalButtonText);
+                     window.uiHelpers?.enableElement(submitButton);
+                 }
             }
         }
 
@@ -168,6 +184,14 @@ document.addEventListener('DOMContentLoaded', () => {
              if (data.new_password !== data.confirm_password) {
                  displayErrors(submittedForm, { confirm_password: "New passwords do not match." });
                  return;
+             }
+            const submitButton = submittedForm.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton ? submitButton.innerHTML : 'Change Password';
+
+            // --- Add Loading State ---
+             if (submitButton) {
+                 window.uiHelpers?.disableElement(submitButton);
+                 window.uiHelpers?.showSpinner(submitButton, true);
              }
 
             try {
@@ -186,6 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Error changing password:', error);
                 displayErrors(submittedForm, { 'password-form': 'Failed to connect to server.' });
+            } finally {
+                  // --- Remove Loading State ---
+                  if (submitButton) {
+                      window.uiHelpers?.hideSpinner(submitButton, originalButtonText);
+                      window.uiHelpers?.enableElement(submitButton);
+                  }
             }
         }
 
@@ -195,7 +225,15 @@ document.addEventListener('DOMContentLoaded', () => {
              clearErrors(submittedForm);
              const formData = new FormData(submittedForm);
              const data = Object.fromEntries(formData.entries());
-             console.log("Submitting prompt form data:", data); // Add log here
+             console.log("Submitting prompt form data:", data);
+             const submitButton = submittedForm.querySelector('button[type="submit"]');
+             const originalButtonText = submitButton ? submitButton.innerHTML : 'Save Prompt';
+
+             // --- Add Loading State ---
+              if (submitButton) {
+                  window.uiHelpers?.disableElement(submitButton);
+                  window.uiHelpers?.showSpinner(submitButton, true);
+              }
 
              try {
                  const response = await fetch('/api/settings/profile', { // Uses profile endpoint
@@ -212,6 +250,12 @@ document.addEventListener('DOMContentLoaded', () => {
              } catch (error) {
                  console.error('Error updating prompt:', error);
                  displayErrors(submittedForm, { form: 'Failed to connect to server.' });
+             } finally {
+                   // --- Remove Loading State ---
+                   if (submitButton) {
+                       window.uiHelpers?.hideSpinner(submitButton, originalButtonText);
+                       window.uiHelpers?.enableElement(submitButton);
+                   }
              }
          }
 
@@ -223,19 +267,38 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!confirm('ARE YOU ABSOLUTELY SURE?\n\nDeleting your account is permanent and cannot be undone. All your conversations and messages will be lost.')) {
                 return;
             }
+           const submitButton = submittedForm.querySelector('button[type="submit"]');
+           const originalButtonText = submitButton ? submitButton.innerHTML : 'Delete Account Permanently';
+
+           // --- Add Loading State ---
+            if (submitButton) {
+                window.uiHelpers?.disableElement(submitButton);
+                window.uiHelpers?.showSpinner(submitButton, true);
+            }
 
             try {
                 const response = await fetch('/api/settings/delete_account', { method: 'DELETE' });
                 const result = await response.json();
                 if (!response.ok) {
                      displayErrors(submittedForm, { form: result.error || 'Failed to delete account.' });
+                     // Re-enable button on failure ONLY if not redirecting
+                     if (submitButton) {
+                         window.uiHelpers?.hideSpinner(submitButton, originalButtonText);
+                         window.uiHelpers?.enableElement(submitButton);
+                     }
                 } else {
                     alert(result.message || 'Account deleted successfully.');
                     window.location.href = '/login'; // Redirect on success
+                    // No need to re-enable button if redirecting
                 }
             } catch (error) {
                 console.error('Error deleting account:', error);
                 displayErrors(submittedForm, { form: 'Failed to connect to server.' });
+                 // Re-enable button on network error
+                 if (submitButton) {
+                     window.uiHelpers?.hideSpinner(submitButton, originalButtonText);
+                     window.uiHelpers?.enableElement(submitButton);
+                 }
             }
         }
         // Removed extra closing brace here
@@ -247,6 +310,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const formData = new FormData(submittedForm);
             const data = Object.fromEntries(formData.entries());
             console.log("Submitting theme form data:", data);
+           const submitButton = submittedForm.querySelector('button[type="submit"]');
+           const originalButtonText = submitButton ? submitButton.innerHTML : 'Save Theme';
+
+           // --- Add Loading State ---
+            if (submitButton) {
+                window.uiHelpers?.disableElement(submitButton);
+                window.uiHelpers?.showSpinner(submitButton, true);
+            }
 
             try {
                 // Assuming a PUT request to a new endpoint
@@ -266,6 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 console.error('Error updating theme settings:', error);
                 displayErrors(submittedForm, { 'theme-form': 'Failed to connect to server.' });
+            } finally {
+                  // --- Remove Loading State ---
+                  if (submitButton) {
+                      window.uiHelpers?.hideSpinner(submitButton, originalButtonText);
+                      window.uiHelpers?.enableElement(submitButton);
+                  }
             }
         }
     });

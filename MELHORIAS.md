@@ -20,11 +20,11 @@
 
 ## 2. Design (Ícones, Alinhamento, Cores - Sugestões Gerais)
 
-*   **Consistência Visual:** Garantir uniformidade em cores, fontes, espaçamentos e estilos de componentes entre todas as páginas. Usar variáveis CSS.
-*   **Hierarquia Visual Clara:** Usar tipografia (tamanho, peso, cor) para guiar o usuário.
-*   **Feedback Visual:** Fornecer indicações claras para ações do usuário (loading, sucesso, erro).
-*   **Ícones:** Utilizar ícones SVG consistentes e significativos para ações comuns.
-*   **Alinhamento:** Verificar alinhamento em diferentes tamanhos de tela (responsividade) usando Flexbox/Grid.
+*   **[CONCLUÍDO] Consistência Visual:** Garantir uniformidade em cores, fontes, espaçamentos e estilos de componentes entre todas as páginas. Usar variáveis CSS. (Verificado que `base.css` define variáveis e outros CSS as utilizam).
+*   **[VERIFICADO] Hierarquia Visual Clara:** Usar tipografia (tamanho, peso, cor) para guiar o usuário. (CSS e HTML indicam uso de diferentes estilos para hierarquia).
+*   **[CONCLUÍDO] Feedback Visual:** Fornecer indicações claras para ações do usuário (loading, sucesso, erro). (Implementado para envio de msg, CRUD de conversas, forms de settings, spinner de carregamento inicial).
+*   **[CONCLUÍDO] Ícones:** Utilizar ícones SVG consistentes e significativos para ações comuns. (Substituído Unicode por SVGs inline).
+*   **[PARCIALMENTE CONCLUÍDO] Alinhamento:** Verificar alinhamento em diferentes tamanhos de tela (responsividade) usando Flexbox/Grid. (Implementada responsividade básica da sidebar).
 *   **Paleta de Cores:** Definir uma paleta coesa e acessível (verificar contraste).
 
 ## 3. Usabilidade (Como deixar o projeto mais agradável - Sugestões Gerais)
@@ -33,7 +33,7 @@
 *   **Navegação Intuitiva:** Garantir clareza na estrutura da interface (sidebar, área de chat, configurações).
 *   **Gerenciamento de Conversas:** Facilitar criação, renomeação, exclusão. Confirmar ações destrutivas.
 *   **Tratamento de Erros no Frontend:** Capturar erros da API no JavaScript e mostrar mensagens amigáveis.
-*   **Responsividade:** Garantir bom funcionamento em diferentes dispositivos.
+*   **[PARCIALMENTE CONCLUÍDO] Responsividade:** Garantir bom funcionamento em diferentes dispositivos. (Implementada responsividade básica da sidebar).
 *   **Acessibilidade (a11y):** Considerar atributos ARIA, navegação por teclado, contraste, semântica HTML.
 *   **Persistência de Estado:** Lembrar a conversa ativa e posição de scroll.
 *   **Configurações Claras:** Organizar a tela/modal de configurações de forma lógica e explicativa.

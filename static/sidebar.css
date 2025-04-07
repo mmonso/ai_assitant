@@ -1,5 +1,37 @@
 /* --- Sidebar Styles --- */
 
+/* Spinner for initial loading */
+.spinner-container {
+    display: flex; /* Initially shown by JS */
+    justify-content: center;
+    align-items: center;
+    padding: 20px; /* Add some space */
+    min-height: 60px; /* Ensure it takes some space */
+}
+
+.spinner-container::after { /* Using pseudo-element for the spinner */
+    content: '';
+    display: block;
+    width: 24px; /* Spinner size */
+    height: 24px;
+    border: 3px solid var(--text-color-secondary); /* Spinner color */
+    border-top-color: var(--accent-color); /* Spinner active color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Hide spinner by default (JS will show it) - Actually, JS now shows it initially */
+/* #sidebar-loading-spinner {
+    display: none;
+} */
+
+
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -80,12 +112,15 @@
     background: none;
     border: none;
     color: var(--text-secondary);
-    padding: 5px;
+    padding: 4px; /* Adjust padding for SVG */
     margin-left: 5px;
     cursor: pointer;
-    font-size: 1.1em;
-    line-height: 1;
+    /* font-size: 1.1em; */ /* Let SVG size control */
+    line-height: 1; /* Keep for vertical alignment */
     border-radius: var(--border-radius-sm);
+    display: inline-flex; /* Align SVG */
+    align-items: center;
+    justify-content: center;
     opacity: 0; /* Hidden by default */
     transition: opacity 0.15s ease-in-out, background-color 0.15s ease-in-out;
     flex-shrink: 0; /* Prevent shrinking */
@@ -100,6 +135,10 @@
 #conversation-list li .conversation-actions-button:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
+}
+#conversation-list li .conversation-actions-button svg { /* Style the SVG */
+    width: 1.1em;
+    height: 1.1em;
 }
 
 /* Popover Styles - Appended to Body */
@@ -132,12 +171,14 @@
     border-radius: var(--border-radius-sm);
 }
 
-.popover-button .icon {
+.popover-button .icon { /* Style SVGs within popover buttons */
     margin-right: 8px;
-    font-size: 1.1em; /* Slightly larger icon */
+    /* font-size: 1.1em; */ /* Controlled by SVG size */
     display: inline-block;
-    width: 1.2em; /* Ensure alignment */
-    text-align: center;
+    width: 1.1em; /* Match SVG size */
+    height: 1.1em;
+    vertical-align: middle; /* Align better with text */
+    /* text-align: center; */ /* Not needed for SVG */
 }
 
 

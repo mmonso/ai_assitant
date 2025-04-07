@@ -1,15 +1,17 @@
 // --- UI Helper Functions ---
 
+import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+import DOMPurify from "https://cdn.jsdelivr.net/npm/dompurify/+esm";
+
 // For syntax highlighting and sanitization (assuming libraries are loaded globally)
-const marked = window.marked;
-const DOMPurify = window.DOMPurify;
+// Removed redundant declarations using window object
 const hljs = window.hljs;
 
 /**
  * Adds a message to the chatbox UI.
  * @param {string} message - The message content (text or markdown).
  * @param {string} sender - 'user', 'bot', or 'system'.
- * @param {HTMLElement} chatBox - The chatbox DOM element.
+ * @param {HTMLElement} chatBox - The chatbox element to append to.
  */
 export function addMessageToChatbox(message, sender, chatBox) {
     if (!chatBox) return;
@@ -58,6 +60,141 @@ export function setActiveConversationInSidebar(conversationId, conversationListE
             item.classList.add('active');
         }
     });
+}
+
+// Removed duplicated function definition (toggleConversationActionsPopover)
+
+/**
+ * Creates the HTML structure for the conversation actions popover.
+ * @param {string} conversationId - The ID of the conversation.
+ * @returns {HTMLElement} The popover element.
+ */
+function createConversationActionsPopover(conversationId) {
+    const popover = document.createElement('div');
+    popover.classList.add('actions-popover');
+    popover.dataset.popoverFor = conversationId; // Link popover to conversation
+
+    // This function seems duplicated by the one in displayConversations.
+    // Keeping it for now, but ideally one source of truth for the popover HTML.
+    popover.innerHTML = `
+        <button class="popover-button" data-action="edit" data-conversation-id="${conversationId}" title="Rename conversation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-pencil-fill icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+            </svg>
+            Rename
+        </button>
+        <button class="popover-button delete-button" data-action="delete" data-conversation-id="${conversationId}" title="Delete conversation">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-trash-fill icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+            </svg>
+            Delete
+        </button>
+    `;
+    // Prevent clicks inside popover from propagating to the list item listener
+    popover.addEventListener('click', (e) => e.stopPropagation());
+    return popover;
+}
+
+/**
+ * Positions a popover relative to a target button element.
+ * Appends to body if not already there to avoid clipping issues.
+ * @param {HTMLElement} popover - The popover element.
+ * @param {HTMLElement} targetButton - The button the popover should appear near.
+ */
+function positionPopover(popover, targetButton) {
+    if (!popover || !targetButton) return;
+
+    // Append to body to avoid clipping issues within scrollable containers
+    if (popover.parentElement !== document.body) {
+        document.body.appendChild(popover);
+    }
+
+    const rect = targetButton.getBoundingClientRect();
+    popover.style.top = `${rect.bottom + window.scrollY + 5}px`; // Position below button
+    popover.style.left = `${rect.left + window.scrollX - popover.offsetWidth + rect.width}px`; // Align right edge
+    popover.style.display = 'block'; // Ensure it's visible for positioning calculation if needed
+}
+
+
+// Removed duplicated function definition (hideAllPopovers)
+
+
+// Removed duplicated function definitions (spinner/disable/enable)
+// --- Spinner and Element Disabling ---
+
+/**
+ * Shows a loading spinner inside a target element (e.g., a button or div).
+ * @param {HTMLElement} targetElement - The element where the spinner should appear.
+ * @param {boolean} replaceContent - If true, replaces element content; otherwise appends.
+ */
+export function showSpinner(targetElement, replaceContent = false) {
+    if (!targetElement) return;
+
+    // Remove existing spinner first
+    hideSpinner(targetElement);
+
+    const spinner = document.createElement('span');
+    spinner.className = 'loading-spinner'; // Use class from base.css
+    spinner.setAttribute('aria-hidden', 'true'); // Hide decorative spinner from screen readers
+
+    if (replaceContent) {
+        // Add accessible text for screen readers
+        const loadingText = document.createElement('span');
+        loadingText.className = 'visually-hidden'; // Use class from base.css
+        loadingText.textContent = 'Loading...';
+        targetElement.innerHTML = ''; // Clear existing content
+        targetElement.appendChild(loadingText);
+        targetElement.appendChild(spinner);
+    } else {
+        targetElement.appendChild(spinner);
+    }
+}
+
+/**
+ * Hides/removes a loading spinner from a target element.
+ * @param {HTMLElement} targetElement - The element containing the spinner.
+ * @param {string | null} originalContent - Optional: HTML content to restore if content was replaced.
+ */
+export function hideSpinner(targetElement, originalContent = null) {
+    if (!targetElement) return;
+    const spinner = targetElement.querySelector('.loading-spinner');
+    if (spinner) {
+        spinner.remove();
+    }
+    // Remove accessible text if it exists
+    const loadingText = targetElement.querySelector('.visually-hidden');
+    if (loadingText && loadingText.textContent === 'Loading...') {
+         loadingText.remove();
+    }
+
+    // Restore original content if provided (and if spinner was the only content)
+    if (originalContent !== null && targetElement.innerHTML.trim() === '') {
+        targetElement.innerHTML = originalContent;
+    }
+}
+
+/**
+ * Disables an element (e.g., button, input).
+ * @param {HTMLElement} element - The element to disable.
+ */
+export function disableElement(element) {
+    if (element) {
+        element.disabled = true;
+        // Optional: Add a class for visual styling (e.g., opacity)
+        // element.classList.add('disabled-element');
+    }
+}
+
+/**
+ * Enables an element.
+ * @param {HTMLElement} element - The element to enable.
+ */
+export function enableElement(element) {
+    if (element) {
+        element.disabled = false;
+        // Optional: Remove the disabled styling class
+        // element.classList.remove('disabled-element');
+    }
 }
 
 /**
@@ -192,14 +329,8 @@ export function displayConversations(conversations, conversationListElement, cur
         const convPopover = document.createElement('div');
         convPopover.classList.add('actions-popover');
         // Add conversation ID to the popover buttons for delegation
-        convPopover.innerHTML = `
-            <button class="popover-button edit-button" data-action="edit" data-conversation-id="${conv.conversation_id}" title="Edit title">
-                <span class="icon">&#x270E;</span> Edit
-            </button>
-            <button class="popover-button delete-button" data-action="delete" data-conversation-id="${conv.conversation_id}" title="Delete conversation">
-                <span class="icon">&#x2715;</span> Delete
-            </button>
-        `;
+        // Use the same HTML structure as createConversationActionsPopover
+        convPopover.innerHTML = createConversationActionsPopover(conv.conversation_id).innerHTML;
 
         itemContent.appendChild(titleSpan);
         itemContent.appendChild(actionsButton);

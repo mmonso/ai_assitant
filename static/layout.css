@@ -72,3 +72,68 @@
     background-color: var(--bg-tertiary);
     color: var(--text-primary);
 }
+
+/* --- Responsiveness --- */
+
+/* Sidebar Toggle Button (Hidden by default on larger screens) */
+#sidebar-toggle-button {
+    display: none; /* Hidden on desktop */
+    position: absolute; /* Position relative to main-content */
+    top: 10px;
+    left: 10px;
+    z-index: 1001; /* Above sidebar when visible */
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 5px 8px;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+}
+
+#sidebar-toggle-button:hover {
+    background-color: var(--bg-tertiary);
+}
+
+/* Styles for smaller screens (e.g., tablets and phones) */
+@media (max-width: 768px) {
+    #sidebar {
+        display: none; /* Hide sidebar by default */
+        position: absolute; /* Position it absolutely */
+        left: 0;
+        top: 0;
+        height: 100%;
+        z-index: 1000; /* Ensure it's above main content */
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Add shadow for separation */
+        /* Keep other sidebar styles like width, background, padding etc. */
+        width: 280px; /* Or adjust as needed for mobile */
+        border-right: none; /* Remove border when it overlays */
+    }
+
+    #sidebar.sidebar-mobile-visible {
+        display: flex; /* Show sidebar when this class is added */
+    }
+
+    #sidebar-toggle-button {
+        display: block; /* Show the toggle button */
+    }
+
+    #main-content {
+        padding: 0 10px; /* Reduce padding on smaller screens */
+    }
+
+    /* Optional: Add an overlay when sidebar is open */
+    .sidebar-overlay {
+        display: none; /* Hidden by default */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999; /* Below sidebar, above content */
+    }
+
+    .sidebar-overlay.active {
+        display: block; /* Show overlay when active */
+    }
+}
