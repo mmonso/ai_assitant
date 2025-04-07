@@ -22,6 +22,7 @@
                     <div class="settings-sub-content"> <!-- Right content area -->
                         <!-- Profile Settings -->
                         <section id="account-profile-section" class="settings-section account-section active"> <!-- Added ID and common class, active by default -->
+                            <h4>Profile Information</h4> <!-- Added consistent section title -->
                             <form id="profile-form">
                                 <div class="form-group">
                                     <label for="username">Username</label>
@@ -34,6 +35,7 @@
                                     <label for="profile_picture_url">Profile Picture URL (Optional)</label>
                                     <input type="url" id="profile_picture_url" name="profile_picture_url" value="{{ user.profile_picture_url or '' }}" placeholder="https://example.com/avatar.png">
                                     <span class="form-error" id="profile_picture_url-error"></span>
+                                    <p class="help-text">URL pública da imagem a ser usada como avatar.</p> <!-- Added help text -->
                                 </div>
                                 <hr class="form-separator"> <!-- Added separator -->
                                 <div class="form-group">
@@ -49,6 +51,7 @@
 
                         <!-- Password Change -->
                         <section id="account-password-section" class="settings-section account-section"> <!-- Added ID and common class -->
+                            <h4>Change Password</h4> <!-- Added consistent section title -->
                             <form id="password-form">
                                 <div class="form-group">
                                     <label for="current_password">Current Password</label>
@@ -74,6 +77,7 @@
 
                         <!-- Delete Account -->
                         <section id="account-delete-section" class="settings-section account-section"> <!-- Added ID and common class -->
+                            <h4>Delete Account</h4> <!-- Added consistent section title -->
                             <p class="help-text" style="color: var(--flash-error-text);">Warning: Deleting your account is permanent and will remove all your conversations and messages.</p>
                             <form id="delete-form">
                                 <button type="submit" class="settings-button delete-button">Delete My Account</button>
@@ -108,6 +112,7 @@
             <div id="theme" class="settings-tab">
                 <h3>Theme Settings</h3>
                 <section class="settings-section">
+                    <h4>Appearance</h4> <!-- Added consistent section title -->
                     <form id="theme-form"> <!-- Add form tag -->
                     <div class="form-group">
                         <label for="font-selector">Font Family</label>

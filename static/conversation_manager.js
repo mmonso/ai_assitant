@@ -56,8 +56,8 @@ export async function loadAndDisplayConversations() {
         // Re-enable button after loading
         uiHelpers.enableElement(newChatBtn);
     } catch (error) {
-        console.error('Manager: Failed to load conversation list:', error);
-        uiHelpers.addMessageToChatbox('Could not load conversation list.', 'system', chatBoxElement);
+        // Use the new helper to display a user-friendly message and log the error
+        uiHelpers.displayErrorInChat('Oops! Não foi possível carregar suas conversas. Tente recarregar a página.', error, chatBoxElement);
         uiHelpers.displayConversations([], conversationListElement, currentConversationId); // Display empty state
     } finally {
         // Optional: Hide global/sidebar spinner
@@ -77,16 +77,18 @@ export async function handleConversationSelect(conversationId) {
     if (conversationId === currentConversationId) return; // Already selected
     console.log(`Manager: Switching to conversation: ${conversationId}`);
     uiHelpers.clearChatbox(chatBoxElement);
-    uiHelpers.addMessageToChatbox('Loading messages...', 'system', chatBoxElement);
-    const loadingIndicator = chatBoxElement.lastChild;
+    // No explicit loading indicator here anymore, as per user feedback
+    // uiHelpers.addMessageToChatbox('Loading messages...', 'system', chatBoxElement);
+    // const loadingIndicator = chatBoxElement.lastChild;
 
-    try {
+    try { // <-- Início do try
         await apiClient.setActiveConversation(conversationId); // Tell backend
         const messages = await apiClient.loadConversationMessages(conversationId); // Fetch messages
 
-        if (loadingIndicator && chatBoxElement.contains(loadingIndicator)) {
-            chatBoxElement.removeChild(loadingIndicator);
-        }
+        // Remove potential old indicator if logic changes back
+        // if (loadingIndicator && chatBoxElement.contains(loadingIndicator)) {
+        //     chatBoxElement.removeChild(loadingIndicator);
+        // }
 
         messages.forEach(message => {
             const sender = message.role === 'assistant' ? 'bot' : message.role;
@@ -95,16 +97,17 @@ export async function handleConversationSelect(conversationId) {
         setCurrentConversationId(conversationId);
         uiHelpers.setActiveConversationInSidebar(conversationId, conversationListElement);
 
-    } catch(error) {
-         if (loadingIndicator && chatBoxElement.contains(loadingIndicator)) {
-            chatBoxElement.removeChild(loadingIndicator);
-         }
-         console.error("Manager: Error setting/loading active conversation:", error);
-         uiHelpers.addMessageToChatbox(`Failed to switch conversation: ${error.message}`, 'system', chatBoxElement);
+    } catch(error) { // <-- Fim do try, início do catch
+         // Remove potential old indicator on error
+         // if (loadingIndicator && chatBoxElement.contains(loadingIndicator)) {
+         //    chatBoxElement.removeChild(loadingIndicator);
+         // }
+         // Use the new helper
+         uiHelpers.displayErrorInChat('Erro ao carregar a conversa selecionada. Por favor, tente novamente.', error, chatBoxElement);
          setCurrentConversationId(null); // Reset if switch failed
          uiHelpers.setActiveConversationInSidebar(null, conversationListElement);
-    }
-}
+    } // <-- Fim do catch
+} // <-- Fim da função
 
 /**
  * Handles the initiation of editing a conversation title.
@@ -142,21 +145,22 @@ export function handleEditConversation(listItem) {
         input.replaceWith(titleSpan);
 
         // Attempt to save to backend
-        // Optional: Add visual feedback during save (e.g., disable input briefly, show spinner?)
-        input.disabled = true; // Disable input during save attempt
+        // Add visual feedback: disable input and show spinner
+        uiHelpers.disableElement(input); // Use helper for disabling
+        uiHelpers.addSpinnerAdjacent(input, 'after'); // Show spinner next to input
         try {
             await apiClient.renameConversation(conversationId, newTitle);
             console.log(`Manager: Conversation ${conversationId} renamed to "${newTitle}"`);
             // Success: UI already updated optimistically
         } catch (error) {
-            console.error("Manager: Error renaming conversation:", error);
-            // Revert UI on error
+            // Revert UI on error first
             titleSpan.textContent = currentTitle;
-            uiHelpers.addMessageToChatbox(`Error renaming conversation: ${error.message}`, 'system', chatBoxElement);
+            // Use the new helper
+            uiHelpers.displayErrorInChat('Não foi possível renomear a conversa. Por favor, tente novamente.', error, chatBoxElement);
         } finally {
-             // Re-enable input (or replace with span) even if save failed,
-             // but the replacement happens anyway outside the try/finally
-             // input.disabled = false; // Not strictly needed as it's replaced
+             // Always remove spinner and re-enable input (though it gets replaced)
+             uiHelpers.removeAdjacentSpinner(input);
+             uiHelpers.enableElement(input); // Re-enable in case it wasn't replaced
         }
     };
 
@@ -207,8 +211,8 @@ export async function handleDeleteConversation(listItem) {
             uiHelpers.displayConversations([], conversationListElement, null); // Show empty state
         }
     } catch (error) {
-        console.error("Manager: Error deleting conversation:", error);
-        uiHelpers.addMessageToChatbox(`Error deleting conversation: ${error.message}`, 'system', chatBoxElement);
+        // Use the new helper
+        uiHelpers.displayErrorInChat('Erro ao excluir a conversa. Por favor, tente novamente.', error, chatBoxElement);
         // Restore item appearance on error
         listItem.style.opacity = '1';
         listItem.style.pointerEvents = 'auto';
@@ -233,8 +237,8 @@ export async function handleNewChat() {
          // Reset textarea height
          userInputElement.style.height = 'auto';
     } catch (error) {
-         console.error("Manager: Error starting new chat:", error);
-         uiHelpers.addMessageToChatbox(`Error starting new chat: ${error.message}`, 'system', chatBoxElement);
+         // Use the new helper
+         uiHelpers.displayErrorInChat('Não foi possível iniciar uma nova conversa. Por favor, tente novamente.', error, chatBoxElement);
     } finally {
         // Re-enable New Chat button
         uiHelpers.enableElement(newChatBtn);

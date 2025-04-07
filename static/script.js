@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => { // Make async
             if (typingIndicator && chatBox.contains(typingIndicator)) {
                 chatBox.removeChild(typingIndicator);
             }
-            // Display error in chatbox
-            ui.addMessageToChatbox(`Error: ${error.message}`, 'system', chatBox);
+            // Display user-friendly error in chatbox using the helper
+            ui.displayErrorInChat('Desculpe, não foi possível enviar sua mensagem. Verifique sua conexão ou tente novamente.', error, chatBox);
         } finally {
             // Re-enable input regardless of success or failure
             ui.enableElement(userInput);

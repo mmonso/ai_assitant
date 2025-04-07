@@ -198,6 +198,53 @@ export function enableElement(element) {
 }
 
 /**
+ * Adds a spinner element adjacent (before or after) to a target element.
+ * Returns the spinner element or null.
+ * @param {HTMLElement} targetElement - The element to add the spinner next to.
+ * @param {'before' | 'after'} position - Where to insert the spinner relative to the target.
+ * @returns {HTMLElement | null} The created spinner element or null if target doesn't exist.
+ */
+export function addSpinnerAdjacent(targetElement, position = 'after') {
+    if (!targetElement || !targetElement.parentNode) return null;
+
+    // Remove any existing adjacent spinner first
+    removeAdjacentSpinner(targetElement);
+
+    const spinner = document.createElement('span');
+    spinner.className = 'loading-spinner adjacent-spinner'; // Add specific class
+    spinner.setAttribute('aria-hidden', 'true');
+    spinner.dataset.spinnerFor = targetElement.id || `target-${Math.random().toString(36).substring(2, 9)}`; // Link spinner to target
+
+    if (position === 'before') {
+        targetElement.parentNode.insertBefore(spinner, targetElement);
+    } else {
+        targetElement.parentNode.insertBefore(spinner, targetElement.nextSibling);
+    }
+    return spinner;
+}
+
+/**
+ * Removes a spinner that was added adjacent to a target element.
+ * @param {HTMLElement} targetElement - The element the spinner was added next to.
+ */
+export function removeAdjacentSpinner(targetElement) {
+    if (!targetElement) return;
+    const targetId = targetElement.id || `target-${targetElement.dataset.spinnerFor}`; // Try to find linked spinner
+    const adjacentSpinners = targetElement.parentNode?.querySelectorAll('.adjacent-spinner');
+
+    adjacentSpinners?.forEach(spinner => {
+        // Basic check: is it immediately before or after?
+        if (spinner.nextSibling === targetElement || spinner.previousSibling === targetElement) {
+             // More specific check if IDs were used
+             // if (spinner.dataset.spinnerFor === targetId) {
+                 spinner.remove();
+             // }
+        }
+    });
+}
+
+
+/**
  * Hides all currently visible popovers (conversation actions and settings level 1).
  * @param {Event | null} event - The click event that triggered the check (optional).
  * @param {HTMLElement | null} settingsPopoverLevel1 - The settings popover element.
@@ -299,7 +346,7 @@ export function displayConversations(conversations, conversationListElement, cur
         conversationListElement.appendChild(noConvItem);
         return;
     }
-
+    
     conversations.forEach(conv => {
         const listItem = document.createElement('li');
         listItem.dataset.conversationId = conv.conversation_id;
@@ -341,4 +388,17 @@ export function displayConversations(conversations, conversationListElement, cur
 
     // Global listener for closing popovers is NOT added here.
     // It should be added once in the main script.
+}
+
+/**
+ * Displays a user-friendly error message in the chatbox and logs the original error.
+ * @param {string} userMessage - The user-friendly message to display.
+ * @param {Error | unknown} error - The original error object/data for logging.
+ * @param {HTMLElement} chatBox - The chatbox element.
+ */
+export function displayErrorInChat(userMessage, error, chatBox) {
+    console.error("An error occurred:", error); // Log the full error for debugging
+    if (chatBox) {
+        addMessageToChatbox(userMessage, 'system', chatBox); // Display user-friendly message
+    }
 }

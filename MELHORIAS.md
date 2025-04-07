@@ -29,14 +29,9 @@
 
 ## 3. Usabilidade (Como deixar o projeto mais agradável - Sugestões Gerais)
 
-*   **Feedback Imediato:** Informar o usuário sobre o status das operações (envio de mensagem, salvamento, etc.).
-*   **Navegação Intuitiva:** Garantir clareza na estrutura da interface (sidebar, área de chat, configurações).
-*   **Gerenciamento de Conversas:** Facilitar criação, renomeação, exclusão. Confirmar ações destrutivas.
-*   **Tratamento de Erros no Frontend:** Capturar erros da API no JavaScript e mostrar mensagens amigáveis.
-*   **[PARCIALMENTE CONCLUÍDO] Responsividade:** Garantir bom funcionamento em diferentes dispositivos. (Implementada responsividade básica da sidebar).
-*   **Acessibilidade (a11y):** Considerar atributos ARIA, navegação por teclado, contraste, semântica HTML.
-*   **Persistência de Estado:** Lembrar a conversa ativa e posição de scroll.
-*   **Configurações Claras:** Organizar a tela/modal de configurações de forma lógica e explicativa.
+*   **[CONCLUÍDO] Feedback Imediato:** Informar o usuário sobre o status das operações (envio de mensagem, salvamento, etc.). (Adicionado spinner ao renomear conversa. Verificado: spinner já existe ao salvar configurações).
+*   **[CONCLUÍDO] Tratamento de Erros no Frontend:** Capturar erros da API no JavaScript e mostrar mensagens amigáveis. (Padronizada exibição de erros no chat com mensagens genéricas; erros de formulário mantidos).
+*   **[CONCLUÍDO] Configurações Claras:** Organizar a tela/modal de configurações de forma lógica e explicativa. (Adicionado help-text, padronizados títulos de seção).
 
 ## 4. Features (Como aprimorar com mais tecnologias - Sugestões)
 
