@@ -372,16 +372,18 @@ def delete_conversation(conversation_id, user_id):
 
 # --- Message Management (largely unchanged) ---
 
-def add_message(conversation_id, role, content):
-    """Adds a message to a specific conversation."""
+def add_message(conversation_id, role, content, google_file_name=None, file_display_name=None, file_mime_type=None):
+    """Adds a message to a specific conversation, optionally including file references."""
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
-                           (conversation_id, role, content))
+            cursor.execute("""
+                INSERT INTO messages (conversation_id, role, content, google_file_name, file_display_name, file_mime_type)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (conversation_id, role, content, google_file_name, file_display_name, file_mime_type))
             conn.commit()
             msg_id = cursor.lastrowid
-            # log.debug(f"Message added to conversation {conversation_id} with id {msg_id}")
+            # log.debug(f"Message added to conversation {conversation_id} with id {msg_id}, file: {google_file_name}")
             return msg_id
     except sqlite3.IntegrityError as e:
         log.error(f"Database integrity error adding message to conversation {conversation_id}: {e}", exc_info=True)
@@ -410,11 +412,12 @@ def get_conversation_messages(conversation_id, user_id):
                  return None # Permission denied
 
             cursor.execute("""
-                SELECT role, content
+                SELECT role, content, google_file_name, file_display_name, file_mime_type
                 FROM messages
                 WHERE conversation_id = ?
                 ORDER BY timestamp ASC
             """, (conversation_id,))
+            # Convert rows to dictionaries to include all fetched columns
             history = [dict(row) for row in cursor.fetchall()]
             # log.debug(f"Retrieved {len(history)} messages for conversation {conversation_id}")
             return history

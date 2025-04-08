@@ -1,7 +1,5 @@
 /* --- Chat Area Styles --- */
 
-
-/* Gear icon link is handled in settings.css */
 /* Logout button styles (if needed separately, though now in popover) */
 .logout-button {
     background-color: var(--accent-secondary);
@@ -34,14 +32,13 @@
 
 
 #input-area {
-    display: flex;
-    padding: 0px 25px 50px 25px; /* Reduced top padding */
-    background-color: var(--bg-primary); /* Restore background */
-    flex-shrink: 0; /* Prevent shrinking */
-    gap: 10px;
+    padding: 15px 25px 15px 25px; /* Reduced bottom padding */
+    background-color: var(--bg-primary);
+    flex-shrink: 0;
     position: sticky;
     bottom: 0;
-    z-index: 1; /* Ensure it stays above chat content */
+    z-index: 1;
+    /* Contains input-wrapper and input-actions */
 }
 
 /* Chat Message Styles */
@@ -84,17 +81,339 @@
 
 
 /* Input Area Styles */
-#user-input { /* Now a textarea */
+/* Single wrapper for the whole input box */
+.input-wrapper {
+    position: relative; /* For popover positioning */
+    display: flex;
+    flex-direction: column; /* Stack textarea and actions vertically */
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 28px; /* Rounded corners */
+    padding: 10px 15px; /* Padding inside the main box */
+    box-sizing: border-box;
+    /* margin-bottom: 10px; */ /* Remove margin */
+}
 
-    flex-grow: 1;
-    background-color: var(--bg-secondary); /* Restore background */
-    border: 1px solid var(--border-color); /* Restore border */
-    padding: 12px 17px; /* Adjust left padding to align text with bot message */
-    border-radius: 30px; /* Fully rounded */
+
+#user-input { /* Textarea styling */
+    flex-grow: 1; /* Allow textarea to grow */
+    background-color: transparent;
+    border: none;
+    /* padding: 15px 20px; */ /* Remove padding here, handled by wrapper */
+    padding: 5px 0; /* Minimal vertical padding */
     color: var(--text-primary);
-    line-height: 1.5; /* Ensure consistent line height for calculations */
-    max-height: 280px; /* Approx 10 lines + padding */
-    overflow-y: auto; /* Show scrollbar when max-height is reached */
+    line-height: 1.5;
+    max-height: 200px; /* Or adjust as needed */
+    overflow-y: auto;
+    resize: none;
+    font-family: inherit;
+    font-size: 1em;
+    outline: none;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 26px; /* Adjust based on line-height */
+    margin-bottom: 8px; /* Space between textarea and button row */
+}
+
+#user-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* Row for action buttons at the bottom */
+.input-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%; /* Take full width */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+
+/* Style for action buttons (attach, send) - Updated */
+/* .input-actions { */ /* Remove this class styling */
+    /* display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 5px;
+    position: relative; */
+/* } */
+
+.input-action-button {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 50%;
+    width: 36px; /* Adjusted size back */
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+/* Specific positions */
+/* Remove specific positioning */
+/* .input-action-button.attach-button {
+    left: 10px;
+} */
+
+/* .input-action-button.send-button {
+    right: 10px;
+} */
+
+/* Add style for mic button if needed */
+.input-action-button.mic-button {
+    /* Add specific styles if different */
+}
+
+
+.input-action-button svg {
+    width: 1.3em; /* Adjust icon size */
+    height: 1.3em;
+}
+
+.input-action-button:hover {
+    color: var(--text-primary); /* Darken icon on hover */
+    background-color: var(--bg-tertiary); /* Slight background on hover */
+}
+
+.input-action-button:disabled {
+    color: var(--border-color); /* Muted color when disabled */
+    color: var(--text-secondary); /* Keep this line for disabled color */
+    cursor: not-allowed;
+}
+
+/* Attachment Popover Styles - Adjust positioning relative to input-wrapper */
+.attach-popover {
+    position: absolute;
+    bottom: 55px; /* Position above the input wrapper's bottom padding + button height */
+    left: 10px; /* Align near the attach button's usual area */
+    background-color: var(--bg-tertiary);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    padding: 8px;
+    z-index: 10;
+    width: 180px;
+    border: 1px solid var(--border-color-light);
+    display: none; /* Hide by default */
+}
+
+.attach-popover ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.attach-popover li button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    padding: 8px 12px;
+    width: 100%;
+    text-align: left;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.attach-popover li button:hover:not(:disabled) {
+    background-color: var(--bg-secondary); /* Hover effect */
+}
+
+.attach-popover li button:disabled {
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.attach-popover li button svg {
+    width: 1.1em;
+    height: 1.1em;
+    flex-shrink: 0; /* Prevent icon shrinking */
+    color: var(--text-secondary); /* Icon color */
+}
+.attach-popover li button:hover:not(:disabled) svg {
+    color: var(--text-primary);
+}
+
+/* File Preview Styles */
+#file-preview-container {
+    display: none; /* Hidden by default, shown by JS */
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-tertiary); /* Slightly different background */
+    border-radius: var(--border-radius-md);
+    padding: 5px 8px;
+    max-width: 250px; /* Limit width */
+    overflow: hidden; /* Hide overflow */
+    border: 1px solid var(--border-color-light);
+    flex-shrink: 1; /* Allow shrinking if needed, but not growing */
+    flex-grow: 0;
+}
+
+.file-preview-thumbnail {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
+    object-fit: cover; /* Scale image nicely */
+    background-color: var(--bg-secondary); /* Placeholder bg */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary); /* Icon color */
+}
+
+.file-preview-thumbnail svg {
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.file-preview-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent text overflow */
+    font-size: 0.85em;
+    line-height: 1.3;
+    flex-grow: 1; /* Allow info to take space */
+    min-width: 0; /* Important for flex shrink/ellipsis */
+}
+
+.file-preview-name {
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ... for long names */
+    font-weight: 500;
+}
+
+.file-preview-type {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.file-preview-remove-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 2px;
+    margin-left: auto; /* Push to the right */
+    flex-shrink: 0;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-preview-remove-button:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+.file-preview-remove-button svg {
+    width: 0.9em;
+    height: 0.9em;
+}
+
+/* Styling for generated images within bot messages */
+.bot-message .generated-image {
+    display: block; /* Ensure image is on its own line */
+    max-width: 80%; /* Limit image width within the message bubble */
+    max-height: 400px; /* Limit image height */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: var(--border-radius-md); /* Rounded corners */
+    margin-top: 8px; /* Space above image if there's text */
+    margin-bottom: 8px; /* Space below image */
+    border: 1px solid var(--border-color-light); /* Subtle border */
+}
+
+/* File Preview Styles */
+#file-preview-container {
+    display: flex; /* Use flex for internal alignment */
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg-tertiary); /* Slightly different background */
+    border-radius: var(--border-radius-md);
+    padding: 5px 8px;
+    max-width: 250px; /* Limit width */
+    overflow: hidden; /* Hide overflow */
+    border: 1px solid var(--border-color-light);
+}
+
+.file-preview-thumbnail {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border-radius: var(--border-radius-sm);
+    object-fit: cover; /* Scale image nicely */
+    background-color: var(--bg-secondary); /* Placeholder bg */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary); /* Icon color */
+}
+
+.file-preview-thumbnail svg {
+    width: 1.2em;
+    height: 1.2em;
+}
+
+.file-preview-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent text overflow */
+    font-size: 0.85em;
+    line-height: 1.3;
+    flex-grow: 1; /* Allow info to take space */
+}
+
+.file-preview-name {
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ... for long names */
+    font-weight: 500;
+}
+
+.file-preview-type {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.file-preview-remove-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 2px;
+    margin-left: auto; /* Push to the right */
+    flex-shrink: 0;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.file-preview-remove-button:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+.file-preview-remove-button svg {
+    width: 0.9em;
+    height: 0.9em;
 }
 
 /* Code Block Styling (within bot messages) */

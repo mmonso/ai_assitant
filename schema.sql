@@ -28,12 +28,15 @@ CREATE TABLE conversations (
     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Delete conversations if user is deleted
 );
 
--- Create the messages table (unchanged)
+-- Create the messages table (modified for file references)
 CREATE TABLE messages (
     message_id INTEGER PRIMARY KEY AUTOINCREMENT,
     conversation_id INTEGER NOT NULL,
     role TEXT NOT NULL CHECK(role IN ('user', 'assistant')), -- Keep 'assistant' for DB consistency
-    content TEXT NOT NULL,
+    content TEXT NOT NULL, -- Stores the text part of the message
+    google_file_name TEXT,    -- Stores the 'name' from Google File API (e.g., 'files/abc-123'), NULL if no file
+    file_display_name TEXT,   -- Stores the original uploaded filename (e.g., 'image.png'), NULL if no file
+    file_mime_type TEXT,      -- Stores the MIME type (e.g., 'image/png'), NULL if no file
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(conversation_id) REFERENCES conversations(conversation_id) ON DELETE CASCADE -- Delete messages if conversation is deleted
 );

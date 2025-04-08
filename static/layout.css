@@ -18,6 +18,8 @@
     position: relative; /* Needed if popover calculation depends on sidebar */
 }
 
+/* Left Panel CSS Removed */
+
 #main-content {
     flex-grow: 1;
     display: flex; /* Use flex to center the wrapper */
@@ -35,9 +37,19 @@
     flex-direction: column;
     width: 100%; /* Take full width within the centered flex item */
     max-width: 800px; /* Set the desired max width */
-    /* height: 100%; <- Removed to fix input area positioning */
+    height: 100%; /* Ensure wrapper fills vertical space */
     background-color: transparent; /* Make wrapper transparent */
+    position: relative; /* Needed for absolute positioning of settings button */
+    /* padding-top removed as header is gone */
 }
+
+/* Main Header styles removed */
+
+/* Settings button is no longer in the header, original positioning applies */
+
+/* Model selector styles removed from .main-header as it's moved to #left-panel */
+
+/* Redundant main-content block removed */
 
 /* Specific scrollbar for sidebar (thinner) */
 #sidebar::-webkit-scrollbar { width: 6px; }
@@ -96,8 +108,8 @@
 
 /* Styles for smaller screens (e.g., tablets and phones) */
 @media (max-width: 768px) {
-    #sidebar {
-        display: none; /* Hide sidebar by default */
+    #sidebar { /* Left panel removed from here */
+        display: none; /* Hide by default */
         position: absolute; /* Position it absolutely */
         left: 0;
         top: 0;
@@ -111,6 +123,7 @@
 
     #sidebar.sidebar-mobile-visible {
         display: flex; /* Show sidebar when this class is added */
+        /* Left panel removed */
     }
 
     #sidebar-toggle-button {
@@ -118,7 +131,7 @@
     }
 
     #main-content {
-        padding: 0 10px; /* Reduce padding on smaller screens */
+        padding: 0 10px; /* Remove top padding, reduce sides */
     }
 
     /* Optional: Add an overlay when sidebar is open */

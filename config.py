@@ -22,4 +22,8 @@ GEMINI_MODEL_NAME = os.environ.get("GEMINI_MODEL_NAME", "gemini-1.5-flash")
 # Database Config
 DATABASE_NAME = os.environ.get('DATABASE_NAME', 'chat_history.db')
 
+# Upload Config
+UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER', 'uploads')
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'wav', 'mp3', 'aiff', 'aac', 'ogg', 'flac'} # Added audio formats
+
 # Add other configurations as needed

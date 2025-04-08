@@ -296,3 +296,6 @@ def get_user_settings():
     except Exception as e:
         log.error(f"Unexpected error retrieving settings for user {user_id}: {e}", exc_info=True)
         return jsonify({"error": "An unexpected error occurred while retrieving settings."}), 500
+
+
+# --- Model Selection Endpoints Removed ---

@@ -34,18 +34,18 @@ export async function loadConversationMessages(conversationId) {
 }
 
 /**
- * Sends a user message to the backend and gets the bot's response.
+ * Sends a user message and/or file to the backend and gets the bot's response.
  * Handles creation of new conversations if necessary.
- * @param {string} messageText - The user's message.
+ * @param {FormData} formData - The FormData object containing the message text and/or file.
  * @returns {Promise<object>} A promise that resolves with the response data (including 'response' and potentially 'new_conversation_id').
  * @throws {Error} If the fetch fails or the backend returns an error.
  */
-export async function sendMessage(messageText) {
-    console.log("API: Sending message...");
+export async function sendMessage(formData) { // Changed parameter to formData
+    console.log("API: Sending message/file...");
     const response = await fetch('/api/chat/send', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageText }),
+        // Remove 'Content-Type' header; browser sets it for FormData
+        body: formData, // Send FormData directly
     });
 
     if (!response.ok) {
@@ -165,3 +165,39 @@ export async function fetchUserSettingsData() {
 // are NOT moved here as they are directly tied to form submissions within settings.js.
 // However, settings.js *could* be refactored to import and use functions from here
 // if we wanted to centralize all fetch calls. For now, keeping them separate is acceptable.
+
+
+/**
+ * Fetches the currently selected model and available models from the backend session.
+ * @returns {Promise<object>} A promise resolving to { selected_model: string, available_models: string[] }.
+ * @throws {Error} If the fetch fails or the backend returns an error.
+ */
+export async function getSelectedModel() {
+    console.log("API: Getting selected model...");
+    const response = await fetch('/api/settings/get_selected_model');
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to get selected model");
+    }
+    return await response.json();
+}
+
+/**
+ * Sets the selected model in the backend session.
+ * @param {string} modelName - The name of the model to select.
+ * @returns {Promise<object>} A promise resolving to the success message.
+ * @throws {Error} If the fetch fails or the backend returns an error.
+ */
+export async function setSelectedModel(modelName) {
+    console.log(`API: Setting selected model to ${modelName}`);
+    const response = await fetch('/api/settings/set_selected_model', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model_name: modelName }),
+    });
+     if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to set selected model");
+    }
+    return await response.json();
+}

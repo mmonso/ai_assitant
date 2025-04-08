@@ -2,10 +2,10 @@
 
 /* Gear Icon Link */
 .settings-link {
-    position: fixed; /* Position relative to viewport */
-    top: 15px;       /* Distance from top */
-    right: 20px;      /* Distance from right */
-    z-index: 101;     /* Ensure it's above most elements */
+    position: absolute; /* Position relative to parent (.chat-area-wrapper) */
+    top: 10px;        /* Distance from top of wrapper */
+    right: 10px;       /* Distance from right of wrapper */
+    z-index: 101;      /* Ensure it's above most elements */
     color: var(--text-secondary);
     /* font-size: 1.4em; */ /* Let SVG size control */
     text-decoration: none;
@@ -35,9 +35,9 @@
 /* Settings Level 1 Popover */
 .settings-popover {
     display: none; /* Hidden by default */
-    position: fixed; /* Position relative to viewport */
-    top: 55px;       /* Position below the fixed gear icon (adjust as needed) */
-    right: 20px;      /* Align with the fixed gear icon */
+    position: absolute; /* Position relative to parent (.chat-area-wrapper) */
+    top: 45px;        /* Position below the absolute gear icon */
+    right: 10px;       /* Align with the absolute gear icon */
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-md);
