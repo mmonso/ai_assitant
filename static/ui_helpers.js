@@ -18,21 +18,40 @@ export function addMessageToChatbox(message, sender, chatBox) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('message', `${sender}-message`);
 
-    if (sender === 'bot' && marked && DOMPurify && hljs) {
-        try {
-            const rawHtml = marked.parse(message, { gfm: true, breaks: true });
-            const cleanHtml = DOMPurify.sanitize(rawHtml);
-            messageElement.innerHTML = cleanHtml;
-            messageElement.querySelectorAll('pre code').forEach((block) => {
-                hljs.highlightElement(block);
-            });
-        } catch (e) {
-            console.error("Error parsing/highlighting markdown:", e);
-            messageElement.textContent = message; // Fallback to text
+    // Create the inner content div
+    const contentDiv = document.createElement('div');
+    contentDiv.classList.add('message-content');
+
+    // Handle content based on sender and message type
+    if (sender === 'bot') {
+        // Check if it's the typing indicator placeholder
+        if (message === '<span>.</span><span>.</span><span>.</span>') {
+            messageElement.classList.add('typing-indicator'); // Add class to the outer element
+            contentDiv.innerHTML = message; // Set the spans directly
+        } else if (marked && DOMPurify && hljs) {
+            // Process actual bot messages with Markdown
+            try {
+                const rawHtml = marked.parse(message, { gfm: true, breaks: true });
+                const cleanHtml = DOMPurify.sanitize(rawHtml);
+                contentDiv.innerHTML = cleanHtml; // Set innerHTML of contentDiv
+                // Apply highlighting after setting innerHTML
+                contentDiv.querySelectorAll('pre code').forEach((block) => {
+                    hljs.highlightElement(block);
+                });
+            } catch (e) {
+                console.error("Error parsing/highlighting markdown:", e);
+                contentDiv.textContent = message; // Fallback to text in contentDiv
+            }
+        } else {
+            contentDiv.textContent = message; // Fallback if libraries missing
         }
     } else {
-        messageElement.textContent = message;
+        // For user or system messages, just set text content
+        contentDiv.textContent = message;
     }
+
+    // Append the content div to the main message element
+    messageElement.appendChild(contentDiv);
     chatBox.appendChild(messageElement);
     chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
 }

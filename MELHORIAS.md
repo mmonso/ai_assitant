@@ -35,11 +35,6 @@
 
 ## 4. Features (Como aprimorar com mais tecnologias - Sugestões)
 
-*   **Streaming de Respostas:** Exibir respostas da IA em tempo real (SSE, WebSockets).
-*   **Markdown Rendering:** Renderizar Markdown nas mensagens.
-*   **Edição de Mensagens:** Permitir que usuários editem suas mensagens.
-*   **Busca em Conversas:** Implementar busca no histórico.
-*   **Compartilhamento de Conversas:** Gerar links públicos (somente leitura).
 *   **Seleção de Modelo:** Permitir escolha do modelo de IA (se aplicável).
 *   **Upload de Arquivos/Imagens:** Adicionar suporte a multimodalidade (se o modelo permitir).
 *   **Temas Múltiplos:** Oferecer temas pré-definidos (claro/escuro) ou personalização.

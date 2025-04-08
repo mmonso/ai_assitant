@@ -44,14 +44,18 @@ document.addEventListener('DOMContentLoaded', async () => { // Make async
         // Optional: Show spinner on send button if it existed
         // if (sendButton) ui.showSpinner(sendButton, true);
 
-        ui.addMessageToChatbox('...', 'bot', chatBox); // Typing indicator
-        const typingIndicator = chatBox.lastChild;
+        // Add the typing indicator message (ui_helpers now adds the class)
+        // Wrap each dot in a span for individual animation
+        ui.addMessageToChatbox('<span>.</span><span>.</span><span>.</span>', 'bot', chatBox);
+        // We will find and remove this element by class later
 
         try {
             const data = await api.sendMessage(messageText); // API call
 
-            if (typingIndicator && chatBox.contains(typingIndicator)) {
-                chatBox.removeChild(typingIndicator);
+            // Find and remove the typing indicator element by its class
+            const indicatorElement = chatBox.querySelector('.typing-indicator');
+            if (indicatorElement) {
+                chatBox.removeChild(indicatorElement);
             }
 
             ui.addMessageToChatbox(data.response, 'bot', chatBox); // Display bot response
@@ -67,8 +71,10 @@ document.addEventListener('DOMContentLoaded', async () => { // Make async
 
         } catch (error) {
             console.error('Main: Error sending message:', error);
-            if (typingIndicator && chatBox.contains(typingIndicator)) {
-                chatBox.removeChild(typingIndicator);
+            // Also remove indicator in case of error
+            const indicatorElementOnError = chatBox.querySelector('.typing-indicator');
+            if (indicatorElementOnError) {
+                chatBox.removeChild(indicatorElementOnError);
             }
             // Display user-friendly error in chatbox using the helper
             ui.displayErrorInChat('Desculpe, não foi possível enviar sua mensagem. Verifique sua conexão ou tente novamente.', error, chatBox);
