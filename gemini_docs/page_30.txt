@@ -1,0 +1,221 @@
+URL: https://ai.google.dev/gemini-api/docs/code-execution
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Execução do código
+Nesta página
+Começar a usar a execução de código
+Ativar a execução de código no modelo
+Usar a execução de código no chat
+Entrada/saída (E/S)
+Preços de E/S
+Detalhes de E/S
+Faturamento
+Limitações
+Python
+JavaScript
+Go
+REST
+O recurso de execução de código da API Gemini permite que o modelo gere e execute código Python e aprenda de forma iterativa com os resultados até chegar a uma saída final. É possível usar esse recurso de execução de código para criar aplicativos que se beneficiam do raciocínio baseado em código e que produzem saída de texto. Por exemplo, você pode usar a execução de código em um aplicativo que resolve equações ou processa texto.
+Observação: o Gemini só pode executar códigos em Python. Ainda é possível pedir ao Gemini para gerar código em outro idioma, mas o modelo não pode usar a ferramenta de execução de código para executá-lo.
+A execução do código está disponível no AI Studio e na API Gemini. No AI Studio, é possível ativar a execução de código no painel à direita em Ferramentas. A API Gemini oferece a execução de código como uma ferramenta, semelhante à chamada de função. Depois de adicionar a execução de código como uma ferramenta, o modelo decide quando usá-la.
+O ambiente de execução do código inclui as seguintes bibliotecas: altair, chess, cv2, matplotlib, mpmath, numpy, pandas, pdfminer, reportlab, seaborn, sklearn, statsmodels, striprtf, sympy e tabulate. Não é possível instalar suas próprias bibliotecas.
+Observação: apenas matplotlib é compatível com a renderização de gráficos usando a execução de código.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Começar a usar a execução de código
+Você também pode testar o tutorial de execução de código em um notebook:
+Testar um notebook do Colab
+Acessar o notebook no GitHub
+Ativar a execução de código no modelo
+É possível ativar a execução de código no modelo, conforme mostrado aqui:
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+response = client.models.generate_content(
+  model='gemini-2.0-flash',
+  contents='What is the sum of the first 50 prime numbers? '
+           'Generate and run code for the calculation, and make sure you get all 50.',
+  config=types.GenerateContentConfig(
+    tools=[types.Tool(
+      code_execution=types.ToolCodeExecution
+    )]
+  )
+)
+Em um notebook, você pode mostrar tudo no formato Markdown com esta função auxiliar:
+def display_code_execution_result(response):
+  for part in response.candidates[0].content.parts:
+    if part.text is not None:
+      display(Markdown(part.text))
+    if part.executable_code is not None:
+      code_html = f'<pre style="background-color: #BBBBEE;">{part.executable_code.code}</pre>' # Change code color
+      display(HTML(code_html))
+    if part.code_execution_result is not None:
+      display(Markdown(part.code_execution_result.output))
+    if part.inline_data is not None:
+      display(Image(data=part.inline_data.data, format="png"))
+    display(Markdown("---"))
+
+display_code_execution_result(response)
+A saída pode ser semelhante a esta:
+Preciso calcular a soma dos primeiros 50 números primos. Vou usar um script Python para gerar os primeiros 50 números primos e somá-los.
+```python
+def is_prime(n):
+  """Checks if a number is prime."""
+  if n <= 1:
+    return False
+  for i in range(2, int(n**0.5) + 1):
+    if n % i == 0:
+      return False
+  return True
+
+def sum_of_primes(n):
+  """Calculates the sum of the first n prime numbers."""
+  primes = []
+  i = 2
+  while len(primes) < n:
+    if is_prime(i):
+      primes.append(i)
+    i += 1
+  return sum(primes)
+
+# Calculate the sum of the first 50 prime numbers
+sum_of_first_50_primes = sum_of_primes(50)
+
+print(f"The sum of the first 50 prime numbers is: {sum_of_first_50_primes}")
+```
+
+**Output:**
+
+```
+The sum of the first 50 prime numbers is: 5117
+```
+Usar a execução de código no chat
+Também é possível usar a execução de código como parte de uma conversa.
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+chat = client.chats.create(
+    model='gemini-2.0-flash',
+    config=types.GenerateContentConfig(
+      tools=[types.Tool(
+        code_execution=types.ToolCodeExecution
+      )]
+    )
+)
+
+response = chat.send_message("Can you run some code to bogo-sort this list of numbers?: [2,34,1,65,4]")
+display_code_execution_result(response)
+A conversa pode continuar assim:
+Entendo que você quer que eu classifique a lista [2, 34, 1, 65, 4] com a regra de Bogo. O Bogo-sort é um algoritmo de classificação notoriamente ineficiente. Ele funciona embaralhando a lista repetidamente até que ela seja classificada. Devido ao desempenho extremamente ruim, ele não é prático para listas de qualquer tamanho significativo.
+No entanto, para fins de demonstração, posso executar uma versão simplificada para um número muito limitado de iterações, apenas para mostrar o processo. Posso concluir?
+response = chat.send_message("Yes, please create the code.")
+display_code_execution_result(response)
+Ok,vou usar uma função que embaralha a lista e verifica se ela está classificada. Vou executar por um máximo de 10 iterações. …
+Entrada/saída (E/S)
+A partir do Gemini 2.0 Flash, a execução de código oferece suporte à entrada de arquivos e à saída de gráficos. Com esses novos recursos de entrada e saída, você pode fazer upload de arquivos CSV e de texto, fazer perguntas sobre os arquivos e gerar gráficos do Matplotlib como parte da resposta.
+Preços de E/S
+Ao usar a E/S de execução de código, você é cobrado por tokens de entrada e de saída:
+Tokens de entrada:
+Comando do usuário
+Tokens de saída:
+Código gerado pelo modelo
+Saída da execução do código no ambiente de código
+Resumo gerado pelo modelo
+Detalhes de E/S
+Ao trabalhar com E/S de execução de código, esteja ciente dos seguintes detalhes técnicos:
+O tempo de execução máximo do ambiente de código é de 30 segundos.
+Se o ambiente de código gerar um erro, o modelo poderá decidir regenerar a saída do código. Isso pode acontecer até cinco vezes.
+O tamanho máximo de entrada de arquivo é limitado pela janela de token do modelo. No AI Studio, usando o Gemini Flash 2.0, o tamanho máximo do arquivo de entrada é de 1 milhão de tokens (cerca de 2 MB para arquivos de texto dos tipos de entrada aceitos). Se você enviar um arquivo muito grande, o AI Studio não vai permitir que ele seja enviado.
+Interação única Bidirecional (API Multimodal Live)
+Modelos com suporte Todos os modelos Gemini 2.0 Somente modelos experimentais do Flash
+Tipos de entrada de arquivo aceitos .png, .jpeg, .csv, .xml, .cpp, .java, .py, .js, .ts .png, .jpeg, .csv, .xml, .cpp, .java, .py, .js, .ts
+Bibliotecas de plotagem com suporte Matplotlib Matplotlib
+Uso de várias ferramentas Não Sim
+Faturamento
+Não há cobrança extra para ativar a execução de código na API Gemini. A cobrança será feita com base na taxa atual de tokens de entrada e saída com base no modelo Gemini que você está usando.
+Confira algumas outras informações sobre o faturamento para execução de código:
+Você só vai receber cobrança uma vez pelos tokens de entrada transmitidos ao modelo e pelos tokens de saída finais retornados pelo modelo.
+Os tokens que representam o código gerado são contados como tokens de saída. O código gerado pode incluir saídas de texto e multimodais, como imagens.
+Os resultados da execução do código também são contados como tokens de saída.
+O modelo de faturamento é mostrado no diagrama a seguir:
+A cobrança é feita com base na taxa atual de tokens de entrada e saída com base no modelo Gemini que você está usando.
+Se o Gemini usar a execução de código ao gerar a resposta, o comando original, o código gerado e o resultado do código executado serão rotulados como tokens intermediários e cobrados como tokens de entrada.
+O Gemini gera um resumo e retorna o código gerado, o resultado do código executado e o resumo final. Eles são cobrados como tokens de saída.
+A API Gemini inclui uma contagem de tokens intermediários na resposta da API para que você saiba por que está recebendo tokens de entrada adicionais além do comando inicial.
+Limitações
+O modelo só pode gerar e executar código. Ele não pode retornar outros artefatos, como arquivos de mídia.
+Em alguns casos, a ativação da execução de código pode levar a regressões em outras áreas da saída do modelo (por exemplo, na escrita de uma história).
+Há alguma variação na capacidade dos diferentes modelos de usar a execução do código com sucesso.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

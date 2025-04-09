@@ -1,0 +1,127 @@
+URL: https://ai.google.dev/gemini-api/docs/migrate-to-cloud
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Crie com o Gemini no Google Cloud
+Nesta página
+Migrar do Gemini no Google AI para a Vertex AI
+Excluir chaves de API não usadas
+Próximas etapas
+Se você é iniciante no Gemini, usar os guias de início rápido é a maneira mais rápida de começar.
+No entanto, à medida que suas soluções de IA generativa se desenvolverem, talvez você precise de uma plataforma para criar e implantar aplicativos e soluções de IA generativa de ponta a ponta. O Google Cloud oferece um ecossistema abrangente de ferramentas para permitir que os desenvolvedores aproveitem o poder da IA generativa, desde os estágios iniciais de desenvolvimento de aplicativos até a implantação e hospedagem de aplicativos e gerenciamento de dados complexos em escala.
+A plataforma da Vertex AI do Google Cloud oferece um conjunto de ferramentas de MLOps que simplificam o uso, a implantação e o monitoramento de modelos de IA para eficiência e confiabilidade. Além disso, as integrações com bancos de dados, ferramentas de DevOps, geração de registros, monitoramento e IAM fornecem uma abordagem holística para gerenciar todo o ciclo de vida da IA generativa.
+A seguinte tabela resume as principais diferenças entre a IA do Google e a Vertex AI para ajudar você a decidir qual é a opção ideal para seu caso de uso:
+Recursos API Gemini da IA do Google API Gemini da Vertex AI
+Modelos do Gemini Gemini 2.0 Flash, Gemini 2.0 Flash-Lite, Gemini 1.5 Flash e Gemini 1.5 Pro Gemini 2.0 Flash, Gemini 2.0 Flash-Lite, Gemini 1.5 Flash, Gemini 1.5 Pro, Gemini 1.0 Pro, Gemini 1.0 Pro Vision, Gemini 1.0 Ultra e Gemini 1.0 Ultra Vision
+Inscrever-se Conta do Google Conta do Google Cloud (com contrato e faturamento de termos)
+Authentication Chave de API Conta de serviço do Google Cloud
+Playground de interface do usuário o Google AI Studio; Vertex AI Studio
+API e SDK SDKs de servidor e cliente para dispositivos móveis/Web
+Servidor: Python, Node.js, Go, Dart, ABAP
+Cliente para dispositivos móveis/Web: Android (Kotlin/Java), Swift, Web, Flutter
+SDKs de servidor e cliente para dispositivos móveis/Web
+Servidor: Python, Node.js, Go, Java, ABAP
+Cliente para dispositivos móveis/Web (pela Vertex AI para Firebase): Android (Kotlin/Java), Swift, Web, Flutter
+Uso sem custo da API e do SDK Sim, quando aplicável Crédito de US$ 300 do Google Cloud para novos usuários
+Cota (solicitações por minuto) Varia de acordo com o modelo e o plano de preços (consulte as informações detalhadas) Varia de acordo com o modelo e a região (consulte as informações detalhadas)
+Suporte empresarial Não Chave de criptografia do cliente
+Nuvem privada virtual
+Residência de dados
+Transparência no acesso
+Infraestrutura escalonável para hospedagem de aplicativos
+Bancos de dados e armazenamento de dados
+MLOps Não MLOps completas na Vertex AI (exemplos: avaliação de modelo, monitoramento de modelos, registro de modelos)
+Para saber quais produtos, frameworks e ferramentas são a melhor opção para criar seu aplicativo de IA generativa no Google Cloud, consulte Criar um aplicativo de IA generativa no Google Cloud.
+Migrar do Gemini no Google AI para a Vertex AI
+Se o seu aplicativo usa as APIs Google AI Gemini, você vai precisar migrar para as APIs Vertex AI Gemini do Google Cloud.
+Ao migrar:
+É possível usar seu projeto atual do Google Cloud (o mesmo usado para gerar a chave de API) ou criar um novo projeto do Google Cloud.
+As regiões compatíveis podem ser diferentes entre o Google AI Studio e a Vertex AI. Consulte a lista de regiões compatíveis com IA generativa no Google Cloud.
+Todos os modelos criados no Google AI Studio precisam ser treinados novamente na Vertex AI.
+O SDK da IA generativa do Google oferece uma interface unificada para o Gemini 2.0 pela API Gemini para desenvolvedores e pela Vertex AI. Com poucas exceções, o código que é executado em uma plataforma será executado nas duas.
+Se você quiser chamar a API Gemini diretamente de um app para dispositivos móveis ou da Web em produção, migre para usar a Vertex AI nos SDKs de cliente do Firebase (disponível para apps Swift, Android, Web e Flutter). Esses SDKs de cliente oferecem opções de segurança essenciais e outros recursos para apps de produção para dispositivos móveis e Web.
+Excluir chaves de API não usadas
+Se você não precisar mais usar sua chave da API Gemini da IA do Google, siga as práticas recomendadas de segurança e exclua a chave.
+Para excluir uma chave de API:
+Abra a página Credenciais da API Google Cloud.
+Encontre a chave de API que você quer excluir e clique no ícone Ações.
+Selecione Excluir chave de API.
+No modal Excluir credencial, selecione Excluir.
+A remoção de uma chave de API leva alguns minutos para ser propagada. Após o término da propagação, todo tráfego que usar a chave de API excluída será recusado.
+Importante: se você tiver removido uma chave que ainda estava sendo usada em produção e precisar recuperá-la, consulte Cancelar exclusão de chaves de API de serviços Beta da gcloud (link em inglês).
+Próximas etapas
+Consulte a Visão geral da IA generativa na Vertex AI para saber mais sobre as soluções de IA generativa na Vertex AI.
+Saiba mais sobre a API Vertex AI Gemini.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-26 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

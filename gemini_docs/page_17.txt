@@ -1,0 +1,95 @@
+URL: https://ai.google.dev/gemini-api/docs/libraries
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Instalar
+Migrar para o SDK de IA generativa
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Bibliotecas da API Gemini
+Nesta página
+Python
+JavaScript e TypeScript (pré-lançamento)
+Go (pré-lançamento)
+SDKs anteriores
+Esta página fornece informações sobre como fazer o download ou instalar as bibliotecas para acessar a API Gemini. Se você não conhece a API Gemini, teste o guia de início rápido da API.
+Python
+Fornecemos um SDK do Python que pode ser instalado executando:
+pip install google-genai
+JavaScript e TypeScript (pré-lançamento)
+Fornecemos um SDK do JavaScript e do TypeScript que pode ser instalado executando:
+npm install @google/genai
+Go (pré-lançamento)
+Fornecemos um SDK do Go que pode ser instalado executando:
+go get github.com/google/generative-ai-go
+SDKs anteriores
+Confira a seguir um conjunto de SDKs anteriores que não estão mais sendo desenvolvidos ativamente:
+SDKs anteriores do Dart e do Flutter
+SDK anterior do Swift
+SDK anterior do Android
+SDK anterior do Python
+SDK anterior para Node.js
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-01 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

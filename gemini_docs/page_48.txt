@@ -1,0 +1,123 @@
+URL: https://ai.google.dev/gemini-api/docs/safety-guidance
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Configurações de segurança
+Orientações de segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Orientações de segurança
+Nesta página
+Entenda os riscos de segurança do seu aplicativo
+Faça ajustes para evitar riscos de segurança.
+Realize testes de segurança de acordo com seu caso de uso.
+Monitorar problemas
+Próximas etapas
+Os modelos generativos de inteligência artificial são ferramentas poderosas, mas não são sem as limitações. A versatilidade e aplicabilidade podem, às vezes, levam a saídas inesperadas, como saídas imprecisas, tendenciosas ou ofensivas. O pós-processamento e a avaliação manual rigorosa são essenciais para e limitar o risco de danos desses resultados.
+Os modelos disponibilizados pela API Gemini podem ser usados em vários de IA generativa e processamento de linguagem natural (PLN). O uso desses recursos está disponível apenas pela API Gemini ou pelo Google AI Studio na Web app. Seu uso da API Gemini também está sujeito à Política de Uso Proibido da IA Generativa do Google e os Termos de Serviço da API Gemini.
+Parte do que torna os modelos de linguagem grandes (LLMs) tão úteis é que eles são de criativos que podem lidar com tarefas de idiomas diferentes. Infelizmente, isso também significa que modelos de linguagem grandes podem gerar saídas o que esperar, incluindo texto que sejam ofensivas, insensíveis ou factualmente incorretas. Além disso, a a incrível versatilidade desses modelos também é o que dificulta para prever exatamente que tipos de resultados indesejados eles podem produzir. Enquanto o A API Gemini foi desenvolvida com a IA do Google em mente, o ônus é que os desenvolvedores aplicar esses modelos com responsabilidade. Para ajudar os desenvolvedores na criação de projetos seguros e a API Gemini tem alguns filtros de conteúdo integrados, bem como configurações de segurança ajustáveis em quatro dimensões de danos. Consulte a configurações de segurança para saber mais.
+O objetivo deste documento é apresentar alguns riscos de segurança que podem surgir em usar LLMs e recomendar novos projetos e desenvolvimentos de segurança recomendações. As leis e regulamentações também podem impor restrições, mas essas considerações estão fora do escopo deste guia.
+As etapas a seguir são recomendadas ao criar aplicativos com LLMs:
+Noções básicas sobre os riscos de segurança do aplicativo
+Fazer ajustes para reduzir os riscos de segurança
+Realizar testes de segurança adequados ao caso de uso
+Pedir feedback dos usuários e monitorar o uso
+As fases de ajuste e teste devem ser iterativas até que você alcance desempenho adequado para seu aplicativo.
+Entenda os riscos de segurança do seu aplicativo
+Nesse contexto, segurança está sendo definida como a capacidade de um LLM de evitar causar danos aos usuários, por exemplo, gerando linguagem ou conteúdo tóxico; que promove estereótipos. Os modelos disponíveis pela API Gemini foram desenvolvido com os princípios de IA do Google em mente. e seu uso está sujeito ao Uso proibido da IA generativa Política. A API fornece filtros de segurança integrados para ajudar a lidar com alguns modelos de linguagem comuns problemas como linguagem tóxica e discurso de ódio, e a busca pela inclusão e evitar estereótipos. No entanto, cada aplicativo pode ter um conjunto diferente de riscos para os usuários. Como proprietário do aplicativo, você é responsável conhecer seus usuários e os possíveis danos que seu aplicativo pode causar, e garantindo que seu aplicativo use LLMs com segurança e responsabilidade.
+Como parte dessa avaliação, considere a probabilidade de que um dano ocorrer e determinar sua gravidade e medidas de mitigação. Por exemplo, uma que gera artigos com base em eventos factuais precisaria ser mais cuidadosa sobre como evitar a desinformação do que apps que geram informações histórias para entretenimento. Uma boa maneira de começar a explorar possíveis riscos à segurança é pesquisar seus usuários finais e outras pessoas que podem ser afetadas por suas resultados do seu aplicativo. Isso pode assumir muitas formas, incluindo pesquisa do estado de os estudos de arte no domínio do seu aplicativo, observando como as pessoas estão usando aplicativos semelhantes, ou realizar um estudo com usuários, uma pesquisa ou realizar entrevistas informais com usuários em potencial.
+Dicas avançadas
+Faça ajustes para evitar riscos de segurança.
+Agora que você compreende os riscos, pode decidir como mitigar para resolvê-los com rapidez. Determinar quais riscos priorizar e quanto você deve fazer para tentar evitá-los é uma decisão crítica, semelhante à triagem de bugs em um software projeto. Depois de determinar as prioridades, comece a pensar e os tipos de mitigações mais adequados. Muitas vezes, mudanças simples podem fazer a diferença e reduzir riscos.
+Por exemplo, ao projetar um aplicativo, considere:
+Ajustar a saída do modelo para refletir melhor o que é aceitável no seu contexto do aplicativo. O ajuste pode tornar a saída do modelo mais previsíveis e consistentes, pode ajudar a mitigar certos riscos.
+Disponibilizar um método de entrada que disponibiliza saídas mais seguras. A entrada exata que você dá a um LLM pode fazer diferença na qualidade do resultado. Testar comandos de entrada para descobrir o que funciona mais com segurança no seu vale a pena o esforço, porque é possível fornecer uma UX que facilita isso. Por exemplo, é possível restringir os usuários a escolher apenas lista suspensa de solicitações de entrada ou ofereça sugestões pop-up com descritivos frases que você encontrou funcionam com segurança no contexto do seu aplicativo.
+Bloquear entradas não seguras e filtrar saídas antes que elas sejam mostradas ao usuário. Em situações simples, as listas de bloqueio podem ser usadas para identificar e bloquear palavras ou frases inseguras em comandos ou respostas ou exigir revisores humanos alterar ou bloquear manualmente esse conteúdo.
+Observação :o bloqueio automático com base em uma lista estática pode ter resultados não intencionais resultados, como a segmentação de um determinado grupo que normalmente usa vocabulário na lista de bloqueio.
+Usar classificadores treinados para rotular cada comando com possíveis danos ou sinais maliciosos. Diferentes estratégias podem ser empregadas sobre como lida com a solicitação com base no tipo de dano detectado. Por exemplo, se o dados sejam de natureza abertamente adversárias ou abusivas, podem ser bloqueados e em vez disso, geram uma resposta predefinida.
+Dica avançada
+Implementar proteções contra o uso indevido deliberado, como atribuir a cada usuário um ID exclusivo e impondo um limite no volume de consultas dos usuários que podem ser enviadas em um determinado período. Outra salvaguarda é tentar para se proteger contra possíveis injeção de comandos. Injeção de comandos, assim como o SQL injeção, é uma forma de usuários mal-intencionados criarem um prompt de entrada manipula a saída do modelo, por exemplo, enviando um comando de entrada que instrui o modelo a ignorar os exemplos anteriores. Consulte a Política de uso proibido da IA generativa para detalhes sobre uso indevido deliberado.
+Ajustar a funcionalidade a algo com risco inerentemente menor. Tarefas com escopo mais restrito (por exemplo, extrair palavras-chave de trechos de ou que têm maior supervisão humana (por exemplo, a geração de textos curtos conteúdo que será analisado por uma pessoa), geralmente representam um risco menor. Então, para em vez de criar um aplicativo para escrever uma resposta de e-mail você pode limitar a expansão em um contorno ou sugerir frases alternativas.
+Realize testes de segurança de acordo com seu caso de uso.
+Testes são essenciais na criação de aplicativos robustos e seguros. No entanto, o escopo e as estratégias de teste variam. Por exemplo, um haicai apenas para diversão é provavelmente apresentar riscos menos graves do que, por exemplo, um aplicativo projetado que os escritórios de advocacia podem usar para resumir documentos jurídicos e ajudar na elaboração de contratos. Mas o gerador de haicai pode ser usado por uma variedade maior de usuários, tentativas adversárias ou até mesmo entradas prejudiciais não intencionais podem ser maior. O contexto da implementação também é importante. Por exemplo, um aplicativo com respostas que são analisadas por especialistas humanos antes que qualquer ação seja realizada. pode ser considerado menos provável de produzir resultados prejudiciais do que o aplicativo sem supervisão.
+Não é incomum passar por várias iterações com mudanças e testes antes de ter certeza de que está tudo pronto para o lançamento, mesmo para aplicativos que têm risco relativamente baixo. Dois tipos de teste são particularmente úteis para aplicativos:
+O comparativo de segurança envolve a criação de métricas de segurança que refletem a maneiras pelas quais seu aplicativo pode não ser seguro no contexto de como ele pode e testar o desempenho do aplicativo nas métricas usando conjuntos de dados de avaliação. É uma boa prática pensar no mínimo níveis aceitáveis de métricas de segurança antes do teste, para que 1) você possa avaliar os resultados do teste em relação a essas expectativas e 2) coletar o conjunto de dados de avaliação com base nos testes que avaliam as métricas que você considera importantes quase em tempo real.
+Dicas avançadas
+O teste adversário envolve tentar proativamente quebrar para o aplicativo. O objetivo é identificar pontos fracos para que você possa e as etapas necessárias para corrigi-los. O teste adversário pode exigir tempo/esforço significativo de avaliadores com experiência no aplicativo — mas quanto mais você fizer isso, maior será a chance de detectar problemas, especialmente aqueles que ocorrem raramente ou somente após execuções repetidas do para o aplicativo.
+O teste adversário é um método para avaliar sistematicamente modelo com a intenção de aprender como ele se comporta quando recebe entradas maliciosas ou prejudiciais:
+Uma entrada pode ser maliciosa quando é claramente projetada para produza uma resposta insegura ou prejudicial, por exemplo, pedir de geração de imagens para gerar um discurso de ódio sobre um determinado religião.
+Uma entrada é inadvertidamente prejudicial quando ela própria pode ser inofensiva, mas produz um resultado prejudicial, como pedir a um texto de geração de imagens, para descrever uma pessoa de uma determinada etnia e recebendo uma reação racista.
+O que distingue um teste adversário de uma avaliação padrão é a composição dos dados usados para testes. Para testes de adversários, selecione dados de teste com maior probabilidade de gerar uma saída problemática o modelo. Isso significa sondar o comportamento do modelo para todos os tipos danos possíveis, incluindo exemplos raros ou incomuns e casos extremos relevantes para as políticas de segurança. Ela também deve incluir diversidade nas diferentes dimensões de uma frase, como estrutura, significado e comprimento. Consulte o artigo sobre a IA responsável do Google práticas imparcialidade para mais detalhes sobre o que considerar ao criar um conjunto de dados de teste.
+Dicas avançadas
+.
+Observação :às vezes, os LLMs produzem saídas diferentes para os mesmo comando de entrada. Várias rodadas de testes podem ser necessárias para capturar mais das saídas problemáticas.
+Monitorar problemas
+Não importa o quanto você testa e mitiga, nunca é possível garantir a perfeição, por isso planejar com antecedência como você vai detectar e lidar com os problemas que surgirem. Comum as abordagens incluem a configuração de um canal monitorado para que os usuários compartilhem feedback (por exemplo, classificação de polegar para cima/baixo) e realizar um estudo de usuário para solicitar proativamente feedback de uma mistura diversificada de usuários, especialmente valioso se os padrões de uso forem diferente das expectativas.
+Dicas avançadas
+Próximas etapas
+Consulte a de configurações de segurança para conhecer os controles configurações de segurança disponíveis na API Gemini.
+Consulte a introdução a comandos para começar a escrever seus primeiros comandos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

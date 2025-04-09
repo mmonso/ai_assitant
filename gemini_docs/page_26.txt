@@ -1,0 +1,212 @@
+URL: https://ai.google.dev/gemini-api/docs/image-generation
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Gerar imagens
+Nesta página
+Gerar imagens usando o Gemini
+Edição de imagens com o Gemini
+Limitações
+Escolher um modelo
+Gerar imagens usando o Imagen 3
+Parâmetros do modelo do Imagen
+A seguir
+A API Gemini oferece suporte à geração de imagens usando o Gemini 2.0 Flash Experimental e o Imagen 3. Este guia ajuda você a começar a usar os dois modelos.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Gerar imagens usando o Gemini
+O Gemini 2.0 Flash Experimental oferece suporte à capacidade de gerar texto e imagens inline. Isso permite que você use o Gemini para editar imagens em uma conversa ou gerar saídas com texto entrelaçado (por exemplo, gerar uma postagem de blog com texto e imagens em uma única vez). Todas as imagens geradas incluem uma marca-d'água SynthID, e as imagens no Google AI Studio também incluem uma marca-d'água visível.
+Observação: inclua responseModalities: ["Text", "Image"] na configuração de geração para saída de texto e imagem com gemini-2.0-flash-exp-image-generation. Imagens únicas não são permitidas.
+O exemplo a seguir mostra como usar o Gemini 2.0 para gerar saída de texto e imagem:
+Python
+JavaScript
+REST
+from google import genai
+from google.genai import types
+from PIL import Image
+from io import BytesIO
+import base64
+
+client = genai.Client()
+
+contents = ('Hi, can you create a 3d rendered image of a pig '
+            'with wings and a top hat flying over a happy '
+            'futuristic scifi city with lots of greenery?')
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp-image-generation",
+    contents=contents,
+    config=types.GenerateContentConfig(
+      response_modalities=['Text', 'Image']
+    )
+)
+
+for part in response.candidates[0].content.parts:
+  if part.text is not None:
+    print(part.text)
+  elif part.inline_data is not None:
+    image = Image.open(BytesIO((part.inline_data.data)))
+    image.save('gemini-native-image.png')
+    image.show()
+Imagem gerada por IA de um porco voador fantástico
+Dependendo do comando e do contexto, o Gemini vai gerar conteúdo em diferentes modos (texto para imagem, texto para imagem e texto, etc.). Veja alguns exemplos:
+Texto para imagem
+Exemplo de comando: "Gere uma imagem da Torre Eiffel com fogos de artifício em segundo plano".
+Texto para imagens e texto (intercalado)
+Exemplo de comando: "Gerencie uma receita ilustrada de paella."
+Imagens e texto para imagens e texto (intercalados)
+Exemplo de comando: (com uma imagem de um cômodo mobiliado) "Que outras cores de sofás funcionariam no meu espaço? Você pode atualizar a imagem?"
+Edição de imagens (texto e imagem para imagem)
+Exemplo de instrução: "Edite esta imagem para que ela pareça um desenho animado"
+Exemplo de comando: [imagem de um gato] + [imagem de um travesseiro] + "Crie um ponto cruz do meu gato neste travesseiro".
+Edição de imagens com vários turnos (chat)
+Exemplos de comandos: [faça upload de uma imagem de um carro azul.] "Transforme este carro em um conversível." "Agora mude a cor para amarelo."
+Edição de imagens com o Gemini
+Para fazer a edição de imagens, adicione uma imagem como entrada. O exemplo a seguir demonstra o envio de imagens codificadas em base64. Para várias imagens e payloads maiores, consulte a seção Entrada de imagem.
+Python
+JavaScript
+REST
+from google import genai
+from google.genai import types
+from PIL import Image
+from io import BytesIO
+
+import PIL.Image
+
+image = PIL.Image.open('/path/to/image.png')
+
+client = genai.Client()
+
+text_input = ('Hi, This is a picture of me.'
+            'Can you add a llama next to me?',)
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp-image-generation",
+    contents=[text_input, image],
+    config=types.GenerateContentConfig(
+      response_modalities=['Text', 'Image']
+    )
+)
+
+for part in response.candidates[0].content.parts:
+  if part.text is not None:
+    print(part.text)
+  elif part.inline_data is not None:
+    image = Image.open(BytesIO(part.inline_data.data))
+    image.show()
+Limitações
+Para ter o melhor desempenho, use os seguintes idiomas: EN, es-MX, ja-JP, zh-CN, hi-IN.
+A geração de imagens não tem suporte para entradas de áudio ou vídeo.
+A geração de imagens nem sempre aciona:
+O modelo pode gerar apenas texto. Tente pedir as saídas de imagem explicitamente (por exemplo, "gerar uma imagem", "fornecer imagens conforme você avança", "atualizar a imagem").
+O modelo pode parar de gerar no meio do processo. Tente de novo ou use outro comando.
+Ao gerar texto para uma imagem, o Gemini funciona melhor se você gerar primeiro o texto e depois pedir uma imagem com o texto.
+Escolher um modelo
+Qual modelo você deve usar para gerar imagens? Depende do seu caso de uso.
+O Gemini 2.0 é o melhor para produzir imagens relevantes do ponto de vista contextual, combinando texto e imagens, incorporando conhecimento geral e raciocinando sobre imagens. Você pode usá-lo para criar recursos visuais precisos e relevantes para o contexto incorporados em longas sequências de texto. Você também pode editar imagens de forma conversacional, usando linguagem natural, mantendo o contexto durante a conversa.
+Se a qualidade da imagem for sua prioridade, o Imagen 3 é a melhor escolha. O Imagen 3 se destaca em fotorrealismo, detalhes artísticos e estilos artísticos específicos, como impressionismo ou anime. O Imagen 3 também é uma boa escolha para tarefas especializadas de edição de imagens, como atualizar planos de fundo de produtos, aumentar o tamanho de imagens e infundir branding e estilo nos recursos visuais. Você pode usar o Imagen 3 para criar logotipos ou outros designs de produtos de marca.
+Gerar imagens usando o Imagen 3
+A API Gemini oferece acesso ao Imagen 3, o modelo de conversão de texto em imagem de maior qualidade do Google, com vários recursos novos e aprimorados. O Imagen 3 pode fazer o seguinte:
+Gerar imagens com mais detalhes, iluminação mais rica e menos artefatos distrativos do que os modelos anteriores
+Entender comandos escritos em linguagem natural
+Gerar imagens em vários formatos e estilos
+Renderizar texto de maneira mais eficaz do que os modelos anteriores
+Observação: o Imagen 3 está disponível apenas no nível pago e sempre inclui uma marca d'água SynthID.
+Python
+JavaScript
+REST
+from google import genai
+from google.genai import types
+from PIL import Image
+from io import BytesIO
+
+client = genai.Client(api_key='GEMINI_API_KEY')
+
+response = client.models.generate_images(
+    model='imagen-3.0-generate-002',
+    prompt='Robot holding a red skateboard',
+    config=types.GenerateImagesConfig(
+        number_of_images= 4,
+    )
+)
+for generated_image in response.generated_images:
+  image = Image.open(BytesIO(generated_image.image.image_bytes))
+  image.show()
+Imagem gerada por IA de dois coelhos fofos na cozinha
+No momento, o Imagen só oferece suporte a comandos em inglês e aos seguintes parâmetros:
+Parâmetros do modelo do Imagen
+(As convenções de nomenclatura variam de acordo com a linguagem de programação.)
+numberOfImages: o número de imagens a serem geradas, de 1 a 4. O padrão é 4.
+aspectRatio: muda a proporção da imagem gerada. Os valores aceitos são "1:1", "3:4", "4:3", "9:16" e "16:9". O padrão é "1:1".
+personGeneration: permite que o modelo gere imagens de pessoas. Os seguintes valores são aceitos:
+"DONT_ALLOW": bloqueia a geração de imagens de pessoas.
+"ALLOW_ADULT": gera imagens de adultos, mas não de crianças. Esse é o padrão.
+A seguir
+Para saber mais sobre como escrever solicitações para o Imagen, consulte o guia de solicitações do Imagen.
+Para saber mais sobre os modelos do Gemini 2.0, consulte Modelos do Gemini e Modelos experimentais.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

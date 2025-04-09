@@ -1,0 +1,124 @@
+URL: https://ai.google.dev/gemini-api/docs/rate-limits
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Limites de taxas
+Nesta página
+Como funcionam os limites de taxa
+Níveis de uso
+Limites de taxa atuais
+Como fazer upgrade para o próximo nível
+Solicitar um aumento no limite de taxa
+Os limites de taxa regulam o número de solicitações que você pode fazer para a API Gemini em um determinado período. Esses limites ajudam a garantir o uso justo, protegem contra abusos e ajudam a manter o desempenho do sistema para todos os usuários.
+Como funcionam os limites de taxa
+Os limites de taxa são medidos em três dimensões:
+Solicitações por minuto (RPM)
+Solicitações por dia (RPD)
+Tokens por minuto (TPM)
+Seu uso é avaliado em relação a cada limite, e o excesso de qualquer um deles aciona um erro de limite de taxa. Por exemplo, se o limite de RPM for 20, fazer 21 solicitações em um minuto resultará em um erro, mesmo que você não tenha excedido o TPM ou outros limites.
+Os limites de taxa são aplicados por projeto, não por chave de API.
+Os limites variam de acordo com o modelo específico usado, e alguns limites se aplicam apenas a modelos específicos. Por exemplo, as imagens por minuto (IPM, na sigla em inglês) são calculadas apenas para modelos capazes de gerar imagens (Imagem 3), mas são conceitualmente semelhantes à TPM.
+Níveis de uso
+Os limites de taxa estão vinculados ao nível de uso dos projetos, que será lançado em breve. À medida que o uso e os gastos com a API aumentam, você tem a opção de fazer upgrade para um nível mais alto com limites de taxa maiores.
+Nível Requisitos
+Grátis Usuários em países qualificados
+Nível 1 Conta de faturamento vinculada ao projeto
+Nível 2 Gasto total: US$ 250 + pelo menos 30 dias desde o pagamento
+Nível 3 Gasto total: US$ 1.000 e pelo menos 30 dias desde o pagamento
+Quando você solicita um upgrade, nosso sistema automatizado de proteção contra abuso realiza outras verificações. Embora o atendimento aos critérios de qualificação declarados seja geralmente suficiente para a aprovação, em casos raros, uma solicitação de upgrade pode ser negada com base em outros fatores identificados durante o processo de análise.
+Esse sistema ajuda a garantir a segurança e a integridade da plataforma da API Gemini para todos os usuários.
+Limites de taxa atuais
+Nível gratuito
+Nível 1
+Nível 2
+Nível 3
+Modelo RPM TPM RPD
+Gemini 2.5 Pro Experimental 5 1.000.000 25
+Pré-lançamento do Gemini 2.5 Pro -- -- --
+Gemini 2.0 Flash 15 1.000.000 1.500
+Gemini 2.0 Flash Experimental (incluindo a geração de imagens) 10 1.000.000 1.500
+Gemini 2.0 Flash-Lite 30 1.000.000 1.500
+Gemini 2.0 Flash Thinking Experimental 01-21 10 4.000.000 1.500
+Gemini 1.5 Flash 15 1.000.000 1.500
+Gemini 1.5 Flash-8B 15 1.000.000 1.500
+Gemini 1.5 Pro 2 32.000 50
+Imagem 3 -- -- --
+O Gemma 3 30 15.000 14.400
+Gemini Embedding Experimental 03-07 5 -- 100
+Os limites de taxa especificados não são garantidos, e a capacidade real pode variar.
+Como fazer upgrade para o próximo nível
+A API Gemini usa o Cloud Billing para todos os serviços de faturamento. Para fazer a transição do nível sem custo financeiro para o pago, primeiro ative o Cloud Billing no seu projeto do Google Cloud.
+Quando seu projeto atende aos critérios especificados, ele se qualifica para um upgrade para o próximo nível. Para solicitar um upgrade, siga estas etapas:
+Acesse a página Chaves de API no AI Studio.
+Localize o projeto que você quer atualizar e clique em "Fazer upgrade". A opção "Upgrade" só vai aparecer para projetos que atendem às qualificações do próximo nível.
+Após uma validação rápida, o projeto será atualizado para o próximo nível.
+Solicitar um aumento no limite de taxa
+Cada variação de modelo tem um limite de taxa associado (solicitações por minuto, RPM). Para mais detalhes sobre esses limites de taxa, consulte Modelos do Gemini.
+Solicitar um aumento no limite de taxa da categoria paga
+Não oferecemos garantias sobre o aumento do limite de taxa, mas vamos fazer o possível para analisar seu pedido e entrar em contato com você se for possível atender às suas necessidades de capacidade.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

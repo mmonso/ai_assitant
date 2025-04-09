@@ -1,0 +1,164 @@
+URL: https://ai.google.dev/gemini-api/docs/safety-settings
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Configurações de segurança
+Orientações de segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Configurações de segurança
+Nesta página
+Filtros de segurança
+Nível de filtragem de segurança do conteúdo
+Filtragem de segurança por solicitação
+Feedback de segurança
+Ajustar as configurações de segurança
+Google AI Studio
+SDKs da API Gemini
+Próximas etapas
+A API Gemini oferece configurações de segurança que podem ser ajustadas durante o estágio de prototipagem para determinar se o aplicativo requer uma configuração de segurança mais ou menos restritiva. É possível ajustar essas configurações em quatro categorias de filtro para restringir ou permitir determinados tipos de conteúdo.
+Este guia explica como a API Gemini lida com as configurações de segurança e a filtragem e como você pode mudar as configurações de segurança do seu aplicativo.
+Observação: os aplicativos que usam configurações de segurança menos restritivas podem estar sujeitos a revisão. Consulte os Termos de Serviço para mais informações.
+Filtros de segurança
+Os filtros de segurança ajustáveis da API Gemini abrangem as seguintes categorias:
+Categoria Descrição
+Assédio Comentários negativos ou nocivos voltados à identidade e/ou atributos protegidos.
+Discurso de ódio Conteúdo grosseiro, desrespeitoso ou linguagem obscena.
+Sexualmente explícito Contém referências a atos sexuais ou outro conteúdo sexual.
+Perigoso Promove, facilita ou incentiva atos nocivos.
+Integridade cívica Consultas relacionadas a eleições.
+Essas categorias são definidas em HarmCategory. Os modelos Gemini só oferecem suporte a HARM_CATEGORY_HARASSMENT, HARM_CATEGORY_HATE_SPEECH, HARM_CATEGORY_SEXUALLY_EXPLICIT, HARM_CATEGORY_DANGEROUS_CONTENT e HARM_CATEGORY_CIVIC_INTEGRITY. Todas as outras categorias são usadas apenas por modelos do PaLM 2 (legado).
+Você pode usar esses filtros para ajustar o que for apropriado para seu caso de uso. Por exemplo, se você estiver criando diálogos de videogame, pode considerar aceitável permitir mais conteúdo classificado como Perigoso devido à natureza do jogo.
+Além dos filtros de segurança ajustáveis, a API Gemini tem proteções integradas contra danos principais, como conteúdo que coloca crianças em risco. Esses tipos de danos são sempre bloqueados e não podem ser ajustados.
+Nível de filtragem de segurança do conteúdo
+A API Gemini categoriza o nível de probabilidade de o conteúdo ser não seguro como HIGH, MEDIUM, LOW ou NEGLIGIBLE.
+A API Gemini bloqueia conteúdo com base na probabilidade de ele ser inseguro, e não na gravidade. É importante considerar isso, porque alguns conteúdos podem ter baixa probabilidade de não serem seguros, mesmo que a gravidade dos danos ainda seja alta. Por exemplo, comparando as frases:
+O robô me bateu.
+O robô me cortou.
+A primeira frase pode resultar em uma probabilidade maior de não ser segura, mas você pode considerar a segunda frase como uma gravidade maior em termos de violência. Por isso, é importante testar cuidadosamente e considerar qual é o nível apropriado de bloqueio necessário para oferecer suporte aos seus principais casos de uso e minimizar os danos aos usuários finais.
+Filtragem de segurança por solicitação
+É possível ajustar as configurações de segurança para cada solicitação feita à API. Quando você faz uma solicitação, o conteúdo é analisado e recebe uma classificação de segurança. A classificação de segurança inclui a categoria e a probabilidade da classificação de dano. Por exemplo, se o conteúdo foi bloqueado devido à categoria de assédio ter uma alta probabilidade, a classificação de segurança retornada terá a categoria igual a HARASSMENT e a probabilidade de dano definida como HIGH.
+Por padrão, as configurações de segurança bloqueiam conteúdo (incluindo comandos) com probabilidade média ou maior de não serem seguros em qualquer filtro. Essa referência de segurança foi projetada para funcionar com a maioria dos casos de uso. Portanto, ajuste as configurações de segurança apenas se isso for consistentemente necessário para sua aplicação.
+A tabela a seguir descreve as configurações de bloqueio que você pode ajustar em cada categoria. Por exemplo, se você definir a configuração de bloqueio como Bloquear poucos itens na categoria Discurso de ódio, tudo com alta probabilidade de ser um conteúdo de discurso de ódio será bloqueado. No entanto, qualquer item com menor probabilidade de risco é permitido.
+Limite (Google AI Studio) Limite (API) Descrição
+Não bloquear nada BLOCK_NONE Sempre mostrar, seja qual for a probabilidade do conteúdo não ser seguro
+Bloquear poucos BLOCK_ONLY_HIGH Bloquear quando houver alta probabilidade de o conteúdo não ser seguro
+Bloquear alguns BLOCK_MEDIUM_AND_ABOVE Bloquear quando houver probabilidade média ou alta de o conteúdo não ser seguro
+Bloquear muitos BLOCK_LOW_AND_ABOVE Bloquear quando houver probabilidade baixa, média ou alta de o conteúdo não ser seguro
+N/A HARM_BLOCK_THRESHOLD_UNSPECIFIED O limite não foi especificado. O bloqueio está usando o limite padrão.
+Se o limite não for definido, o limite de bloqueio padrão será Bloquear nenhum (para gemini-1.5-pro-002 e gemini-1.5-flash-002 e todos os modelos mais recentes do GA estável) ou Bloquear alguns (em todos os outros modelos) para todas as categorias, exceto a integridade cívica.
+O limite de bloqueio padrão para a categoria Integridade cívica é Bloquear nenhum (para gemini-2.0-flash-001 com o alias gemini-2.0-flash, gemini-2.0-pro-exp-02-05 e gemini-2.0-flash-lite) para o Google AI Studio e a API Gemini, e Bloquear a maioria para todos os outros modelos no Google AI Studio.
+Você pode definir essas configurações para cada solicitação feita ao serviço generativo. Consulte a referência da API HarmBlockThreshold para mais detalhes.
+Feedback de segurança
+generateContent retorna um GenerateContentResponse que inclui feedback de segurança.
+O feedback do comando é incluído em promptFeedback. Se promptFeedback.blockReason estiver definido, o conteúdo da solicitação foi bloqueado.
+O feedback do candidato à resposta é incluído em Candidate.finishReason e Candidate.safetyRatings. Se o conteúdo da resposta for bloqueado e o finishReason for SAFETY, inspecione safetyRatings para mais detalhes. O conteúdo bloqueado não é retornado.
+Ajustar as configurações de segurança
+Esta seção aborda como ajustar as configurações de segurança no Google AI Studio e no código.
+Google AI Studio
+É possível ajustar as configurações de segurança no Google AI Studio, mas não é possível desativá-las.
+Clique em Editar configurações de segurança no painel Configurações de execução para abrir o modal Configurações de segurança de execução. No modo, você pode usar os controles deslizantes para ajustar o nível de filtragem de conteúdo por categoria de segurança:
+Observação: se você definir qualquer um dos filtros de categoria como Não bloquear nenhum, o Google AI Studio vai mostrar um lembrete sobre os Termos de Serviço da API Gemini em relação às configurações de segurança.
+Quando você envia uma solicitação (por exemplo, fazendo uma pergunta ao modelo), uma mensagem warning No Content aparece se o conteúdo da solicitação estiver bloqueado. Para conferir mais detalhes, mantenha o ponteiro sobre o texto No Content e clique em warning Safety.
+SDKs da API Gemini
+O snippet de código abaixo mostra como definir as configurações de segurança na chamada GenerateContent. Isso define os limites para as categorias de assédio (HARM_CATEGORY_HARASSMENT) e discurso de ódio (HARM_CATEGORY_HATE_SPEECH). Por exemplo, definir essas categorias como BLOCK_LOW_AND_ABOVE bloqueia qualquer conteúdo com probabilidade baixa ou alta de ser assédio ou discurso de ódio. Para entender as configurações de limite, consulte Filtragem de segurança por solicitação.
+Python
+Go
+JavaScript
+Dart (Flutter)
+Kotlin
+Java
+REST
+from google import genai
+from google.genai import types
+
+import PIL.Image
+
+img = PIL.Image.open("cookies.jpg")
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=['Do these look store-bought or homemade?', img],
+    config=types.GenerateContentConfig(
+      safety_settings=[
+        types.SafetySetting(
+            category=types.HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+            threshold=types.HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+        ),
+      ]
+    )
+)
+
+print(response.text)
+Próximas etapas
+Consulte a referência da API para saber mais sobre a API completa.
+Consulte as orientações de segurança para ter uma visão geral das considerações de segurança ao desenvolver com LLMs.
+Saiba mais sobre como avaliar a probabilidade em relação à gravidade da equipe do Jigsaw.
+Saiba mais sobre os produtos que contribuem para soluções de segurança, como a API Perspective. * É possível usar essas configurações de segurança para criar um classificador de toxicidade. Consulte o exemplo de classificação para começar.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-28 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

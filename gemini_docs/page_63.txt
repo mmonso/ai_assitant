@@ -1,0 +1,222 @@
+URL: https://ai.google.dev/gemini-api/tutorials/slides-advisor
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Aplicativo de chat
+Assistente de código
+Gerador de código do Flutter
+Pesquisa de conteúdo
+Agente de exploração de dados
+Assistente de redação
+Revisor do Apresentações Google
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Crie um revisor de slides de IA com o Gemini
+Nesta página
+Configurar o projeto
+Criar um projeto do Apps Script
+Preparar os arquivos do projeto
+Receber o código do projeto
+Conectar um projeto do Google Cloud
+Configurar um projeto do Cloud
+Criar uma conta de serviço
+Criar e instalar a chave da conta de serviço
+Monte, execute e personalize um complemento de revisão de slides para Apresentações do Google Workspace com este projeto de código. Seja uma apresentação por semana ou por ano, a maioria de nós precisa de ajuda para fazer isso direito. Você tende a colocar muita informação em um slide? Você esquece de dividir sua apresentação com recursos visuais? Talvez você até tenha um conjunto de diretrizes da sua organização sobre apresentação eficaz. Você leu esses artigos recentemente?
+O projeto Slides Advisor é um complemento do Google Workspace de código aberto que usa tecnologia de inteligência artificial (IA) para analisar e dar feedback sobre suas apresentações, sempre que você precisar. O projeto usa os recursos de processamento de imagens e texto da API Gemini para analisar seus slides do Google em relação a um conjunto de diretrizes e informar como você está em relação a elas. Melhor ainda, você pode personalizar essas diretrizes para seguir as recomendações da sua organização ou ser lembrado de melhorar suas apresentações com base nas regras que você define para si mesmo.
+Para conferir uma visão geral em vídeo do projeto e como ele pode ser estendido, incluindo insights dos desenvolvedores, acesse AI Slides Reviewer - Build with Google AI. Caso contrário, você pode começar a estender o projeto seguindo as instruções abaixo.
+Figura 1. Complemento do Slides Advisor para as Apresentações Google em execução como painel da barra lateral.
+Configurar o projeto
+Estas instruções mostram como configurar o projeto do Slides Advisor para desenvolvimento e teste. As etapas gerais são criar o projeto do Google Apps Script, configurar um projeto do Google Cloud para acesso à API e definir algumas propriedades do script para o projeto.
+Observação: para este projeto de código, você precisa ter acesso à API Gemini em um projeto do Google Cloud. Isso é descrito na seção Conectar o projeto do Google Cloud.
+Criar um projeto do Apps Script
+Esse projeto do Slides Advisor é executado como um complemento para o Apresentações Google. Você configura o projeto usando a interface da Web do Apresentações Google e cria um projeto do Apps Script para o código.
+Para criar um novo projeto do Apps Script:
+Acesse o app da Web Apresentações para Google Workspace.
+Abra uma apresentação ou crie uma nova.
+Na apresentação do Apresentações Google, selecione Extensões > Apps Script.
+Depois de concluir essas etapas, você terá um novo projeto sem título na interface da Web do Apps Script, que é anexada à apresentação em que você começou. Dê um nome ao projeto para facilitar a localização.
+Para nomear o projeto do Apps Script:
+Na interface da Web do Apps Script, selecione o texto Untitled project.
+Na caixa de diálogo "Renomear projeto", digite My Slides Advisor e selecione Renomear.
+Preparar os arquivos do projeto
+O projeto do Slides Advisor tem cinco arquivos de código, e você precisa configurá-los antes de copiar o código para o novo projeto do Apps Script. Esta seção descreve como preparar o projeto e receber o código.
+Para preparar os arquivos do projeto:
+Abra a interface da Web do Apps Script que contém o projeto My Slides Advisor.
+No menu à esquerda, selecione a visualização < > Editor.
+Renomeie o arquivo Code.gs para main.gs passando o cursor sobre o nome do arquivo de código Code.gs, selecionando Rename no menu de contexto e digitando main. A interface adiciona a extensão .gs automaticamente.
+Para tornar o arquivo de manifesto appscript.json do projeto visível, selecione o ícone de engrenagem (Project Settings) no menu à esquerda e ative a opção Show "appscript.json" manifest file.
+Na interface da Web do Apps Script, no menu à esquerda, selecione a visualização < > Editor.
+Crie um arquivo de código ui.gs selecionando o ícone + (sinal de adição) à direita do cabeçalho Files, selecionando Script e inserindo ui.
+Repita a etapa anterior para criar os arquivos de código slides.gs e ai.gs.
+Seu projeto do Apps Script agora precisa conter os cinco arquivos de código a seguir, que estão quase vazios:
+appscript.json
+main.gs
+ui.gs
+slides.gs
+ai.gs
+Na próxima etapa, extraia o código do projeto do repositório e copie-o para seu projeto do Apps Script.
+Receber o código do projeto
+O código do projeto do Slides Advisor é hospedado em um repositório de código. Você precisa copiar esse código para o projeto do Apps Script para trabalhar com ele. Esta seção descreve como conseguir o código do projeto.
+Para conseguir o código do projeto:
+Navegue até o repositório de código do projeto para o arquivo de manifesto do projeto, appsscript.json
+Copie o conteúdo desse arquivo de código para a área de transferência.
+Navegue de volta à interface da Web do Apps Script, selecione o nome de arquivo appsscript.json e cole o código no painel do editor de código, substituindo qualquer código anterior.
+Repita esse procedimento para os outros quatro arquivos de código:
+Copie o código main.js para o arquivo main.gs.
+Copie o código ui.js para o arquivo ui.gs.
+Copie o código slides.js para o arquivo slides.gs.
+Copie o código ai.js para o arquivo ai.gs.
+Conectar um projeto do Google Cloud
+Esse projeto usa um projeto do Google Cloud para acessar os modelos de IA do Gemini. O Google Cloud oferece políticas específicas de privacidade de dados e uma série de serviços de software úteis para criar aplicativos como o Slides Advisor. Para conectar o código do complemento à API Gemini, crie um projeto do Cloud com acesso à API de IA, crie uma conta de serviço para o projeto, crie uma chave para a conta de serviço e instale essa chave no projeto do complemento.
+Configurar um projeto do Cloud
+O projeto do Cloud que você usa para se conectar à API Gemini precisa ter o serviço da API Vertex AI ativado, e você precisa criar uma conexão autenticada do complemento Slides Advisor para esse projeto. A API Vertex AI também exige que o faturamento seja ativado nos projetos em que você a usa.
+Para configurar um projeto do Cloud com acesso à API Vertex AI:
+Acesse o console do Google Cloud e faça login, se necessário.
+No console do Google Cloud, selecione um projeto do Cloud ou crie um novo.
+Na página Painel do console do seu projeto, no painel APIs, selecione Acessar a visão geral das APIs ou acesse https://console.cloud.google.com/apis/.
+Na parte de cima da página APIs e serviços, selecione + ATIVAR APIS E SERVIÇOS.
+Na página Biblioteca de APIs, pesquise vertex ai api, selecione a opção API Vertex AI e clique no botão Ativar.
+Se ainda não estiver ativado, ative o faturamento no seu projeto do Google Cloud e, em seguida, ative a API AI selecionando o botão Ativar na página do console da API Vertex AI.
+Para verificar se a API Vertex AI está ativada, acesse a página APIs e serviços do seu projeto. A API Vertex AI vai aparecer nesta página.
+Criar uma conta de serviço
+O complemento Slides Advisor exige uma conexão autenticada com seu projeto do Cloud para acessar a API Vertex AI e os modelos do Gemini. Para criar essa conexão, primeiro gere uma conta de serviço no seu projeto do Cloud que tenha acesso à API Vertex AI. O projeto do Slides Advisor se conecta usando essa conta de serviço.
+Para criar uma conta de serviço para o complemento Slides Advisor:
+No console do Google Cloud, navegue até a página APIs e serviços do seu projeto do Cloud.
+No lado esquerdo da página, selecione Credenciais.
+Na parte de cima da página, selecione + CRIAR CREDENCIAIS > Conta de serviço.
+Na página Criar conta de serviço, na seção Detalhes da conta de serviço, insira um nome, um ID e uma descrição da conta de serviço.
+Selecione Criar e continuar para criar a conta de serviço.
+Na seção Conceder acesso a essa conta de serviço ao projeto, selecione o controle Papel.
+Na pesquisa do campo Filtro, selecione o conjunto de permissões Usuário da Vertex AI e clique em Continuar.
+Para concluir a criação da conta de serviço, selecione Concluído.
+Para mais informações sobre como criar contas de serviço, consulte a documentação Criar contas de serviço do Google Cloud.
+Criar e instalar a chave da conta de serviço
+O projeto do Slides Advisor precisa ser capaz de fazer a autenticação na conta de serviço criada no procedimento anterior. É possível ativar essa autenticação criando uma chave para a conta de serviço e configurando essa chave no seu projeto do Slides Advisor Apps Script como uma propriedade de script. O procedimento a seguir explica como criar a chave e configurá-la no projeto.
+Aviso: trate o arquivo de chave JSON da conta de serviço e o conteúdo dele como uma senha e mantenha-os seguros. Para conferir algumas práticas recomendadas gerais de segurança de chaves, consulte este artigo de suporte.
+Para criar e configurar uma chave de conta de serviço:
+No console do Google Cloud, navegue até a página APIs e serviços do seu projeto do Cloud.
+No lado esquerdo da página, selecione Credenciais.
+Na seção Contas de serviço, encontre a conta de serviço que você criou, selecione o endereço de e-mail da conta ou o ícone de lápis para editá-la.
+Na janela de edição da conta de serviço, perto da parte de cima da página, selecione o título da guia CHAVES.
+Na seção Chaves, selecione Adicionar chave > Criar nova chave.
+Na caixa de diálogo Criar chave privada para..., selecione JSON e clique em Criar. Essa etapa cria um arquivo de chave chamado projectid-hashcode.json e faz o download automático dele no computador.
+Abra o arquivo projectid-hashcode.json salvo e copie o conteúdo.
+Abra a interface da Web do Apps Script que contém o projeto My Slides Advisor e, no menu à esquerda, selecione a visualização Settings.
+Na seção Propriedades do script, selecione o botão Editar propriedades do script e, em seguida, o botão Adicionar propriedade do script.
+No novo campo Property, digite SERVICE_ACCOUNT_KEY e, no campo Value, copie o conteúdo do arquivo projectid-hashcode.json baixado.
+Salve a nova propriedade selecionando o botão Salvar propriedades do script.
+Para mais informações sobre a criação de chaves de contas de serviço, consulte a documentação Criar e excluir chaves de contas de serviço do Google Cloud.
+Testar o projeto do complemento
+Para testar o projeto do Slides Advisor, é necessário criar uma implantação de teste do código do complemento e instalar essa implantação de teste. Nesta configuração de teste, o projeto só está disponível na apresentação do Apresentações Google em que você iniciou o projeto do complemento do Apps Script e em nenhuma outra apresentação do Apresentações. Saiba mais sobre como implantar seu complemento para uso mais amplo na documentação do Apps Script do Google Workspace, Criar e gerenciar implantações (link em inglês).
+Para implantar e testar o código do projeto do Apps Script:
+Na parte de cima da interface da Web do Apps Script, selecione Implantar > Testar implantações.
+Na caixa de diálogo Test deployments, ao lado de Select type, selecione o ícone de engrenagem e Google Workspace Add-on.
+Ao lado do título "Aplicativos", selecione o botão Instalar.
+Deixe as configurações padrão para Testar o código mais recente e selecione Concluído.
+Navegue pela apresentação do Apresentações Google conectada ao seu projeto do Apps Script e recarregue a página da Web.
+No canto inferior direito do app da Web do Apresentações, selecione o ícone ( < ) para abrir o painel lateral e, em seguida, selecione o ícone de olho preto e branco para abrir o painel Slides Advisor.
+Depois de concluir essa etapa e executar o complemento, você poderá modificá-lo para usar diretrizes diferentes ou seguir um fluxo de trabalho diferente. Consulte as próximas seções para ver instruções sobre como fazer algumas modificações básicas no complemento Slides Advisor.
+Modificar o comportamento da avaliação
+É possível mudar o comportamento de revisão do Slides Advisor, tanto em termos do que você recebe da API Gemini quanto da interface do usuário fornecida pelo complemento, modificando o código do projeto. Este tutorial se concentra em mudar as instruções de solicitação para modificar o comportamento de análise dos slides de apresentação. Para mais informações sobre como estender a interface do usuário do Apresentações Google usando o Apps Script, consulte Como estender as Apresentações Google.
+Mudar as diretrizes de avaliação
+O Slides Advisor vem programado com um conjunto básico de diretrizes de revisão de slides com categorias para simplicidade, cor e tipografia, estrutura e espaço em branco, gráficos e ícones. As diretrizes de revisão são apenas instruções de texto incluídas em um comando pela API Gemini, junto com uma imagem de um slide selecionado e as notas do orador.
+É possível mudar o comportamento de análise do complemento mudando as instruções de texto. Por exemplo, é possível instruir o modelo do Gemini a gerar a revisão com a classificação da categoria na mesma linha que o título da categoria ou mudar o nome de uma categoria.
+Para mudar o local da classificação e o nome de uma categoria:
+Abra a interface da Web do Apps Script que contém o projeto My Slides Advisor. Se necessário, navegue até a janela do projeto abrindo a apresentação do Google Slides que contém o projeto do Apps Script e selecionando Extensões > Apps Script.
+No menu à esquerda, selecione a visualização < > Editor e selecione o nome de arquivo ai.gs.
+No arquivo de código ai.gs, localize a constante de string SYSTEM_PROMPT e modifique as instruções da seguinte maneira com o texto em negrito:
+const SYSTEM_PROMPT = `
+...
+For each of the following categories evaluate the given slide. Score each
+category on a scale of 0 to 100, show the score next to the category heading,
+and concisely explain the reasoning. Do not suggest improvements if the score
+is 80 or above.
+Na mesma constante de string SYSTEM_PROMPT, mude o texto da categoria Simplicity para Message:
+const SYSTEM_PROMPT = `
+...
+* Message -- Slides should focus on one main idea per slide and ...
+Salve as mudanças no arquivo de código ai.gs.
+Navegue pela apresentação do Google Slides conectada ao seu projeto do Apps Script, atualize a página da Web e teste as mudanças no complemento executando-o novamente.
+Se você ainda não tiver configurado uma implantação de teste para o complemento do Slides Advisor, siga as instruções em Testar o projeto do complemento.
+É possível remover, substituir ou reescrever as instruções da categoria de avaliação na constante de string SYSTEM_PROMPT para corresponder aos requisitos de avaliação. Se você quiser testar diferentes abordagens de comando de revisão ou reescrever todo o comando de revisão, confira o aplicativo da Web do Google AI Studio. Esse app permite criar protótipos, testar e salvar comandos para o Gemini em uma interface conveniente e usa a mesma API Gemini do projeto Slides Advisor. Para mais informações sobre o uso do AI Studio, consulte o guia de início rápido do AI Studio.
+Mudar a configuração do comportamento do modelo
+A API Gemini oferece várias configurações para alterar a operação geral do modelo em resposta a uma solicitação. Especificamente, a configuração de temperatura do modelo permite definir a variação permitida do modelo em uma resposta, sendo zero a menor e 1 a maior. Definir esse valor em 0,1 produz respostas muito consistentes, mas esse comportamento pode parecer repetitivo e menos útil para os usuários que recebem feedback de revisão. Considere definir um valor de temperatura mais alto e lembre-se de que, quanto maior a temperatura, mais inconsistentes seus resultados podem ser, o que pode incluir a implementação de instruções de maneira diferente e até mesmo o completo desconsideramento de algumas instruções.
+Para aumentar a temperatura das respostas às avaliações:
+Abra a interface da Web do Apps Script que contém o projeto My Slides Advisor.
+No menu à esquerda, selecione a visualização < > Editor e selecione o nome de arquivo ai.gs.
+No arquivo de código ai.gs, localize a função analyzeSlides() e modifique a constante generationConfig definindo o valor temperature como 0.3:
+function analyzeSlides(slide) {
+
+    const generationConfig = {
+        temperature: 0.3,
+        maxOutputTokens: 1024 * 2,
+    };
+Salve as mudanças no arquivo de código ai.gs.
+Navegue pela apresentação do Google Slides conectada ao seu projeto do Apps Script, atualize a página da Web e teste as mudanças no complemento executando-o novamente.
+Para mais informações sobre as configurações de comportamento do modelo, consulte a documentação da API Gemini para GenerationConfig.
+Outros recursos
+Para mais informações sobre o projeto do Slides Advisor, consulte o repositório de código. Se você precisar de ajuda para criar o aplicativo ou quiser colaborar com outros desenvolvedores, confira o servidor Google Developers Community Discord. Para conferir mais projetos do Build with Google AI, acesse a playlist de vídeos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

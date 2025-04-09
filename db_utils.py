@@ -28,6 +28,14 @@ class PermissionDeniedError(DatabaseError):
     """Raised when a user tries to access a resource they don't own."""
     pass
 
+class FolderNotFoundError(DatabaseError):
+    """Raised when a folder is not found."""
+    pass
+
+class DuplicateFolderError(DatabaseError):
+    """Raised when trying to create a folder with a name that already exists for the user."""
+    pass
+
 class DatabaseOperationalError(DatabaseError):
     """Raised for general operational errors like connection issues, etc."""
     pass
@@ -271,20 +279,149 @@ def delete_user(user_id):
     except sqlite3.Error as e: # Catch other potential SQLite errors
         log.error(f"Unexpected SQLite error deleting user {user_id}: {e}", exc_info=True)
         raise DatabaseError(f"Unexpected database error deleting user {user_id}.") from e
+    
+    
+# --- Folder Management ---
 
-
-# --- Conversation Management (largely unchanged) ---
-
-def create_conversation(user_id, title=None):
-    """Creates a new conversation for a user."""
+def create_folder(user_id, name):
+    """Creates a new folder for a user."""
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("INSERT INTO conversations (user_id, title) VALUES (?, ?)",
-                           (user_id, title))
+            # Check if folder with the same name already exists for this user
+            cursor.execute("SELECT folder_id FROM folders WHERE user_id = ? AND name = ?", (user_id, name))
+            if cursor.fetchone():
+                log.warning(f"Attempted to create duplicate folder name '{name}' for user_id {user_id}.")
+                raise DuplicateFolderError(f"Folder with name '{name}' already exists.")
+
+            cursor.execute("INSERT INTO folders (user_id, name) VALUES (?, ?)", (user_id, name))
+            conn.commit()
+            folder_id = cursor.lastrowid
+            log.info(f"Folder '{name}' created successfully with folder_id: {folder_id} for user_id: {user_id}.")
+            return folder_id
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error creating folder '{name}' for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error creating folder '{name}' for user {user_id}.") from e
+    except sqlite3.Error as e:
+        log.error(f"Unexpected SQLite error creating folder '{name}' for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error creating folder '{name}' for user {user_id}.") from e
+
+def get_folders(user_id):
+    """Retrieves a list of folders (id, name) for a user."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT folder_id, name, created_at
+                FROM folders
+                WHERE user_id = ?
+                ORDER BY name ASC
+            """, (user_id,))
+            folders = [dict(row) for row in cursor.fetchall()]
+            # log.debug(f"Retrieved {len(folders)} folders for user_id {user_id}")
+            return folders
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error retrieving folders for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error retrieving folders for user {user_id}.") from e
+    except sqlite3.Error as e:
+        log.error(f"Unexpected SQLite error retrieving folders for user_id {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error retrieving folders for user {user_id}.") from e
+
+def update_folder_name(folder_id, user_id, new_name):
+    """Updates the name of a specific folder, ensuring user owns it and name is unique for the user."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            # 1. Verify ownership
+            cursor.execute("SELECT user_id FROM folders WHERE folder_id = ?", (folder_id,))
+            folder = cursor.fetchone()
+            if not folder:
+                log.warning(f"Attempt to update non-existent folder {folder_id} by user {user_id}.")
+                raise FolderNotFoundError(f"Folder {folder_id} not found.")
+            if folder['user_id'] != user_id:
+                log.warning(f"Permission denied: User {user_id} attempted to update folder {folder_id} owned by user {folder['user_id']}.")
+                raise PermissionDeniedError(f"User {user_id} does not own folder {folder_id}.")
+
+            # 2. Check if new name already exists for this user (excluding the current folder)
+            cursor.execute("SELECT folder_id FROM folders WHERE user_id = ? AND name = ? AND folder_id != ?", (user_id, new_name, folder_id))
+            if cursor.fetchone():
+                log.warning(f"Attempted to rename folder {folder_id} to duplicate name '{new_name}' for user_id {user_id}.")
+                raise DuplicateFolderError(f"Folder with name '{new_name}' already exists.")
+
+            # 3. Update the name
+            cursor.execute("UPDATE folders SET name = ? WHERE folder_id = ?", (new_name, folder_id))
+            conn.commit()
+
+            if cursor.rowcount > 0:
+                log.info(f"Folder {folder_id} renamed to '{new_name}' by user {user_id}")
+                return True
+            else:
+                # Should not happen if ownership check passed, but log if it does
+                log.error(f"Folder {folder_id} rename affected 0 rows after ownership check passed for user {user_id}.")
+                # Re-raise FolderNotFoundError as the most likely cause if it got deleted concurrently
+                raise FolderNotFoundError(f"Folder {folder_id} not found during update.")
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error renaming folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error renaming folder {folder_id}.") from e
+    except sqlite3.Error as e:
+        log.error(f"Unexpected SQLite error renaming folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error renaming folder {folder_id}.") from e
+
+
+def delete_folder(folder_id, user_id):
+    """Deletes a specific folder after verifying ownership. Conversations in the folder will have folder_id set to NULL."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            # 1. Verify ownership
+            cursor.execute("SELECT user_id FROM folders WHERE folder_id = ?", (folder_id,))
+            folder = cursor.fetchone()
+            if not folder:
+                log.warning(f"Attempt to delete non-existent folder {folder_id} by user {user_id}.")
+                raise FolderNotFoundError(f"Folder {folder_id} not found.")
+            if folder['user_id'] != user_id:
+                log.warning(f"Permission denied: User {user_id} attempted to delete folder {folder_id} owned by user {folder['user_id']}.")
+                raise PermissionDeniedError(f"User {user_id} does not own folder {folder_id}.")
+
+            # 2. Delete the folder (ON DELETE SET NULL handles conversations)
+            cursor.execute("DELETE FROM folders WHERE folder_id = ?", (folder_id,))
+            conn.commit()
+
+            if cursor.rowcount > 0:
+                log.info(f"Folder {folder_id} deleted successfully by user {user_id}.")
+                # No return value needed on success
+            else:
+                # Should not happen if ownership check passed
+                log.error(f"Folder {folder_id} deletion affected 0 rows after ownership check passed for user {user_id}.")
+                raise DatabaseOperationalError(f"Failed to delete folder {folder_id} despite ownership check.")
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error deleting folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error deleting folder {folder_id}.") from e
+    except sqlite3.Error as e:
+        log.error(f"Unexpected SQLite error deleting folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error deleting folder {folder_id}.") from e
+    
+    
+    # --- Conversation Management (Updated) ---
+
+def create_conversation(user_id, title=None, folder_id=None):
+    """Creates a new conversation for a user, optionally assigning it to a folder."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
+            # Optional: Verify folder_id belongs to the user if provided
+            if folder_id is not None:
+                cursor.execute("SELECT folder_id FROM folders WHERE folder_id = ? AND user_id = ?", (folder_id, user_id))
+                if not cursor.fetchone():
+                    log.warning(f"User {user_id} attempted to create conversation in invalid or unowned folder {folder_id}.")
+                    # Decide how to handle: raise error or silently ignore folder_id? Let's ignore for now.
+                    folder_id = None # Set to None if invalid
+
+            cursor.execute("INSERT INTO conversations (user_id, title, folder_id) VALUES (?, ?, ?)",
+                           (user_id, title, folder_id))
             conn.commit()
             new_conversation_id = cursor.lastrowid
-            log.info(f"Conversation created with ID: {new_conversation_id} for user_id: {user_id}")
+            log.info(f"Conversation created with ID: {new_conversation_id} for user_id: {user_id} (folder_id: {folder_id})")
             return new_conversation_id
     except sqlite3.OperationalError as e:
         log.error(f"Database operational error creating conversation for user_id {user_id}: {e}", exc_info=True)
@@ -294,12 +431,12 @@ def create_conversation(user_id, title=None):
         raise DatabaseError(f"Unexpected database error creating conversation for user {user_id}.") from e
 
 def get_conversations(user_id):
-    """Retrieves a list of conversations (id, title) for a user, newest first."""
+    """Retrieves a list of conversations (id, title, folder_id, created_at) for a user, newest first."""
     try:
         with get_db_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("""
-                SELECT conversation_id, title, created_at
+                SELECT conversation_id, title, folder_id, created_at
                 FROM conversations
                 WHERE user_id = ?
                 ORDER BY created_at DESC
@@ -369,7 +506,54 @@ def delete_conversation(conversation_id, user_id):
     except sqlite3.Error as e:
         log.error(f"Unexpected SQLite error deleting conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
         raise DatabaseError(f"Unexpected database error deleting conversation {conversation_id}.") from e
+def move_conversation_to_folder(conversation_id, user_id, folder_id):
+    """Moves a conversation to a different folder (or removes it from a folder if folder_id is None)."""
+    try:
+        with get_db_connection() as conn:
+            cursor = conn.cursor()
 
+            # 1. Verify conversation ownership
+            cursor.execute("SELECT user_id FROM conversations WHERE conversation_id = ?", (conversation_id,))
+            conversation = cursor.fetchone()
+            if not conversation:
+                log.warning(f"Attempt to move non-existent conversation {conversation_id} by user {user_id}.")
+                raise ConversationNotFoundError(f"Conversation {conversation_id} not found.")
+            if conversation['user_id'] != user_id:
+                log.warning(f"Permission denied: User {user_id} attempted to move conversation {conversation_id} owned by user {conversation['user_id']}.")
+                raise PermissionDeniedError(f"User {user_id} does not own conversation {conversation_id}.")
+
+            # 2. Verify folder ownership (if moving *to* a folder)
+            if folder_id is not None:
+                cursor.execute("SELECT user_id FROM folders WHERE folder_id = ?", (folder_id,))
+                folder = cursor.fetchone()
+                if not folder:
+                    log.warning(f"Attempt to move conversation {conversation_id} to non-existent folder {folder_id} by user {user_id}.")
+                    raise FolderNotFoundError(f"Folder {folder_id} not found.")
+                if folder['user_id'] != user_id:
+                    log.warning(f"Permission denied: User {user_id} attempted to move conversation {conversation_id} to folder {folder_id} owned by user {folder['user_id']}.")
+                    raise PermissionDeniedError(f"User {user_id} does not own folder {folder_id}.")
+
+            # 3. Update the conversation's folder_id
+            cursor.execute("UPDATE conversations SET folder_id = ? WHERE conversation_id = ?", (folder_id, conversation_id))
+            conn.commit()
+
+            if cursor.rowcount > 0:
+                log.info(f"Conversation {conversation_id} moved to folder {folder_id} by user {user_id}")
+                return True
+            else:
+                # Should not happen if ownership checks passed
+                log.error(f"Conversation {conversation_id} move to folder {folder_id} affected 0 rows after ownership checks passed for user {user_id}.")
+                raise DatabaseOperationalError(f"Failed to move conversation {conversation_id} despite ownership checks.")
+
+    except sqlite3.OperationalError as e:
+        log.error(f"Database operational error moving conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseOperationalError(f"Operational error moving conversation {conversation_id}.") from e
+    except sqlite3.Error as e:
+        log.error(f"Unexpected SQLite error moving conversation {conversation_id} for user {user_id}: {e}", exc_info=True)
+        raise DatabaseError(f"Unexpected database error moving conversation {conversation_id}.") from e
+
+
+# --- Message Management (largely unchanged) ---
 # --- Message Management (largely unchanged) ---
 
 def add_message(conversation_id, role, content, google_file_name=None, file_display_name=None, file_mime_type=None):

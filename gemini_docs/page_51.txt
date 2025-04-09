@@ -1,0 +1,242 @@
+URL: https://ai.google.dev/gemini-api/docs/models/generative-models
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Sobre modelos generativos
+Nesta página
+Exemplos de aplicativos
+Gerar um poema
+Gerar uma lista
+Introdução ao design de comandos
+Comandos versus desenvolvimento de software tradicional
+Parâmetros do modelo
+Tipos de comandos
+Comandos zero-shot
+Modelos de inteligência artificial (IA) generativos, como a família de modelos Gemini, são capazes de criar conteúdo a partir de vários tipos de entrada de dados, incluindo texto, imagens e áudio. No nível mais básico, esses modelos funcionam como aplicativos de preenchimento automático sofisticados. Dado o texto de entrada ("Você pode levar um cavalo à água"), um modelo generativo pode prever que o texto de saída que é estatisticamente provável de seguir ("mas você não pode fazê-lo beber"), com base em padrões aprendidos com os dados de treinamento. É possível usar essa propriedade básica de modelos generativos para várias aplicações:
+Gerar textos criativos, como poesias, contos, metáforas e postagens de blogs
+Converter dados estruturados em texto de formato livre
+Extrair e resumir informações de texto em formato livre
+Gerar código
+Traduzir idiomas
+O uso de modelos generativos para criar esses recursos não exige experiência em aprendizado de máquina (ML). Não é necessário coletar um grande conjunto de dados ou treinar um modelo. Para começar seu primeiro protótipo, basta descrever o que você quer que o modelo faça em algumas frases.
+Os modelos generativos que processam apenas entradas e saídas de texto também são conhecidos como modelos de linguagem grandes (LLMs). A família de modelos Gemini pode processar mais do que dados de texto e, embora possam executar as funções de um LLM, eles são mais conhecidos como modelos generativos.
+Exemplos de aplicativos
+Os exemplos a seguir mostram entradas de texto típicas e saídas de um modelo generativo.
+Gerar um poema
+Entrada do usuário: Write me a four-line poem about puppies and Android phones. Make sure it rhymes.
+Saída do modelo:
+Puppies are cute,
+Android phones are neat,
+They both bring joy,
+And make life complete.
+Gerar uma lista
+Entrada do usuário: Generate a bulleted list of items I need to pack for a three-day camping trip.
+Saída do modelo:
+*   Tent
+*   Sleeping bag
+*   Sleeping pad
+*   Camp stove
+*   Pots and pans
+*   Utensils
+*   Food
+*   Water
+*   First-aid kit
+*   Sunscreen
+*   Insect repellent
+*   ...
+É possível fazer com que modelos generativos produzam todos os tipos de comportamentos úteis como esse, apenas criando o texto de entrada correto, também chamado de comando. A arte e a ciência de descobrir a redação certa para que os modelos generativos façam o que você quer é chamada de design de comando, também chamada de "engenharia de comando" ou simplesmente "comando".
+Introdução ao design de comandos
+A seção anterior mostrou alguns exemplos de comandos que contêm uma instrução, como "Escreva um poema para mim". Esse tipo de instrução pode funcionar bem para determinados tipos de tarefas. No entanto, para outros aplicativos, outra técnica de solicitações, chamada de solicitações de poucos cliques, pode funcionar melhor. Os comandos de poucos exemplos aproveitam o fato de que os modelos de linguagem grandes são incrivelmente bons em reconhecer e replicar padrões em dados de texto. A ideia é enviar ao modelo generativo um padrão de texto que ele aprende a completar. Por exemplo, digamos que você queira criar um aplicativo que receba como entrada o nome de um país e gere a capital dele. Confira um comando de texto criado para fazer isso:
+Italy : Rome
+France : Paris
+Germany :
+Nesta solicitação, você estabelece um padrão: [country] : [capital]. Se você enviar esse comando para um modelo de linguagem grande, ele vai preencher automaticamente o padrão e retornar algo como isto:
+     Berlin
+Turkey : Ankara
+Greece : Athens
+Essa resposta de modelo pode parecer um pouco estranha. O modelo retornou não apenas a capital da Alemanha (o último país na instrução escrita à mão), mas também uma lista completa de outros pares de países e capitais. Isso ocorre porque o modelo generativo está "continuando o padrão". Se você está tentando criar uma função que informa a capital de um país de entrada ("Alemanha: Berlim"), provavelmente não se importa com o texto que o modelo gera depois de "Berlim". Na verdade, como designers de aplicativos, você provavelmente quer truncar esses exemplos estranhos. Além disso, provavelmente você vai querer parametrizar a entrada para que "Germany" não seja uma string fixa, mas uma variável fornecida pelo usuário final:
+Italy : Rome
+France : Paris
+<user input here> :
+Você acabou de escrever um comando few-shot para gerar capitais de países.
+Você pode realizar um grande número de tarefas seguindo este modelo de comandos de poucos disparos. Este é um comando few-shot com um formato um pouco diferente que converte Python em JavaScript:
+Convert Python to JavaScript.
+Python: print("hello world")
+JavaScript: console.log("hello world")
+Python: for x in range(0, 100):
+JavaScript: for(var i = 0; i < 100; i++) {
+Python: ${USER INPUT HERE}
+JavaScript:
+Ou use este comando "dicionário reverso". Dada uma definição, ele retorna a palavra que se encaixa nessa definição:
+Given a definition, return the word it defines.
+Definition: When you're happy that other people are also sad.
+Word: schadenfreude
+Definition: existing purely in the mind, but not in physical reality
+Word: abstract
+Definition: ${USER INPUT HERE}
+Word:
+Talvez você tenha notado que o padrão exato desses comandos few-shot varia um pouco. Além de conter exemplos, fornecer instruções nos comandos é outra estratégia a ser considerada ao escrever seus próprios comandos, já que ajuda a comunicar sua intenção ao modelo.
+Comandos versus desenvolvimento de software tradicional
+Ao contrário do software tradicional, que é projetado para uma especificação cuidadosamente redigida, o comportamento dos modelos generativos é bastante opaco, mesmo para os treinadores de modelos. Como resultado, muitas vezes não é possível prever com antecedência quais tipos de estruturas de comando vão funcionar melhor para um modelo específico. Além disso, o comportamento de um modelo generativo é determinado em grande parte pelos dados de treinamento. Como os modelos são continuamente ajustados em novos conjuntos de dados, às vezes o modelo muda o suficiente para mudar inadvertidamente quais estruturas de comando funcionam melhor. O que isso significa para você? Experimento Tente usar formatos de comando diferentes.
+Parâmetros do modelo
+Cada comando enviado ao modelo inclui valores de parâmetros que controlam como ele gera uma resposta. O modelo pode gerar diferentes resultados para diferentes valores de parâmetros. Os parâmetros de modelo mais comuns são:
+Máximo de tokens de saída:especifica o número máximo de tokens que podem ser gerados na resposta. Um token tem cerca de quatro caracteres. 100 tokens correspondem a cerca de 60 a 80 palavras.
+Temperatura:controla o grau de aleatoriedade na seleção do token. A temperatura é usada para amostragem durante a geração da resposta, o que ocorre quando topP e topK são aplicados. Temperaturas mais baixas são boas para comandos que exigem uma resposta mais determinista ou menos aberta, enquanto temperaturas mais altas podem levar a resultados mais diversos ou criativos. Uma temperatura de 0 é determinista, o que significa que a resposta de maior probabilidade é sempre selecionada.
+topK:o parâmetro topK muda a forma como o modelo seleciona tokens para saída. Um topK de 1 significa que o token selecionado é o mais provável entre todos os tokens no vocabulário do modelo (também chamado de decodificação gananciosa), enquanto um topK de 3 significa que o próximo token é selecionado entre os três mais prováveis usando a temperatura. Em cada etapa da seleção de tokens, são amostrados os tokens topK com as maiores probabilidades. Em seguida, os tokens são filtrados com base em topP, com o token final selecionado usando a amostragem de temperatura.
+topP:o parâmetro topP muda a forma como o modelo seleciona tokens para saída. Os tokens são selecionados do mais ao menos provável até que a soma das probabilidades seja igual ao valor topP. Por exemplo, se os tokens A, B e C tiverem uma probabilidade de 0,3, 0,2 e 0,1 e o valor de topP for 0,5, o modelo vai selecionar A ou B como o próximo token usando a temperatura e excluir C como candidato. O valor padrão de topP é 0,95.
+stop_sequences:define uma sequência de parada para informar ao modelo que pare de gerar conteúdo. Uma sequência de parada pode ser qualquer sequência de caracteres. Evite usar uma sequência de caracteres que possa aparecer no conteúdo gerado.
+Tipos de comandos
+Dependendo do nível de informações contextuais contidas neles, os comandos são classificados em três tipos gerais.
+Comandos zero-shot
+Esses comandos não contêm exemplos para o modelo replicar. Os comandos zero-shot mostram essencialmente a capacidade do modelo de concluir o comando sem nenhum exemplo ou informação adicional. Isso significa que o modelo precisa confiar no conhecimento preexistente para gerar uma resposta plausível.
+Estes são alguns padrões de comando zero-shot usados com frequência:
+Conteúdo das instruções
+<Overall instruction>
+<Content to operate on>
+Por exemplo,
+Summarize the following into two sentences at the third-grade level:
+
+Hummingbirds are the smallest birds in the world, and they are also one of the
+most fascinating. They are found in North and South America, and they are known
+for their long, thin beaks and their ability to fly at high speeds.
+
+Hummingbirds are made up of three main parts: the head, the body, and the tail.
+The head is small and round, and it contains the eyes, the beak, and the brain.
+The body is long and slender, and it contains the wings, the legs, and the
+heart. The tail is long and forked, and it helps the hummingbird to balance
+while it is flying.
+
+Hummingbirds are also known for their coloration. They come in a variety of
+colors, including green, blue, red, and purple. Some hummingbirds are even able
+to change their color!
+
+Hummingbirds are very active creatures. They spend most of their time flying,
+and they are also very good at hovering. Hummingbirds need to eat a lot of food
+in order to maintain their energy, and they often visit flowers to drink nectar.
+
+Hummingbirds are amazing creatures. They are small, but they are also very
+powerful. They are beautiful, and they are very important to the ecosystem.
+Instruction-content-instruction
+<Overall instruction or context setting>
+<Content to operate on>
+<Final instruction>
+Por exemplo,
+Here is some text I'd like you to summarize:
+
+Hummingbirds are the smallest birds in the world, and they are also one of the
+most fascinating. They are found in North and South America, and they are known
+for their long, thin beaks and their ability to fly at high speeds. Hummingbirds
+are made up of three main parts: the head, the body, and the tail. The head is
+small and round, and it contains the eyes, the beak, and the brain. The body is
+long and slender, and it contains the wings, the legs, and the heart. The tail
+is long and forked, and it helps the hummingbird to balance while it is flying.
+Hummingbirds are also known for their coloration. They come in a variety of
+colors, including green, blue, red, and purple. Some hummingbirds are even able
+to change their color! Hummingbirds are very active creatures. They spend most
+of their time flying, and they are also very good at hovering. Hummingbirds need
+to eat a lot of food in order to maintain their energy, and they often visit
+flowers to drink nectar. Hummingbirds are amazing creatures. They are small, but
+they are also very powerful. They are beautiful, and they are very important to
+the ecosystem.
+
+Summarize it in two sentences at the third-grade reading level.
+Continuação. Às vezes, o modelo pode continuar o texto sem nenhuma instrução. Por exemplo, aqui está um comando zero-shot em que o modelo pretende continuar a entrada fornecida:
+Once upon a time, there was a little sparrow building a nest in a farmer's
+barn. This sparrow
+Use comandos de zero-shot para gerar formatos de texto criativos, como poemas, código, scripts, peças musicais, e-mails ou cartas.
+Comandos one-shot
+Esses comandos fornecem ao modelo um único exemplo para replicar e continuar o padrão. Isso permite a geração de respostas previsíveis a partir do modelo.
+Por exemplo, você pode gerar combinações de alimentos como:
+Food: Apple
+Pairs with: Cheese
+Food: Pear
+Pairs with:
+Comandos de poucos disparos (few-shot)
+Esses comandos fornecem ao modelo vários exemplos para replicar. Use instruções de poucas palavras para concluir tarefas complicadas, como sintetizar dados com base em um padrão.
+Um exemplo de comando pode ser:
+Generate a grocery shopping list for a week for one person. Use the JSON format
+given below.
+{"item": "eggs", "quantity": "6"}
+{"item": "bread", "quantity": "one loaf"}
+Modelos generativos em segundo plano
+Esta seção tem como objetivo responder à pergunta: Há aleatoriedade nas respostas dos modelos generativos ou elas são determinísticas?
+A resposta curta é sim para as duas. Quando você solicita um modelo generativo, uma resposta de texto é gerada em duas etapas. Na primeira fase, o modelo generativo processa o comando de entrada e gera uma distribuição de probabilidade sobre os possíveis tokens (palavras) que provavelmente serão mostrados em seguida. Por exemplo, se você pedir com o texto de entrada "O cachorro pulou sobre o ... ", o modelo generativo vai produzir uma matriz de palavras prováveis:
+[("fence", 0.77), ("ledge", 0.12), ("blanket", 0.03), ...]
+Esse processo é determinista. Um modelo generativo vai produzir essa mesma distribuição sempre que o mesmo texto de comando for inserido.
+Na segunda etapa, o modelo generativo converte essas distribuições em respostas de texto reais usando uma das várias estratégias de decodificação. Uma estratégia de decodificação simples pode selecionar o token mais provável em cada período. Esse processo sempre seria determinístico. No entanto, você pode optar por gerar uma resposta por amostragem aleatória na distribuição retornada pelo modelo. Esse processo seria estocástico (aleatório). Controle o grau de aleatoriedade permitido nesse processo de decodificação, definindo a temperatura. Uma temperatura de 0 significa que apenas os tokens mais prováveis são selecionados, e não há aleatoriedade. Por outro lado, uma temperatura alta injeta um alto grau de aleatoriedade nos tokens selecionados pelo modelo, levando a respostas mais inesperadas e surpreendentes.
+Leitura adicional
+Agora que você tem uma compreensão mais profunda dos comandos e modelos generativos, tente escrever seus próprios comandos usando o Google AI Studio.
+Consulte as diretrizes de comandos para saber mais sobre as práticas recomendadas para criar comandos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

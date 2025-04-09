@@ -1,0 +1,113 @@
+URL: https://ai.google.dev/gemini-api/docs/grounding/search-suggestions
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Tutorial de aterramento
+Usar as sugestões de pesquisa do Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Usar as sugestões de pesquisa do Google
+Nesta página
+Requisitos para sugestões de pesquisa do Google
+Requisitos de exibição
+Comportamento ao tocar
+Código para implementar uma sugestão da Pesquisa Google
+A seguir
+Para usar o embasamento na Pesquisa Google, ative as sugestões da Pesquisa Google. Elas ajudam os usuários a encontrar resultados da pesquisa correspondentes a uma resposta embasada.
+Especificamente, é necessário mostrar as consultas de pesquisa incluídas nos metadados da resposta embasada. A resposta inclui:
+content: resposta gerada pelo LLM
+webSearchQueries: as consultas a serem usadas para as sugestões da Pesquisa Google
+Por exemplo, no snippet de código a seguir, o Gemini responde a um comando baseado na Pesquisa Google que pergunta sobre um tipo de planta tropical.
+"predictions": [
+  {
+    "content": "Monstera is a type of vine that thrives in bright indirect light…",
+    "groundingMetadata": {
+      "webSearchQueries": ["What's a monstera?"],
+    }
+  }
+]
+Use as Sugestões de pesquisa Google para mostrar essa saída.
+Requisitos para sugestões de pesquisa do Google
+O que fazer:
+mostrar a sugestão de pesquisa exatamente como fornecida, sem modificações, em conformidade com os requisitos de exibição;
+Direcione os usuários diretamente para a página de resultados da Pesquisa Google (SRP) quando eles interagiarem com a sugestão de pesquisa.
+O que não fazer:
+Inclua telas intersticiais ou etapas adicionais entre o toque do usuário e a exibição do SRP.
+Mostre outros resultados ou sugestões da pesquisa ao lado da Sugestão de pesquisa ou da resposta do LLM fundamentada associada.
+Requisitos de exibição
+Mostre a sugestão de pesquisa exatamente como ela foi fornecida e não faça modificações nas cores, fontes ou aparência. Confira se a sugestão de pesquisa é renderizada conforme especificado nos modelos a seguir, incluindo os modos claro e escuro:
+Sempre que uma resposta fundamentada for exibida, a sugestão de pesquisa Google correspondente vai permanecer visível.
+Branding: é necessário seguir rigorosamente as Diretrizes do Google para o uso de características da marca do Google por terceiros.
+As sugestões da Pesquisa Google precisam ter, no mínimo, a largura total da resposta embasada.
+Comportamento ao tocar
+Quando um usuário toca no ícone, ele é direcionado para uma página de resultados da Pesquisa Google (SRP) com o termo de pesquisa exibido no ícone. O SRP pode ser aberto no navegador no app ou em um app de navegador separado. É importante não minimizar, remover ou obstruir a exibição do SRP de maneira alguma. O modelo animado a seguir ilustra a interação do toque para o SRP.
+Código para implementar uma sugestão da Pesquisa Google
+Quando você usa a API para fundamentar uma resposta à pesquisa, a resposta do modelo fornece estilo HTML e CSS compatível no campo renderedContent que você implementa para mostrar sugestões de pesquisa no seu aplicativo. Para conferir um exemplo da resposta da API, consulte a seção de resposta em Embasamento com a Pesquisa Google.
+Observação: o HTML e o CSS fornecidos na resposta da API se adaptam automaticamente às configurações do dispositivo do usuário, sendo exibido no modo claro ou escuro com base na preferência do usuário indicada por @media(prefers-color-scheme).
+A seguir
+Saiba como criar um chat interativo.
+Saiba como usar o Gemini com segurança e responsabilidade.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

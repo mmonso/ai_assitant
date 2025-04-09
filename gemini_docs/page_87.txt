@@ -1,0 +1,100 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=tr
+
+Modeller
+/
+Türkçe
+Oturum aç
+Gemini API belgeleri
+API Referansı
+Tarif Defteri
+Genel bakış
+Başlama
+Hızlı Başlangıç
+API anahtarları
+Kütüphaneler
+Sürüm notları
+OpenAI uyumluluğu
+Geliştirici forumu
+Modeller
+Tüm modeller
+Fiyatlandırma
+Hız sınırları
+Fatura bilgisi
+İşlemler
+Metin oluşturma
+Resim üretimi
+Vision
+Sesleri anlama
+Uzun bağlam
+Kod yürütme
+Yapılandırılmış çıkış
+Düşünüyorum
+İşlev çağırma
+Belge anlama
+Google Arama temeli
+İnce ayar
+Yerleşimler
+Rehberler
+Canlı API
+Bağlamı önbelleğe alma
+Hızlı yanıt mühendisliği
+Jeton sayımı
+Güvenlik
+Ek kaynaklar
+Araştırma için Gemini
+Gemini Akademik Programı
+Kullanım örnekleri
+Uygulamalar
+Sorun giderme
+API sorunlarını giderme
+AI Studio ile ilgili sorunları giderme
+Google Workspace
+Hukuk
+Hizmet şartları
+Kullanılabildiği bölgeler
+Ek kullanım politikaları
+En gelişmiş modelimiz Gemini 2.5 Pro Experimental kullanıma sunuldu. Daha fazla bilgi
+Bu sayfa, Cloud Translation API ile çevrilmiştir.
+Switch to English
+Ana Sayfa
+Gemini API
+Modeller
+Gemini Developer API
+Gemini API anahtarı alma
+Gemini API anahtarı edinin ve ilk API isteğinizi birkaç dakika içinde gönderin.
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+Modellerle tanışın
+Google AI Studio'da Gemini'yi kullanma
+2.5 Pro experiment
+Karmaşık akıl yürütme ve daha pek çok özellik içeren en güçlü düşünme modelimiz
+2.0 Flash spark
+Yeni nesil özellikleri ve gelişmiş özellikleri olan en yeni çok modlu modelimiz
+2.0 Flash-Lite bolt
+Yüksek sıklıktaki görevler için mükemmel performans sunan en hızlı ve en uygun maliyetli çok modlu modelimiz
+API'yi keşfetme
+Yerel Görüntü Üretme
+Gemini 2.0 Flash ile yerel olarak yüksek bağlama dayalı resimler oluşturun ve düzenleyin.
+Uzun bağlamı keşfetme
+Gemini modellerine milyonlarca jeton girin ve yapılandırılmamış resimlerden, videolardan ve dokümanlardan bilgi edinin.
+Yapılandırılmış çıkışlar oluşturma
+Gemini'yi, otomatik işlemeye uygun yapılandırılmış bir veri biçimi olan JSON ile yanıt vermeye zorlama.
+Gemini API ile uygulama geliştirmeye başlama
+Başlayın
+Aksi belirtilmediği sürece bu sayfanın içeriği Creative Commons Atıf 4.0 Lisansı altında ve kod örnekleri Apache 2.0 Lisansı altında lisanslanmıştır. Ayrıntılı bilgi için Google Developers Site Politikaları'na göz atın. Java, Oracle ve/veya satış ortaklarının tescilli ticari markasıdır.
+Son güncelleme tarihi: 2025-04-04 UTC.
+Şartlar
+Gizlilik
+Türkçe

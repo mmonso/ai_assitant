@@ -1,0 +1,84 @@
+URL: https://ai.google.dev/gemini-api/docs/troubleshoot-ai-studio
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Resolver problemas do Google AI Studio
+Nesta página
+Entenda os erros 403 de acesso restrito
+Resolver respostas "Sem conteúdo" no Google AI Studio
+Verificar o uso e os limites de tokens
+Esta página fornece sugestões para solucionar problemas do Google AI Studio se você encontrar problemas.
+Entenda os erros 403 de acesso restrito
+Se aparecer o erro 403 "Acesso restrito", você está usando o Google AI Studio em um maneira que não siga os Termos de Serviço. Um motivo comum é Você não está em uma região com suporte.
+Resolver respostas "Sem conteúdo" no Google AI Studio
+Uma mensagem warning Sem conteúdo aparece em Google AI Studio se o conteúdo for bloqueado por algum motivo. Para conferir mais detalhes, mantenha o ponteiro do mouse sobre Nenhum conteúdo e clique warning Segurança.
+Se a resposta foi bloqueada devido às configurações de segurança e você considerou os riscos de segurança do caso de uso, pode modificar configurações de segurança para influenciar a resposta retornada.
+Se a resposta estiver bloqueada, mas não devido às configurações de segurança, a consulta ou pode violar os Termos de Serviço ou não ter suporte de alguma outra forma.
+Verificar o uso e os limites de tokens
+Quando um comando estiver aberto, clique no botão Text Preview na parte de baixo do mostra os tokens atuais usados para o conteúdo do comando e o contagem máxima de tokens para o modelo que está sendo usado.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

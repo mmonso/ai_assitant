@@ -1,0 +1,331 @@
+URL: https://ai.google.dev/gemini-api/docs/tokens
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Entender e contar tokens
+Nesta página
+Sobre os tokens
+Testar a contagem de tokens em um Colab
+Janelas de contexto
+Contar Tokens
+Contar tokens de texto
+Contagem de tokens de multiturno (chat)
+Contar tokens multimodais
+Instruções e ferramentas do sistema
+Python
+JavaScript
+Go
+
+O Gemini e outros modelos de IA generativa processam a entrada e a saída com uma granularidade chamada token.
+Sobre os tokens
+Os tokens podem ser caracteres únicos, como z, ou palavras inteiras, como cat. Palavras longas são divididas em vários tokens. O conjunto de todos os tokens usados pelo modelo é chamado de vocabulário, e o processo de dividir o texto em tokens é chamado de tokenização.
+Para modelos do Gemini, um token equivale a cerca de quatro caracteres. 100 tokens equivalem a cerca de 60 a 80 palavras em inglês.
+Quando o faturamento está ativado, o custo de uma chamada para a API Gemini é determinado em parte pelo número de tokens de entrada e saída. Portanto, saber como contar tokens pode ser útil.
+Testar a contagem de tokens em um Colab
+Você pode tentar contar tokens usando um Colab.
+Testar um notebook do Colab
+Acessar o notebook no GitHub
+Janelas de contexto
+Os modelos disponíveis na API Gemini têm janelas de contexto que são medidas em tokens. A janela de contexto define quanta entrada você pode fornecer e quanta saída o modelo pode gerar. É possível determinar o tamanho da janela de contexto chamando o endpoint getModels ou confira a documentação de modelos.
+No exemplo abaixo, o modelo gemini-1.5-flash tem um limite de entrada de cerca de 1.000.000 tokens e um limite de saída de cerca de 8.000 tokens, o que significa que uma janela de contexto é de 1.000.000 tokens.
+import google.generativeai as genai
+
+model_info = genai.get_model("models/gemini-1.5-flash")
+
+# Returns the "context window" for the model,
+# which is the combined input and output token limits.
+print(f"{model_info.input_token_limit=}")
+print(f"{model_info.output_token_limit=}")
+# ( input_token_limit=30720, output_token_limit=2048 )
+count_tokens.py
+Contar Tokens
+Todas as entradas e saídas da API Gemini são tokenizadas, incluindo texto, arquivos de imagem e outras modalidades que não são de texto.
+É possível contar tokens das seguintes maneiras:
+Chame count_tokens com a entrada da solicitação.
+Retorna o número total de tokens na entrada somente. Você pode fazer essa chamada antes de enviar a entrada para o modelo para verificar o tamanho das solicitações.
+Use o atributo usage_metadata no objeto response depois de chamar generate_content.
+Isso retorna o número total de tokens na entrada e na saída: total_token_count.
+Ele também retorna as contagens de tokens de entrada e saída separadamente: prompt_token_count (tokens de entrada) e candidates_token_count (tokens de saída).
+Contar tokens de texto
+Se você chamar count_tokens com uma entrada somente de texto, ela retornará a contagem de tokens do texto em somente a entrada (total_tokens). É possível fazer essa chamada antes de chamar generate_content para verificar o tamanho das suas solicitações.
+Outra opção é chamar generate_content e usar o atributo usage_metadata no objeto response para receber o seguinte:
+As contagens de tokens separadas da entrada (prompt_token_count) e da saída (candidates_token_count)
+O número total de tokens na entrada e na saída (total_token_count).
+import google.generativeai as genai
+
+model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+prompt = "The quick brown fox jumps over the lazy dog."
+
+# Call `count_tokens` to get the input token count (`total_tokens`).
+print("total_tokens: ", model.count_tokens(prompt))
+# ( total_tokens: 10 )
+
+response = model.generate_content(prompt)
+
+# On the response for `generate_content`, use `usage_metadata`
+# to get separate input and output token counts
+# (`prompt_token_count` and `candidates_token_count`, respectively),
+# as well as the combined token count (`total_token_count`).
+print(response.usage_metadata)
+# ( prompt_token_count: 11, candidates_token_count: 73, total_token_count: 84 )
+count_tokens.py
+Contagem de tokens de multiturno (chat)
+Se você chamar count_tokens com o histórico de chat, ele vai retornar a contagem total de tokens do texto de cada função no chat (total_tokens).
+Outra opção é chamar send_message e usar o atributo usage_metadata no objeto response para receber o seguinte:
+As contagens de tokens separadas da entrada (prompt_token_count) e da saída (candidates_token_count)
+O número total de tokens na entrada e na saída (total_token_count)
+Para entender o tamanho da sua próxima vez de conversa, você precisa adicioná-la ao histórico quando chamar count_tokens.
+import google.generativeai as genai
+
+model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+chat = model.start_chat(
+    history=[
+        {"role": "user", "parts": "Hi my name is Bob"},
+        {"role": "model", "parts": "Hi Bob!"},
+    ]
+)
+# Call `count_tokens` to get the input token count (`total_tokens`).
+print(model.count_tokens(chat.history))
+# ( total_tokens: 10 )
+
+response = chat.send_message(
+    "In one sentence, explain how a computer works to a young child."
+)
+
+# On the response for `send_message`, use `usage_metadata`
+# to get separate input and output token counts
+# (`prompt_token_count` and `candidates_token_count`, respectively),
+# as well as the combined token count (`total_token_count`).
+print(response.usage_metadata)
+# ( prompt_token_count: 25, candidates_token_count: 21, total_token_count: 46 )
+
+from google.generativeai.types.content_types import to_contents
+
+# You can call `count_tokens` on the combined history and content of the next turn.
+print(model.count_tokens(chat.history + to_contents("What is the meaning of life?")))
+# ( total_tokens: 56 )
+count_tokens.py
+Contar tokens multimodais
+Todas as entradas na API Gemini são tokenizadas, incluindo texto, arquivos de imagem e outras modalidades não textuais. Confira os seguintes pontos-chave de alto nível sobre a tokenização de entrada multimodal durante o processamento pela API Gemini:
+Com o Gemini 2.0, as entradas de imagem com as duas dimensões <=384 pixels são contadas como 258 tokens. As imagens maiores em uma ou ambas as dimensões são cortadas e redimensionadas conforme necessário em blocos de 768 x 768 pixels, cada um contado como 258 tokens. Antes do Gemini 2.0, as imagens usavam 258 tokens fixos.
+Os arquivos de vídeo e áudio são convertidos em tokens nas seguintes taxas fixas: vídeo a 263 tokens por segundo e áudio a 32 tokens por segundo.
+Arquivos de imagem
+Se você chamar count_tokens com uma entrada de texto e imagem, ela retornará a contagem de tokens combinada do texto e da imagem na entrada apenas (total_tokens). Você pode fazer essa chamada antes de chamar generate_content para verificar o tamanho das solicitações. Também é possível chamar count_tokens no texto e no arquivo separadamente.
+Outra opção é chamar generate_content e usar o atributo usage_metadata no objeto response para receber o seguinte:
+As contagens de tokens separadas da entrada (prompt_token_count) e da saída (candidates_token_count)
+O número total de tokens na entrada e na saída (total_token_count)
+Observação: você vai receber a mesma contagem de tokens se usar um arquivo enviado com a API File ou fornecer o arquivo como dados inline.
+Exemplo que usa uma imagem enviada pela API File:
+import google.generativeai as genai
+
+model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+prompt = "Tell me about this image"
+your_image_file = genai.upload_file(path=media / "organ.jpg")
+
+# Call `count_tokens` to get the input token count
+# of the combined text and file (`total_tokens`).
+# An image's display or file size does not affect its token count.
+# Optionally, you can call `count_tokens` for the text and file separately.
+print(model.count_tokens([prompt, your_image_file]))
+# ( total_tokens: 263 )
+
+response = model.generate_content([prompt, your_image_file])
+response.text
+# On the response for `generate_content`, use `usage_metadata`
+# to get separate input and output token counts
+# (`prompt_token_count` and `candidates_token_count`, respectively),
+# as well as the combined token count (`total_token_count`).
+print(response.usage_metadata)
+# ( prompt_token_count: 264, candidates_token_count: 80, total_token_count: 345 )
+count_tokens.py
+Exemplo que fornece a imagem como dados inline:
+import google.generativeai as genai
+
+import PIL.Image
+
+model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+prompt = "Tell me about this image"
+your_image_file = PIL.Image.open(media / "organ.jpg")
+
+# Call `count_tokens` to get the input token count
+# of the combined text and file (`total_tokens`).
+# An image's display or file size does not affect its token count.
+# Optionally, you can call `count_tokens` for the text and file separately.
+print(model.count_tokens([prompt, your_image_file]))
+# ( total_tokens: 263 )
+
+response = model.generate_content([prompt, your_image_file])
+
+# On the response for `generate_content`, use `usage_metadata`
+# to get separate input and output token counts
+# (`prompt_token_count` and `candidates_token_count`, respectively),
+# as well as the combined token count (`total_token_count`).
+print(response.usage_metadata)
+# ( prompt_token_count: 264, candidates_token_count: 80, total_token_count: 345 )
+count_tokens.py
+Arquivos de áudio ou vídeo
+O áudio e o vídeo são convertidos em tokens com as seguintes taxas fixas:
+Vídeo: 263 tokens por segundo
+Áudio: 32 tokens por segundo
+Se você chamar count_tokens com uma entrada de texto e vídeo/áudio, ela retornará a contagem de tokens combinada do texto e do arquivo de vídeo/áudio apenas na entrada (total_tokens). É possível fazer essa chamada antes de chamar generate_content para verificar o tamanho das suas solicitações. Também é possível chamar count_tokens no texto e no arquivo separadamente.
+Outra opção é chamar generate_content e usar o atributo usage_metadata no objeto response para receber o seguinte:
+As contagens de tokens separadas da entrada (prompt_token_count) e da saída (candidates_token_count)
+O número total de tokens na entrada e na saída (total_token_count)
+Observação: você vai receber a mesma contagem de tokens se usar um arquivo enviado com a API File ou fornecer o arquivo como dados inline.
+import google.generativeai as genai
+
+import time
+
+model = genai.GenerativeModel("models/gemini-1.5-flash")
+
+prompt = "Tell me about this video"
+your_file = genai.upload_file(path=media / "Big_Buck_Bunny.mp4")
+
+# Videos need to be processed before you can use them.
+while your_file.state.name == "PROCESSING":
+    print("processing video...")
+    time.sleep(5)
+    your_file = genai.get_file(your_file.name)
+
+# Call `count_tokens` to get the input token count
+# of the combined text and video/audio file (`total_tokens`).
+# A video or audio file is converted to tokens at a fixed rate of tokens per second.
+# Optionally, you can call `count_tokens` for the text and file separately.
+print(model.count_tokens([prompt, your_file]))
+# ( total_tokens: 300 )
+
+response = model.generate_content([prompt, your_file])
+
+# On the response for `generate_content`, use `usage_metadata`
+# to get separate input and output token counts
+# (`prompt_token_count` and `candidates_token_count`, respectively),
+# as well as the combined token count (`total_token_count`).
+print(response.usage_metadata)
+# ( prompt_token_count: 301, candidates_token_count: 60, total_token_count: 361 )
+count_tokens.py
+Instruções e ferramentas do sistema
+As instruções e ferramentas do sistema também são contabilizadas na contagem total de tokens da entrada.
+Se você usar instruções do sistema, a contagem de total_tokens vai aumentar para refletir a adição de system_instruction.
+import google.generativeai as genai
+
+model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+
+prompt = "The quick brown fox jumps over the lazy dog."
+
+print(model.count_tokens(prompt))
+# total_tokens: 10
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash", system_instruction="You are a cat. Your name is Neko."
+)
+
+# The total token count includes everything sent to the `generate_content` request.
+# When you use system instructions, the total token count increases.
+print(model.count_tokens(prompt))
+# ( total_tokens: 21 )
+count_tokens.py
+Se você usar a chamada de função, a contagem de total_tokens vai aumentar para refletir a adição de tools.
+import google.generativeai as genai
+
+model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+
+prompt = "I have 57 cats, each owns 44 mittens, how many mittens is that in total?"
+
+print(model.count_tokens(prompt))
+# ( total_tokens: 22 )
+
+def add(a: float, b: float):
+    """returns a + b."""
+    return a + b
+
+def subtract(a: float, b: float):
+    """returns a - b."""
+    return a - b
+
+def multiply(a: float, b: float):
+    """returns a * b."""
+    return a * b
+
+def divide(a: float, b: float):
+    """returns a / b."""
+    return a / b
+
+model = genai.GenerativeModel(
+    "models/gemini-1.5-flash-001", tools=[add, subtract, multiply, divide]
+)
+
+# The total token count includes everything sent to the `generate_content` request.
+# When you use tools (like function calling), the total token count increases.
+print(model.count_tokens(prompt))
+# ( total_tokens: 206 )
+count_tokens.py
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-08 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

@@ -1,0 +1,166 @@
+URL: https://ai.google.dev/gemini-api/docs/model-tuning/tutorial
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Introdução ao ajuste
+Tutorial de ajuste
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Tutorial de ajuste
+Nesta página
+Limitações
+Ajustar conjuntos de dados
+Modelos ajustados
+Listar modelos ajustados
+Criar um modelo ajustado
+Testar o modelo
+Não implementado
+Python
+REST
+Este tutorial vai ajudar você a começar a usar o serviço de ajuste da API Gemini com o SDK do Python ou a API REST usando o curl. Os exemplos mostram como ajustar o modelo de texto por trás do serviço de geração de texto da API Gemini.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Testar um notebook do Colab
+Acessar o notebook no GitHub
+Limitações
+Antes de ajustar um modelo, considere as seguintes limitações:
+Ajustar conjuntos de dados
+O ajuste fino dos conjuntos de dados do Gemini 1.5 Flash tem as seguintes limitações:
+O tamanho máximo de entrada por exemplo é de 40.000 caracteres.
+O tamanho máximo de saída por exemplo é de 5.000 caracteres.
+Somente exemplos de pares de entrada e saída são aceitos. Não há suporte para conversas de vários turnos no estilo de chat.
+Modelos ajustados
+Os modelos ajustados têm as seguintes limitações:
+O limite de entrada de um modelo Gemini 1.5 Flash ajustado é de 40.000 caracteres.
+O modo JSON não é compatível com modelos ajustados.
+Somente a entrada de texto é aceita.
+Listar modelos ajustados
+É possível verificar os modelos ajustados com o método tunedModels.list.
+from google import genai
+from google.genai import types
+client = genai.Client() # Get the key from the GOOGLE_API_KEY env variable
+
+for model_info in client.models.list():
+    print(model_info.name)
+Criar um modelo ajustado
+Para criar um modelo ajustado, você precisa transmitir o dataset para o modelo no método tunedModels.create.
+Neste exemplo, você vai ajustar um modelo para gerar o próximo número na sequência. Por exemplo, se a entrada for 1, o modelo vai gerar 2. Se a entrada for one hundred, a saída será one hundred one.
+# create tuning model
+training_dataset =  [
+    ["1", "2"],
+    ["3", "4"],
+    ["-3", "-2"],
+    ["twenty two", "twenty three"],
+    ["two hundred", "two hundred one"],
+    ["ninety nine", "one hundred"],
+    ["8", "9"],
+    ["-98", "-97"],
+    ["1,000", "1,001"],
+    ["10,100,000", "10,100,001"],
+    ["thirteen", "fourteen"],
+    ["eighty", "eighty one"],
+    ["one", "two"],
+    ["three", "four"],
+    ["seven", "eight"],
+]
+training_dataset=types.TuningDataset(
+        examples=[
+            types.TuningExample(
+                text_input=i,
+                output=o,
+            )
+            for i,o in training_dataset
+        ],
+    )
+tuning_job = client.tunings.tune(
+    base_model='models/gemini-1.5-flash-001-tuning',
+    training_dataset=training_dataset,
+    config=types.CreateTuningJobConfig(
+        epoch_count= 5,
+        batch_size=4,
+        learning_rate=0.001,
+        tuned_model_display_name="test tuned model"
+    )
+)
+
+# generate content with the tuned model
+response = client.models.generate_content(
+    model=tuning_job.tuned_model.model,
+    contents='III',
+)
+
+print(response.text)
+Os valores ideais para a contagem de épocas, o tamanho do lote e a taxa de aprendizado dependem do seu conjunto de dados e de outras restrições do caso de uso. Para saber mais sobre esses valores, consulte Configurações avançadas de ajuste e Hiperparâmetros.
+Dica: para uma introdução mais geral a esses hiperparâmetros, consulte Regressão linear: hiperparâmetros no Curso intensivo de machine learning.
+Testar o modelo
+Use o método tunedModels.generateContent e especifique o nome do modelo ajustado para testar a performance dele.
+response = client.models.generate_content(
+    model=tuning_job.tuned_model.model,
+    contents='III'
+)
+Não implementado
+Alguns recursos (relatórios de progresso, atualização da descrição e exclusão de modelos ajustados) ainda não foram implementados no novo SDK.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

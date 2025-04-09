@@ -1,8 +1,8 @@
 // --- API Client Functions ---
 
 /**
- * Fetches the list of conversations from the backend.
- * @returns {Promise<Array>} A promise that resolves with the list of conversations.
+ * Fetches the list of conversations and folders from the backend.
+ * @returns {Promise<{conversations: Array, folders: Array}>} A promise that resolves with an object containing lists of conversations and folders.
  * @throws {Error} If the fetch fails or the response is not ok.
  */
 export async function loadConversationList() {
@@ -12,7 +12,11 @@ export async function loadConversationList() {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    return data.conversations || [];
+    // Return both conversations and folders, defaulting to empty arrays if missing
+    return {
+        conversations: data.conversations || [],
+        folders: data.folders || []
+    };
 }
 
 /**
@@ -58,7 +62,8 @@ export async function sendMessage(formData) { // Changed parameter to formData
     if (data.error) { // Check for application-level errors returned in JSON
         throw new Error(data.error);
     }
-    return data; // Contains { response, new_conversation_id?, new_conversation_title? }
+    // Contains { response, new_conversation_id?, new_conversation_title?, new_conversation_folder_id? }
+    return data;
 }
 
 /**
@@ -132,6 +137,90 @@ export async function deleteConversation(conversationId) {
     }
     return await response.json();
 }
+
+
+// --- Folder API Functions ---
+
+/**
+ * Creates a new folder via the API.
+ * @param {string} name - The desired name for the new folder.
+ * @returns {Promise<object>} A promise that resolves with the success message and new folder details.
+ * @throws {Error} If the fetch fails or the backend returns an error (e.g., duplicate name).
+ */
+export async function createFolder(name) {
+    console.log(`API: Creating folder "${name}"`);
+    const response = await fetch(`/api/chat/folders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name }),
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to create folder: ${response.statusText}`);
+    }
+    return await response.json(); // Returns { message, folder_id, name }
+}
+
+/**
+ * Renames a folder via the API.
+ * @param {string|number} folderId - The ID of the folder to rename.
+ * @param {string} newName - The desired new name.
+ * @returns {Promise<object>} A promise that resolves with the success message.
+ * @throws {Error} If the fetch fails or the backend returns an error.
+ */
+export async function renameFolder(folderId, newName) {
+    console.log(`API: Renaming folder ${folderId} to "${newName}"`);
+    const response = await fetch(`/api/chat/folders/${folderId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName }),
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to rename folder: ${response.statusText}`);
+    }
+    return await response.json();
+}
+
+/**
+ * Deletes a folder via the API.
+ * @param {string|number} folderId - The ID of the folder to delete.
+ * @returns {Promise<object>} A promise that resolves with the success message.
+ * @throws {Error} If the fetch fails or the backend returns an error.
+ */
+export async function deleteFolder(folderId) {
+    console.log(`API: Deleting folder ${folderId}`);
+    const response = await fetch(`/api/chat/folders/${folderId}`, { method: 'DELETE' });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to delete folder: ${response.statusText}`);
+    }
+    return await response.json();
+}
+
+/**
+ * Moves a conversation to a specific folder (or removes it from folders).
+ * @param {string|number} conversationId - The ID of the conversation to move.
+ * @param {string|number|null} folderId - The ID of the target folder, or null to remove from any folder.
+ * @returns {Promise<object>} A promise that resolves with the success message.
+ * @throws {Error} If the fetch fails or the backend returns an error.
+ */
+export async function moveConversationToFolder(conversationId, folderId) {
+    console.log(`API: Moving conversation ${conversationId} to folder ${folderId}`);
+    const response = await fetch(`/api/chat/conversations/${conversationId}/move`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ folder_id: folderId }), // Send null if folderId is null
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to move conversation: ${response.statusText}`);
+    }
+    return await response.json();
+}
+
+
+// --- Settings Related API Functions ---
 
 /**
  * Fetches the settings modal HTML partial.

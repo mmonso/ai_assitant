@@ -1,0 +1,193 @@
+URL: https://ai.google.dev/gemini-api/docs/models
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Modelos do Gemini
+Nesta página
+Variantes de modelo
+Pré-lançamento do Gemini 2.5 Pro
+Gemini 2.0 Flash
+Gemini 2.0 Flash-Lite
+Gemini 1.5 Flash
+Gemini 1.5 Flash-8B
+Gemini 1.5 Pro
+Imagem 3
+2.5 Pro experiment
+Nosso modelo de pensamento mais poderoso, com precisão máxima de resposta e desempenho de ponta
+Inserir áudio, imagens, vídeo e texto e receber respostas em texto
+Resolva problemas difíceis, analise grandes bancos de dados e muito mais
+Ideal para programação, raciocínio e compreensão multimodais complexos
+2.0 Flash spark
+Nosso modelo multimodal mais recente, com recursos de última geração e recursos aprimorados
+Inserir áudio, imagens, vídeo e texto e receber respostas em texto
+Gerar código e imagens, extrair dados, analisar arquivos, gerar gráficos e muito mais
+Baixa latência, desempenho aprimorado e recursos desenvolvidos para oferecer experiências de agentes
+2.0 Flash-Lite
+Um modelo Gemini 2.0 Flash otimizado para eficiência de custo e baixa latência
+Inserir áudio, imagens, vídeo e texto e receber respostas em texto
+Supera o Flash 1.5 na maioria dos comparativos de mercado
+Uma janela de contexto com 1 milhão de tokens e entrada multimodal, como o Flash 2.0
+Variantes de modelo
+A API Gemini oferece diferentes modelos otimizados para casos de uso específicos. Confira uma breve descrição das variantes disponíveis do Gemini:
+Variante de modelo Entrada(s) Saída Otimizado para
+Pré-lançamento do Gemini 2.5 Pro
+gemini-2.5-pro-preview-03-25 Áudio, imagens, vídeos e texto Texto Pensamento e raciocínio aprimorados, compreensão multimodal, programação avançada e muito mais
+Gemini 2.0 Flash
+gemini-2.0-flash Áudio, imagens, vídeos e texto Texto, imagens (experimental) e áudio (em breve) Recursos, velocidade, pensamento, streaming em tempo real e geração multimodais de última geração
+Gemini 2.0 Flash-Lite
+gemini-2.0-flash-lite Áudio, imagens, vídeos e texto Texto Eficiência de custos e baixa latência
+Gemini 1.5 Flash
+gemini-1.5-flash Áudio, imagens, vídeos e texto Texto Desempenho rápido e versátil em várias tarefas
+Gemini 1.5 Flash-8B
+gemini-1.5-flash-8b Áudio, imagens, vídeos e texto Texto Tarefas de alto volume e menor inteligência
+Gemini 1.5 Pro
+gemini-1.5-pro Áudio, imagens, vídeos e texto Texto Tarefas de raciocínio complexas que exigem mais inteligência
+Incorporação do Gemini
+gemini-embedding-exp Texto Embeddings de textos Como medir a relação entre strings de texto
+Imagen 3
+imagen-3.0-generate-002 Texto Imagens Nosso modelo de geração de imagens mais avançado
+Você pode conferir os limites de taxa de cada modelo na página de limites de taxa.
+Pré-lançamento do Gemini 2.5 Pro
+Gemini 2.0 Flash
+Gemini 2.0 Flash-Lite
+Gemini 1.5 Flash
+Gemini 1.5 Flash-8B
+Gemini 1.5 Pro
+Imagem 3
+Integração experimental do Gemini
+Incorporação de texto e embedding
+AQA
+Consulte os exemplos para conhecer os recursos dessas variações de modelo.
+[*] Um token equivale a cerca de quatro caracteres para modelos do Gemini. 100 tokens equivalem a cerca de 60 a 80 palavras em inglês.
+Padrões de nome de versão do modelo
+Os modelos do Gemini estão disponíveis nas versões de pré-lançamento ou estáveis. No seu código, use um dos formatos de nome de modelo a seguir para especificar qual modelo e versão você quer usar.
+Mais recente:aponta para a versão mais recente do modelo para uma geração e variação especificadas. O modelo subjacente é atualizado regularmente e pode ser uma versão de visualização. Apenas apps de teste exploratório e protótipos devem usar esse alias.
+Para especificar a versão mais recente, use o seguinte padrão: <model>-<generation>-<variation>-latest. Por exemplo, gemini-1.0-pro-latest.
+Versão estável mais recente:aponta para a versão estável mais recente lançada para a geração e variação de modelo especificadas.
+Para especificar a versão estável mais recente, use o seguinte padrão: <model>-<generation>-<variation>. Por exemplo, gemini-1.0-pro.
+Estável:aponta para um modelo estável específico. Modelos estáveis geralmente não mudam. A maioria dos apps de produção precisa usar um modelo estável específico.
+Para especificar uma versão estável, use o seguinte padrão: <model>-<generation>-<variation>-<version>. Por exemplo, gemini-1.0-pro-001.
+Experimental:aponta para um modelo experimental que pode não ser adequado para uso em produção. Lançamos modelos experimentais para coletar feedback e disponibilizar as nossas atualizações mais recentes aos desenvolvedores rapidamente.
+Para especificar uma versão experimental, use o seguinte padrão: <model>-<generation>-<variation>-<version>. Por exemplo, gemini-2.0-pro-exp-02-05.
+Modelos experimentais
+Além dos modelos prontos para produção, a API Gemini oferece modelos experimentais que podem não ser adequados para uso em produção.
+Lançamos modelos experimentais para coletar feedback, disponibilizar as últimas atualizações aos desenvolvedores rapidamente e destacar o ritmo de inovação do Google. O que aprendemos com os lançamentos experimentais nos ajuda a definir como lançar modelos para um público maior. Um modelo experimental pode ser trocado por outro sem aviso prévio. Não garantimos que um modelo experimental se torne estável no futuro.
+Modelos experimentais anteriores
+À medida que novas versões ou versões estáveis ficam disponíveis, removemos e substituímos modelos experimentais. Você pode encontrar os modelos experimentais anteriores que lançamos na seção a seguir, junto com a versão de substituição:
+Código do modelo Modelo base Versão substituta
+gemini-2.0-pro-exp-02-05 Gemini 2.0 Pro Experimental gemini-2.5-pro-exp-03-25
+gemini-2.0-flash-exp Gemini 2.0 Flash gemini-2.0-flash
+gemini-exp-1206 Gemini 2.0 Pro gemini-2.0-pro-exp-02-05
+gemini-2.0-flash-thinking-exp-1219 Gemini 2.0 Flash Thinking gemini-2.0-flash-thinking-exp-01-21
+gemini-exp-1121 Gemini gemini-exp-1206
+gemini-exp-1114 Gemini gemini-exp-1206
+gemini-1.5-pro-exp-0827 Gemini 1.5 Pro gemini-exp-1206
+gemini-1.5-pro-exp-0801 Gemini 1.5 Pro gemini-exp-1206
+gemini-1.5-flash-8b-exp-0924 Gemini 1.5 Flash-8B gemini-1.5-flash-8b
+gemini-1.5-flash-8b-exp-0827 Gemini 1.5 Flash-8B gemini-1.5-flash-8b
+Idiomas aceitos
+Os modelos do Gemini são treinados para funcionar com os seguintes idiomas:
+Árabe (ar)
+Bengalês (bn)
+Búlgaro (bg)
+Chinês (simplificado e tradicional) (zh)
+Croata (hr)
+República Tcheca (cs)
+Coreano (da)
+Holandês (nl)
+Inglês (en)
+Estoniano (et)
+Finlandês (fi)
+Francês (fr)
+Alemão (de)
+Grego (el)
+Hebraico (iw)
+Hindi (hi)
+Húngaro (hu)
+Indonésio (id)
+Italiano (it)
+Japonês (ja)
+Coreano (ko)
+Letão (lv)
+Lituano (lt)
+Norueguês (no)
+Polonês (pl)
+Português (pt)
+Romeno (ro)
+Russo (ru)
+Sérvio (sr)
+Eslovaco (sk)
+Esloveno (sl)
+Espanhol (es)
+Suaíli (sw)
+Sueco (sv)
+Tailandês (th)
+Turco (tr)
+Ucraniano (uk)
+Vietnamita (vi)
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

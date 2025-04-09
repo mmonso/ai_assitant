@@ -1,0 +1,60 @@
+URL: https://ai.google.dev/edge
+
+Soluções
+/
+Português – Brasil
+Fazer login
+Borda de IA do Google
+MediaPipe
+LiteRT
+Simulador de modelos
+Mais
+Conheça o LiteRT: o ambiente de execução de alto desempenho do Google para IA no dispositivo, antes conhecido como TensorFlow Lite.
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Implantar a IA em aplicativos para dispositivos móveis, Web e incorporados
+Ferramentas e frameworks que alimentam os apps do Google
+Conheça toda a pilha de IA de ponta, com produtos em todos os níveis, de APIs de pouco código a bibliotecas de aceleração específicas de hardware.
+IA generativa
+Integre modelos de imagem e linguagem generativa diretamente aos seus apps com APIs prontas para uso.
+Vision
+Conheça uma grande variedade de tarefas de visão que abrangem segmentação, classificação, detecção, reconhecimento e pontos de referência do corpo.
+Texto e áudio
+Classifique texto e áudio em várias categorias, incluindo idioma, sentimento e suas próprias categorias personalizadas.
+PRIMEIROS PASSOS
+Documentação do app Tarefas
+Encontre todas as tarefas do MediaPipe com pouco código prontas para uso com documentação e exemplos de código.
+Tarefas de IA generativa
+Execute LLMs e modelos de difusão na borda com nossas tarefas de IA generativa do MediaPipe.
+Testar demonstrações
+Conheça nossa biblioteca de tarefas do MediaPipe e teste-as.
+Documentação do Model Maker
+Personalize os modelos nas nossas tarefas do MediaPipe com seus próprios dados.
+Começar
+Vários frameworks
+Converta modelos do JAX, Keras, PyTorch e TensorFlow para execução na borda.
+Multiplataforma
+Execute o mesmo modelo em Android, iOS, Web e microcontroladores com SDKs nativos.
+Leve e rápido
+O ambiente de execução eficiente do LiteRT ocupa apenas alguns megabytes e permite a aceleração do modelo em CPUs, GPUs e NPUs.
+PRIMEIROS PASSOS
+Escolher um modelo
+Escolha um modelo novo, treine novamente um modelo existente ou use o seu.
+Converter
+Converta seu modelo JAX, Keras, PyTorch ou Tensorflow em um modelo otimizado do LiteRT.
+Implantar
+Execute um modelo do LiteRT no Android, iOS, Web e microcontroladores.
+Quantizar
+Compacte seu modelo para reduzir a latência, o tamanho e a memória máxima.
+Começar
+Um tutorial para soluções de IA generativa no dispositivo Android
+1º DE OUTUBRO DE 2024
+Como levar seu modelo de IA para dispositivos Android
+2 DE OUTUBRO DE 2024
+O Gemini Nano já está disponível no Android com acesso experimental
+1º DE OUTUBRO DE 2024
+O TensorFlow Lite agora é o LiteRT
+4 DE SETEMBRO DE 2024
+Termos de Serviço
+Privacidade
+Português – Brasil

@@ -3,13 +3,13 @@ import * as uiHelpers from './ui_helpers.js';
 
 // --- State ---
 let currentConversationId = null;
-let conversationListElement = null; // Reference to the <ul> element
+let conversationListElement = null; // Reference to the main container for folders and conversations
 let chatBoxElement = null; // Reference to the chatbox div
 let userInputElement = null; // Reference to the user input field
 
 /**
  * Initializes the conversation manager with necessary DOM elements.
- * @param {HTMLElement} convListEl - The <ul> element for the conversation list.
+ * @param {HTMLElement} convListEl - The main container element for the conversation/folder list.
  * @param {HTMLElement} chatBoxEl - The chatbox <div> element.
  * @param {HTMLElement} userInputEl - The user input <input> element.
  */
@@ -38,7 +38,7 @@ export function getCurrentConversationId() {
 }
 
 /**
- * Loads the conversation list from the API and displays it using uiHelpers.
+ * Loads the conversation and folder lists from the API and displays them using uiHelpers.
  */
 export async function loadAndDisplayConversations() {
     if (!conversationListElement || !chatBoxElement) return;
@@ -50,15 +50,17 @@ export async function loadAndDisplayConversations() {
         const newChatBtn = document.getElementById('new-chat-button');
         uiHelpers.disableElement(newChatBtn);
 
-        const conversations = await apiClient.loadConversationList();
-        uiHelpers.displayConversations(conversations, conversationListElement, currentConversationId);
+        // Load both conversations and folders
+        const { conversations, folders } = await apiClient.loadConversationList();
+        // Call the updated UI helper (to be implemented in ui_helpers.js)
+        uiHelpers.displayConversationsAndFolders(conversations, folders, conversationListElement, currentConversationId);
 
         // Re-enable button after loading
         uiHelpers.enableElement(newChatBtn);
     } catch (error) {
         // Use the new helper to display a user-friendly message and log the error
         uiHelpers.displayErrorInChat('Oops! Não foi possível carregar suas conversas. Tente recarregar a página.', error, chatBoxElement);
-        uiHelpers.displayConversations([], conversationListElement, currentConversationId); // Display empty state
+        uiHelpers.displayConversationsAndFolders([], [], conversationListElement, currentConversationId); // Display empty state
     } finally {
         // Optional: Hide global/sidebar spinner
         // uiHelpers.hideSpinner(sidebarHeaderElement);
@@ -216,6 +218,186 @@ export async function handleDeleteConversation(listItem) {
         // Restore item appearance on error
         listItem.style.opacity = '1';
         listItem.style.pointerEvents = 'auto';
+    }
+}
+
+// --- Folder Management Handlers ---
+
+/**
+ * Handles the creation of a new folder.
+ * Typically triggered by a button click.
+ */
+export async function handleCreateFolder() {
+    if (!conversationListElement || !chatBoxElement) return;
+    const folderName = prompt("Enter a name for the new folder:");
+    if (!folderName || folderName.trim().length === 0) {
+        return; // User cancelled or entered empty name
+    }
+
+    console.log(`Manager: Attempting to create folder: "${folderName.trim()}"`);
+    // Optional: Add visual feedback (e.g., disable create button, show spinner)
+    try {
+        const newFolder = await apiClient.createFolder(folderName.trim());
+        console.log(`Manager: Folder created:`, newFolder);
+        // Reload the entire list to display the new folder correctly
+        await loadAndDisplayConversations();
+        // Optional: Scroll to the new folder? Highlight it?
+    } catch (error) {
+        uiHelpers.displayErrorInChat(`Failed to create folder "${folderName.trim()}". It might already exist.`, error, chatBoxElement);
+        // Optional: Remove visual feedback
+    }
+}
+
+/**
+ * Handles initiating the rename process for a folder.
+ * @param {HTMLElement} folderElement - The folder element (e.g., the <li> or a specific title element within it).
+ */
+export function handleEditFolder(folderElement) {
+    if (!folderElement || !chatBoxElement) return;
+    const folderId = folderElement.dataset.folderId; // Assuming folder ID is stored in a data attribute
+    const titleElement = folderElement.querySelector('.folder-title'); // Assuming a class for the title
+    if (!folderId || !titleElement) {
+        console.error("Could not find folder ID or title element for renaming.");
+        return;
+    }
+
+    folderElement.classList.add('editing');
+    const currentTitle = titleElement.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentTitle;
+    input.classList.add('edit-folder-input'); // Style similarly to conversation edit
+    titleElement.replaceWith(input);
+    input.focus();
+    input.select();
+
+    const saveChanges = async () => {
+        const newTitle = input.value.trim();
+        folderElement.classList.remove('editing');
+
+        if (!newTitle || newTitle === currentTitle) {
+            input.replaceWith(titleElement);
+            titleElement.textContent = currentTitle;
+            return;
+        }
+
+        // Optimistic UI update
+        titleElement.textContent = newTitle;
+        input.replaceWith(titleElement);
+
+        // Add visual feedback
+        uiHelpers.disableElement(input);
+        uiHelpers.addSpinnerAdjacent(input, 'after');
+        try {
+            await apiClient.renameFolder(folderId, newTitle);
+            console.log(`Manager: Folder ${folderId} renamed to "${newTitle}"`);
+            // Success: UI already updated
+        } catch (error) {
+            // Revert UI
+            titleElement.textContent = currentTitle;
+            uiHelpers.displayErrorInChat(`Failed to rename folder to "${newTitle}". Name might be taken.`, error, chatBoxElement);
+        } finally {
+            uiHelpers.removeAdjacentSpinner(input);
+            uiHelpers.enableElement(input);
+        }
+    };
+
+    input.addEventListener('blur', saveChanges, { once: true });
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            input.blur();
+        } else if (e.key === 'Escape') {
+            folderElement.classList.remove('editing');
+            input.replaceWith(titleElement);
+            titleElement.textContent = currentTitle;
+            input.removeEventListener('blur', saveChanges);
+        }
+    });
+}
+
+/**
+ * Handles the deletion of a folder.
+ * @param {HTMLElement} folderElement - The folder element to delete.
+ */
+export async function handleDeleteFolder(folderElement) {
+    if (!folderElement || !chatBoxElement || !conversationListElement) return;
+    const folderId = folderElement.dataset.folderId;
+    const folderTitle = folderElement.querySelector('.folder-title')?.textContent || `Folder ${folderId}`;
+    if (!folderId) return;
+
+    if (!confirm(`Are you sure you want to delete the folder "${folderTitle}"?\nConversations inside will NOT be deleted but moved out.`)) {
+        return;
+    }
+
+    console.log(`Manager: Attempting to delete folder: ${folderId}`);
+    folderElement.style.opacity = '0.5';
+    folderElement.style.pointerEvents = 'none';
+    try {
+        await apiClient.deleteFolder(folderId);
+        console.log(`Manager: Folder ${folderId} deleted.`);
+        // Reload the list to reflect conversations moved out of the folder
+        await loadAndDisplayConversations();
+        // Note: The specific folderElement might be gone after reload, so removing it directly might error. Reloading handles cleanup.
+    } catch (error) {
+        uiHelpers.displayErrorInChat(`Failed to delete folder "${folderTitle}".`, error, chatBoxElement);
+        // Restore appearance if reload fails or isn't immediate
+        folderElement.style.opacity = '1';
+        folderElement.style.pointerEvents = 'auto';
+        // Consider reloading even on error to ensure consistency?
+        // await loadAndDisplayConversations();
+    }
+}
+
+/**
+ * Handles moving a conversation into or out of a folder.
+ * This is often triggered by drag-and-drop or a context menu action.
+ * @param {string} conversationId - The ID of the conversation being moved.
+ * @param {string | null} targetFolderId - The ID of the folder to move into, or null to move out.
+ * @param {HTMLElement} conversationElement - The DOM element of the conversation being moved (for potential optimistic UI update).
+ * @param {HTMLElement} targetFolderElement - The DOM element of the target folder (optional, for UI updates).
+ */
+export async function handleMoveConversation(conversationId, targetFolderId, conversationElement, targetFolderElement = null) {
+    if (!conversationId || !conversationElement || !chatBoxElement || !conversationListElement) return;
+
+    console.log(`Manager: Attempting to move conversation ${conversationId} to folder ${targetFolderId}`);
+
+    // --- Optimistic UI Update (Example - Drag & Drop) ---
+    // This part is complex and depends heavily on the UI implementation (drag/drop library, etc.)
+    // 1. Visually move the conversationElement into the targetFolderElement (if targetFolderId is not null)
+    //    or to the root level (if targetFolderId is null).
+    // 2. Update data attributes if necessary.
+    // Example:
+    // if (targetFolderId && targetFolderElement) {
+    //     const dropZone = targetFolderElement.querySelector('.conversation-drop-zone'); // Assuming a drop zone inside folder
+    //     if (dropZone) dropZone.appendChild(conversationElement);
+    // } else {
+    //     conversationListElement.appendChild(conversationElement); // Move to root
+    // }
+    // conversationElement.dataset.folderId = targetFolderId; // Update data attribute (might not be needed)
+    // --- End Optimistic Update ---
+
+    // Add visual feedback (e.g., dim the item during API call)
+    conversationElement.style.opacity = '0.7';
+
+    try {
+        await apiClient.moveConversationToFolder(conversationId, targetFolderId);
+        console.log(`Manager: Conversation ${conversationId} successfully moved to folder ${targetFolderId}.`);
+        // Success: Reload the list to show the change.
+        // conversationElement.style.opacity = '1'; // No longer needed, reload handles it.
+        await loadAndDisplayConversations(); // Reload list on success
+
+    } catch (error) {
+        uiHelpers.displayErrorInChat(`Failed to move conversation.`, error, chatBoxElement);
+        // --- Revert Optimistic Update ---
+        // Move the conversationElement back to its original position.
+        // This requires knowing its original parent/sibling.
+        // Example:
+        // originalParent.insertBefore(conversationElement, originalNextSibling);
+        // --- End Revert ---
+        conversationElement.style.opacity = '1'; // Restore opacity
+
+        // Consider reloading the list to ensure consistency after failure
+        await loadAndDisplayConversations();
     }
 }
 

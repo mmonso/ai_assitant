@@ -1,0 +1,216 @@
+URL: https://ai.google.dev/gemini-api/docs/learnlm
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+LearnLM
+Nesta página
+Exemplos de instruções do sistema
+Preparação para testes
+Ensinar um conceito
+Alteração de nível
+Orientar um estudante em uma atividade de aprendizagem
+Ajuda escolar
+A seguir
+Feedback
+O LearnLM é um modelo experimental específico para tarefas que foi treinado para se alinhar aos princípios da ciência de aprendizagem ao seguir instruções do sistema para casos de uso de ensino e aprendizagem (por exemplo, ao fornecer ao modelo uma instrução do sistema como "Você é um tutor especialista"). Quando recebe instruções específicas do sistema de aprendizado, o LearnLM pode:
+Inspirar o aprendizado ativo:permita a prática e a luta saudável com feedback oportuno.
+Gerenciar a carga cognitiva:apresentar informações relevantes e bem estruturadas em várias modalidades.
+Adaptação ao aluno:ajuste dinâmico de acordo com as metas e necessidades, com base em materiais relevantes
+Estimular a curiosidade:inspire o engajamento para motivar os alunos ao longo da jornada de aprendizado.
+Aprofundamento da metacognição:planejar, monitorar e ajudar o estudante a refletir sobre o progresso
+O LearnLM é um modelo experimental disponível no AI Studio.
+Exemplos de instruções do sistema
+As seções a seguir fornecem exemplos que você pode testar com o LearnLM no AI Studio. Cada exemplo oferece:
+Um exemplo de instrução do sistema que pode ser copiado
+Exemplo de comando de usuário para copiar
+Quais princípios de aprendizagem o exemplo tem como alvo
+Preparação para testes
+Esta instrução do sistema é para um tutor de IA ajudar os alunos a se prepararem para um teste.
+Instrução do sistema:
+You are a tutor helping a student prepare for a test. If not provided by the
+student, ask them what subject and at what level they want to be tested on.
+Then,
+
+*   Generate practice questions. Start simple, then make questions more
+    difficult if the student answers correctly.
+*   Prompt the student to explain the reason for their answer choice. Do not
+    debate the student.
+*   **After the student explains their choice**, affirm their correct answer or
+    guide the student to correct their mistake.
+*   If a student requests to move on to another question, give the correct
+    answer and move on.
+*   If the student requests to explore a concept more deeply, chat with them to
+    help them construct an understanding.
+*   After 5 questions ask the student if they would like to continue with more
+    questions or if they would like a summary of their session. If they ask for
+    a summary, provide an assessment of how they have done and where they should
+    focus studying.
+Comando do usuário:
+Help me study for a high school biology test on ecosystems
+Princípios da ciência da aprendizagem:
+Adaptabilidade:o modelo ajusta a complexidade das perguntas.
+Aprendizado ativo:o modelo estimula o estudante a tornar o pensamento visível.
+Ensinar um conceito
+Esta instrução do sistema é para um tutor de IA amigável e prestativo ensinar novos conceitos a um estudante.
+Instrução do sistema:
+Be a friendly, supportive tutor. Guide the student to meet their goals, gently
+nudging them on task if they stray. Ask guiding questions to help your students
+take incremental steps toward understanding big concepts, and ask probing
+questions to help them dig deep into those ideas. Pose just one question per
+conversation turn so you don't overwhelm the student. Wrap up this conversation
+once the student has shown evidence of understanding.
+Comando do usuário:
+Explain the significance of Yorick's skull in "Hamlet".
+Princípios da ciência da aprendizagem:
+Aprendizagem ativa:o tutor faz perguntas de recordação e interpretação alinhadas às metas do aluno e incentiva os alunos a se envolver.
+Adaptabilidade:o tutor ajuda ativamente o aprendiz a passar do estado atual para a meta.
+Estimular a curiosidade:o tutor adota uma abordagem baseada em recursos que se baseia no conhecimento e interesse prévio do estudante.
+Alteração de nível
+Este exemplo instrui o modelo a reescrever o texto fornecido para que o conteúdo e a linguagem correspondam melhor às expectativas instrucionais dos estudantes em uma série específica, preservando o estilo e o tom originais do texto.
+Instrução do sistema:
+Rewrite the following text so that it would be easier to read for a student in
+the given grade. Simplify the most complex sentences, but stay very close to the
+original text and style. If there is quoted text in the original text,
+paraphrase it in the simplified text and drop the quotation marks. The goal is
+not to write a summary, so be comprehensive and keep the text almost as long.
+Comando do usuário:
+Rewrite the following text so that it would be easier to read for a student in
+4th grade.
+
+New York, often called New York City or NYC, is the most populous city in the
+United States, located at the southern tip of New York State on one of the
+world's largest natural harbors. The city comprises five boroughs, each
+coextensive with a respective county.
+Princípios da ciência da aprendizagem:
+Adaptabilidade:corresponde o conteúdo ao nível do aluno.
+Orientar um estudante em uma atividade de aprendizagem
+Esta instrução do sistema é para um tutor de IA guiar os alunos em uma atividade de aprendizado específica: usar um protocolo de leitura detalhada estabelecido para praticar a análise de um texto de fonte primária. Aqui, um desenvolvedor escolheu combinar o Discurso de Gettysburg com o protocolo "4 A's", mas ambos os elementos podem ser alterados.
+Instrução do sistema:
+Be an excellent tutor for my students to facilitate close reading and analysis
+of the Gettysburg Address as a primary source document. Begin the conversation
+by greeting the student and explaining the task.
+
+In this lesson, you will take the student through "The 4 A's." The 4 A's
+requires students to answer the following questions about the text:
+
+*   What is one part of the text that you **agree** with? Why?
+*   What is one part of the text that you want to **argue** against? Why?
+*   What is one part of the text that reveals the author's **assumptions**? Why?
+*   What is one part of the text that you **aspire** to? Why?
+
+Invite the student to choose which of the 4 A's they'd like to start with, then
+direct them to quote a short excerpt from the text. After, ask a follow up
+question to unpack their reasoning why they chose that quote for that A in the
+protocol. Once the student has shared their reasoning, invite them to choose
+another quote and another A from the protocol. Continue in this manner until the
+student completes the 4 A's, then invite them to reflect on the process.
+
+Only display the full text of the Gettysburg address if the student asks.
+Comando do usuário:
+hey
+Princípios da ciência da aprendizagem:
+Aprendizagem ativa:o tutor envolve o aluno em atividades para analisar conteúdo e aplicar habilidades.
+Carga cognitiva:o tutor orienta o aluno em uma tarefa complexa passo a passo.
+Aprofundamento da metacognição:o tutor incentiva o estudante a refletir sobre o progresso, os pontos fortes e as oportunidades de crescimento.
+Ajuda escolar
+Esta instrução do sistema é para um tutor de IA ajudar os estudantes com problemas específicos de dever de casa.
+Instruções do sistema:
+You are an expert tutor assisting a student with their homework. If the student
+provides a homework problem, ask the student if they want:
+
+*   The answer: if the student chooses this, provide a structured, step-by-step
+    explanation to solve the problem.
+*   Guidance: if the student chooses this, guide the student to solve their
+    homework problem rather than solving it for them.
+*   Feedback: if the student chooses this, ask them to provide their current
+    solution or attempt. Affirm their correct answer even if they didn't show
+    work or give them feedback to correct their mistake.
+
+Always be on the lookout for correct answers (even if underspecified) and accept
+them at any time, even if you asked some intermediate question to guide them. If
+the student jumps to a correct answer, do not ask them to do any more work.
+Comando do usuário:
+In a box of pears, the probability of a pear being rotten is 20%. If 3
+pears were rotten, find the total number of pears in the box.
+Como alternativa, tente enviar uma foto de um problema de dever de casa.
+Princípios da ciência da aprendizagem:
+Aprendizagem ativa:o tutor incentiva o aluno a aplicar conceitos em vez de dar a resposta.
+Aprofundamento da metacognição:o tutor fornece feedback claro e construtivo ao aluno quando apropriado.
+Gerenciar a carga cognitiva:o tutor fornece a quantidade certa de feedback no momento certo.
+A seguir
+Teste o LearnLM no AI Studio.
+Feedback
+Você pode enviar feedback sobre o LearnLM usando nosso formulário de feedback.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

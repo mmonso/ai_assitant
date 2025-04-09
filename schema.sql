@@ -3,6 +3,7 @@
 -- Drop tables in reverse order of dependency
 DROP TABLE IF EXISTS messages;
 DROP TABLE IF EXISTS conversations;
+DROP TABLE IF EXISTS folders; -- Add drop for folders
 DROP TABLE IF EXISTS users;
 
 -- Create the users table (modified)
@@ -19,13 +20,24 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Create the folders table
+CREATE TABLE folders (
+    folder_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Delete folders if user is deleted
+);
+
 -- Create the conversations table (unchanged)
 CREATE TABLE conversations (
     conversation_id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
+    folder_id INTEGER, -- Nullable foreign key to folders
     title TEXT, -- Can be NULL initially, set later
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE -- Delete conversations if user is deleted
+    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE, -- Delete conversations if user is deleted
+    FOREIGN KEY(folder_id) REFERENCES folders(folder_id) ON DELETE SET NULL -- If folder is deleted, set conversation's folder_id to NULL
 );
 
 -- Create the messages table (modified for file references)
@@ -42,6 +54,8 @@ CREATE TABLE messages (
 );
 
 -- Optional: Add indexes for performance
+CREATE INDEX IF NOT EXISTS idx_folders_user_id ON folders (user_id); -- Index for folders
 CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations (user_id);
+CREATE INDEX IF NOT EXISTS idx_conversations_folder_id ON conversations (folder_id); -- Index for conversation folders
 CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON messages (conversation_id);
 CREATE INDEX IF NOT EXISTS idx_messages_timestamp ON messages (timestamp);

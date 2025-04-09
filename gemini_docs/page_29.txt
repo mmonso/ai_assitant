@@ -1,0 +1,150 @@
+URL: https://ai.google.dev/gemini-api/docs/long-context
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Contexto longo
+Nesta página
+O que é uma janela de contexto?
+Introdução ao contexto longo
+Casos de uso de contexto longo
+Texto longo
+Vídeo mais longo
+Áudio de longa duração
+Otimizações de contexto longo
+Limitações de contexto longo
+O Gemini 2.0 Flash e o Gemini 1.5 Flash vêm com uma janela de contexto de um milhão de tokens, e o Gemini 1.5 Pro vem com uma janela de contexto de dois milhões de tokens. Historicamente, os modelos de linguagem grandes (LLMs) estavam significativamente limitados pela quantidade de texto (ou tokens) que podia ser transmitida ao modelo de uma só vez. A janela de contexto longo do Gemini 1.5, com recuperação quase perfeita (>99%), libera muitos novos casos de uso e paradigmas de desenvolvedor.
+O código que você já usa para casos como geração de texto ou entradas multimodais vai funcionar imediatamente com contexto longo.
+Neste guia, você vai conhecer os conceitos básicos da janela de contexto, como os desenvolvedores devem pensar sobre o contexto longo, vários casos de uso reais para contexto longo e maneiras de otimizar o uso do contexto longo.
+O que é uma janela de contexto?
+A maneira básica de usar os modelos do Gemini é transmitindo informações (contexto) ao modelo, que vai gerar uma resposta. Uma analogia com a janela de contexto é a memória de curto prazo. Há uma quantidade limitada de informações que podem ser armazenadas na memória de curto prazo, e o mesmo vale para modelos generativos.
+Leia mais sobre como os modelos funcionam no nosso guia de modelos generativos.
+Introdução ao contexto longo
+A maioria dos modelos generativos criados nos últimos anos só foi capaz de processar 8.000 tokens de uma vez. Os modelos mais recentes avançaram ainda mais, aceitando 32.000 tokens ou 128.000 tokens. O Gemini 1.5 é o primeiro modelo capaz de aceitar 1 milhão de tokens e agora 2 milhões de tokens com o Gemini 1.5 Pro.
+Na prática, 1 milhão de tokens seria:
+50.000 linhas de código (com o padrão de 80 caracteres por linha)
+Todas as mensagens de texto que você enviou nos últimos cinco anos
+8 romances ingleses de tamanho médio
+Transcrição de mais de 200 episódios de podcast de duração média
+Os modelos podem ter cada vez mais contexto, muito da sabedoria convencional sobre o uso de modelos de linguagem grandes assume essa limitação no modelo, que, a partir de 2024, não ocorrerá mais.
+Algumas estratégias comuns para lidar com a limitação de pequenas janelas de contexto incluindo o seguinte:
+Mensagens / textos antigos são descartados arbitrariamente da janela de contexto quando um novo texto é recebido
+Resume o conteúdo anterior e o substitui pelo resumo quando a janela de contexto estiver quase cheia
+Usa o RAG com pesquisa semântica para mover dados para fora da janela de contexto e em um banco de dados de vetores
+Usar filtros determinísticos ou generativos para remover determinados textos / caracteres dos comandos para salvar tokens
+Embora muitos deles ainda sejam relevantes em certos casos, o local padrão para começar é colocando todos os tokens na janela de contexto. Como os modelos Gemini foram criados especificamente com uma janela de contexto longa, eles são muito mais capazes de aprender com base em contexto. Por exemplo, com apenas materiais instrucionais (uma gramática de referência de 500 páginas, um dicionário e cerca de 400 frases paralelas extras) fornecidos no contexto, o Gemini 1.5 Pro e o Gemini 1.5 Flash são capazes de aprender a traduzir do inglês para o Kalamang, um idioma papuano com menos de 200 falantes e, portanto, quase nenhuma presença on-line, com qualidade semelhante a uma pessoa que aprendeu com os mesmos materiais.
+Este exemplo destaca como você pode começar a pensar no que é possível com o contexto longo e os recursos de aprendizado no contexto dos modelos do Gemini.
+Casos de uso de contexto longo
+Embora o caso de uso padrão para a maioria dos modelos generativos ainda seja a entrada de texto, a família de modelos Gemini 1.5 possibilita um novo paradigma de casos de uso multimodais. Eles podem entender textos, vídeos, áudios e imagens de maneira nativa. São acompanhados pela API Gemini, que aceita tipos de arquivos multimodais por conveniência.
+Texto longo
+O texto provou ser a camada de inteligência que sustenta grande parte do impulso em torno dos LLMs. Como mencionado anteriormente, grande parte da limitação prática dos LLMs se deve à falta de uma janela de contexto grande o suficiente para realizar determinadas tarefas. Isso levou à rápida adoção da geração aumentada de recuperação (RAG, na sigla em inglês) e outras técnicas que fornecem dinamicamente ao modelo informações contextuais. Agora, com janelas de contexto cada vez maiores (atualmente até 2 milhões no Gemini 1.5 Pro), novas técnicas são disponibilizadas, o que possibilita novos casos de uso.
+Alguns casos de uso emergentes e padrão para contexto longo baseado em texto incluem o seguinte:
+Resumir grandes corpus de texto
+As opções de resumo anteriores com modelos de contexto menores exigiam uma janela deslizante ou outra técnica para manter o estado das seções anteriores à medida que novos tokens eram transmitidos para o modelo.
+Perguntas e respostas
+Historicamente, isso só era possível com o RAG, devido à quantidade limitada de contexto e à baixa recuperação de fatos dos modelos.
+Fluxos de trabalho agente
+O texto é a base de como os agentes mantêm o estado do que fizeram e o que eles precisam fazer. Não ter informações suficientes sobre o mundo e o objetivo do agente é uma limitação na confiabilidade dos agentes
+A aprendizagem em contexto com muitas tentativas é um dos recursos mais exclusivos liberados pelos modelos de contexto longo. As pesquisas mostram que usar o exemplo de paradigma de "tentativa única" comum ou "muitas tentativas", em que o modelo é apresentado com um ou alguns exemplos de uma tarefa e escalonando-o até centenas, milhares ou mesmo centenas de milhares de exemplos, pode levar a novos recursos do modelo. Essa abordagem de várias fotos também apresentou um desempenho semelhante ao de modelos ajustados para uma tarefa específica. Para casos de uso em que a performance de um modelo do Gemini ainda não é suficiente para um lançamento em produção, tente a abordagem de várias tentativas. Como você pode explorar mais tarde na seção de otimização de contexto longo, o armazenamento em cache de contexto torna esse tipo de alta carga de trabalho de token de entrada muito mais viável e com latência ainda menor em alguns casos.
+Vídeo mais longo
+A utilidade do conteúdo de vídeo é, há muito tempo, limitada pela falta de acessibilidade da própria mídia. Era difícil ler o conteúdo, as transcrições muitas vezes não conseguiam capturar as nuances de um vídeo e a maioria das ferramentas não processava imagem, texto e áudio juntos. Com o Gemini 1.5, os recursos de texto de contexto longo se traduzem na capacidade de raciocinar e responder a perguntas sobre entradas multimodais com desempenho sustentável. Gemini 1.5 Flash, quando testado na agulha em um problema de palheiro em vídeo com 1 milhão de tokens, obteve um recall >99,8% do vídeo na janela de contexto, e o 1.5 Pro alcançou um desempenho de última geração no comparativo de mercado de vídeo/MME.
+Alguns casos de uso emergentes e padrão para contexto de vídeo longo incluem:
+Perguntas e respostas sobre vídeos
+Memória de vídeo, como mostrado com o Project Astra do Google
+Legendas em vídeos
+Sistemas de recomendação de vídeo, enriquecendo os metadados com nova compreensão multimodal
+Personalização de vídeo, analisando um conjunto de dados e metadados de vídeos associados e, em seguida, removendo partes dos vídeos que não são relevantes para o leitor
+Moderação de conteúdo em vídeo
+Processamento de vídeo em tempo real
+Ao trabalhar com vídeos, é importante considerar como os vídeos são processados em tokens, o que afeta os limites de faturamento e uso. Saiba mais sobre comandos com arquivos de vídeo no Guia de comandos.
+Áudio de longa duração
+O Gemini 1.5 foi os primeiros modelos de linguagem grandes multimodais nativos que pudesse entender áudio. Historicamente, o fluxo de trabalho típico de um desenvolvedor envolve unir vários modelos específicos de domínio, como um modelo de conversão de voz em texto e de conversão de texto em texto para processar o áudio. Isso levou a uma latência adicional necessária ao realizar várias solicitações de ida e volta e reduziu o desempenho, geralmente atribuído a arquiteturas desconexas da configuração de vários modelos.
+Em avaliações padrão de palheiro de áudio, o Gemini 1.5 Pro encontra o áudio oculto em 100% dos testes, e o Gemini 1.5 Flash consegue encontrá-lo em 98,7% dos testes. O Gemini 1.5 Flash aceita até 9,5 horas de áudio em uma única solicitação, e o Gemini 1.5 Pro aceita até 19 horas de áudio usando a janela de contexto de 2 milhões de tokens. Além disso, em um conjunto de teste de 15 minutos de áudio, o Gemini 1.5 Pro arquiva uma taxa de erro de palavras (WER, na sigla em inglês) de cerca de 5,5%, muito menor do que modelos de conversão de voz em texto especializados, sem a complexidade adicional de segmentação de entrada extra e pré-processamento.
+Alguns casos de uso emergentes e padrão para contexto de áudio incluem o seguinte:
+Transcrição e tradução em tempo real
+Perguntas e respostas sobre podcasts / vídeos
+Transcrição e resumo de reuniões
+Assistentes por voz
+Saiba mais sobre comandos com arquivos de áudio em Guia de comandos.
+Otimizações de contexto longo
+A otimização principal ao trabalhar com contexto longo e os modelos do Gemini 1.5 é usar o armazenamento em cache de contexto. Além da impossibilidade anterior de processar muitos tokens em uma única solicitação, a outra restrição principal era o custo. Se você tiver um app de "conversa com seus dados" em que um usuário carrega 10 PDFs, um vídeo e alguns documentos de trabalho, historicamente, você teria que trabalhar com uma ferramenta / framework de geração aumentada de recuperação (RAG) mais complexa para processar essas solicitações e pagar um valor significativo por tokens que foram movidos para a janela de contexto. Agora, é possível armazenar em cache os arquivos que o usuário envia e pagar para armazená-los por hora. O custo de entrada / saída por solicitação com o Gemini 1.5 Flash, por exemplo, é cerca de quatro vezes menor do que o custo de entrada / saída padrão. Portanto, se o usuário conversar bastante com os dados, isso vai gerar uma grande economia de custos para você como desenvolvedor.
+Limitações de contexto longo
+Em várias seções deste guia, falamos sobre como os modelos do Gemini 1.5 alcançam alta performance em várias avaliações de recuperação de agulha no palheiro. Esses testes consideram a configuração mais básica, em que há apenas uma agulha que você está procurando. Nos casos em que você pode ter várias "agulhas" ou partes específicas de informações que está procurando, o modelo não tem o mesmo desempenho. A performance pode variar bastante dependendo do contexto. É importante considerar isso, pois há uma compensação inerente entre obter a recuperação de informações e custos corretos. Você pode receber cerca de 99% em uma única consulta, mas precisa pagar o custo do token de entrada sempre que enviar essa consulta. Portanto, para que 100 pedaços de informações sejam recuperadas, se você precisar de 99% de performance, provavelmente terá que enviar 100 solicitações. Este é um bom exemplo de quando o armazenamento em cache do contexto pode reduzir significativamente o custo associado ao uso de modelos do Gemini mantendo o alto desempenho.
+Perguntas frequentes
+A performance do modelo é afetada quando adiciono mais tokens a uma consulta?
+Em geral, se você não precisar que os tokens sejam transmitidos ao modelo, é melhor evitar a transmissão deles. No entanto, se você tiver um grande número de tokens com algumas informações e quiser fazer perguntas sobre elas, o modelo será capaz de extrair essas informações (até 99% de precisão em muitos casos).
+Como o Gemini 1.5 Pro se sai no teste padrão de agulha no palheiro?
+O Gemini 1.5 Pro alcança um recall de 100% em até 530 mil tokens e de >99,7% em até 1 milhão de tokens.
+Como posso reduzir meu custo com consultas de contexto longo?
+Se você tiver um conjunto semelhante de tokens / contexto que quer reutilizar várias vezes, o armazenamento em cache de contexto pode ajudar a reduzir os custos associados a perguntas sobre essas informações.
+Como posso acessar a janela de contexto com 2 milhões de tokens?
+Todos os desenvolvedores agora têm acesso à janela de contexto de 2 milhões de tokens com o Gemini 1.5 Pro.
+O comprimento do contexto afeta a latência do modelo?
+Há uma quantidade fixa de latência em qualquer solicitação, independentemente do tamanho, mas geralmente as consultas mais longas têm latência mais alta (tempo até o primeiro token).
+Os recursos de contexto longo são diferentes entre o Gemini 1.5 Flash e o Gemini 1.5 Pro?
+Sim, alguns números foram mencionados em diferentes seções deste guia, mas, geralmente, o Gemini 1.5 Pro tem melhor desempenho na maioria dos casos de uso de contexto longo.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-24 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

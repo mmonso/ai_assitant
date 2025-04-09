@@ -1,0 +1,100 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=sq
+
+Modelet
+/
+Shqip
+Identifikohu
+Dokumentet e Gemini API
+Referenca API
+Libër gatimi
+Vështrim i përgjithshëm
+Filloni
+Fillimi i shpejtë
+Çelësat API
+Bibliotekat
+Shënimet e publikimit
+Përputhshmëria me OpenAI
+Forumi i zhvilluesve
+Modelet
+Të gjitha modelet
+Çmimet
+Kufijtë e tarifave
+Informacioni i faturimit
+aftësitë
+Gjenerimi i tekstit
+Gjenerimi i imazhit
+Vizioni
+Kuptimi audio
+Konteksti i gjatë
+Ekzekutimi i kodit
+Prodhimi i strukturuar
+duke menduar
+Thirrja e funksionit
+Kuptimi i dokumentit
+Tokëzimi me Google Search
+Rregullimi i imët
+Embeddings
+Udhëzues
+API e drejtpërdrejtë
+Memoria e kontekstit
+Inxhinieri e shpejtë
+Numërimi i shenjave
+Siguria
+Burime shtesë
+Binjakët për Kërkime
+Programi Akademik Binjakët
+Rastet e përdorimit
+Aplikacionet
+Zgjidhja e problemeve
+Zgjidhja e problemeve të API
+Zgjidhja e problemeve të AI Studio
+Google Workspace
+Ligjore
+Kushtet e shërbimit
+Rajonet e disponueshme
+Politika shtesë të përdorimit
+Gemini 2.5 Pro Experimental, modeli ynë më i avancuar, tani është në dispozicion! Mësoni më shumë
+Kjo faqe është përkthyer nga Cloud Translation API.
+Switch to English
+Faqja kryesore
+Gemini API
+Modelet
+Gemini Developer API
+Merrni një çelës API Gemini
+Merrni një çelës Gemini API dhe bëni kërkesën tuaj të parë API në pak minuta.
+Python
+JavaScript
+PUSHIMI
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+Njihuni me modelet
+Përdorni Gemini në Google AI Studio
+experiment 2.5 Pro
+Modeli ynë më i fuqishëm i të menduarit me veçori për arsyetim kompleks dhe shumë më tepër
+2.0 Blic spark
+Modeli ynë më i ri multimodal, me karakteristika të gjeneratës së ardhshme dhe aftësi të përmirësuara
+Bulon 2.0 Flash- bolt
+Modeli ynë multimodal më i shpejtë dhe më ekonomik me performancë të shkëlqyer për detyra me frekuencë të lartë
+Eksploroni API-në
+Gjenerimi i imazhit vendas
+Gjeneroni dhe modifikoni imazhe shumë kontekstuale në mënyrë origjinale me Gemini 2.0 Flash.
+Eksploroni kontekstin e gjatë
+Futni miliona argumente në modelet e Gemini dhe nxirrni të kuptuarit nga imazhet, videot dhe dokumentet e pastrukturuara.
+Gjeneroni rezultate të strukturuara
+Kufizoni Binjakët të përgjigjet me JSON, një format i strukturuar i të dhënave i përshtatshëm për përpunim të automatizuar.
+Filloni të ndërtoni me Gemini API
+Filloni
+Përveçse siç përcaktohet ndryshe, përmbajtja e kësaj faqeje është e licencuar sipas licencës së atribuimit 4.0 të Creative Commons dhe kampionët e kodit janë licencuar sipas licencës së Apache 2.0. Për detaje, shiko Politikat e sajtit të Google Developers. Java është një markë tregtare e regjistruar e Oracle dhe/ose filialeve të tij.
+Përditësimi i fundit: 2025-04-04 UTC.
+Kushtet
+Privatësia
+Shqip

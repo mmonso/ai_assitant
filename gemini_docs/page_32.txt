@@ -1,0 +1,509 @@
+URL: https://ai.google.dev/gemini-api/docs/thinking
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Use o pensamento Gemini
+Nesta página
+Usar modelos de pensamento
+Enviar uma solicitação básica
+Conversas de pensamento com vários turnos
+Usar ferramentas com modelos mentais
+Ferramenta de pesquisa
+Execução do código
+Saída estruturada
+Técnicas de estímulo para modelos de pensamento
+O Gemini 2.5 Pro Experimental e o Gemini 2.0 Flash Thinking Experimental são modelos que usam um "processo de pensamento" interno durante a geração de respostas. Esse processo contribui para melhorar as habilidades de raciocínio e permite que eles resolvam tarefas complexas. Este guia mostra como usar modelos do Gemini com recursos de pensamento.
+Teste a prévia do Gemini 2.5 Pro no Google AI Studio
+Observação: "gemini-2.5-pro-preview-03-25" é um modelo faturado. Você pode continuar usando "gemini-2.5-pro-exp-03-25" no nível sem custo financeiro.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Usar modelos de pensamento
+Os modelos com recursos de pensamento estão disponíveis no Google AI Studio e na API Gemini. O processo de pensamento é visível no Google AI Studio, mas não é fornecido como parte da saída da API.
+Enviar uma solicitação básica
+Python
+JavaScript
+Go
+REST
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+prompt = "Explain the concept of Occam's Razor and provide a simple, everyday example."
+response = client.models.generate_content(
+    model="gemini-2.5-pro-exp-03-25",  # or gemini-2.0-flash-thinking-exp
+    contents=prompt
+)
+
+print(response.text)
+Conversas de pensamento com vários turnos
+Para considerar o histórico de chat anterior, use conversas de vários turnos.
+Com os SDKs, é possível criar uma sessão de chat para gerenciar o estado da conversa.
+Python
+JavaScript
+from google import genai
+
+client = genai.Client(api_key='GEMINI_API_KEY')
+
+chat = client.aio.chats.create(
+    model='gemini-2.5-pro-preview-03-25',  # or gemini-2.0-flash-thinking-exp
+)
+response = await chat.send_message('What is your name?')
+print(response.text)
+response = await chat.send_message('What did you just say before this?')
+print(response.text)
+Usar ferramentas com modelos mentais
+Os modelos de pensamento podem usar ferramentas para realizar ações além de gerar texto. Isso permite que eles interajam com sistemas externos, executem códigos ou acessem informações em tempo real, incorporando os resultados ao raciocínio e à resposta final.
+Ferramenta de pesquisa
+A ferramenta de pesquisa permite que o modelo consulte mecanismos de pesquisa externos para encontrar informações atualizadas ou além dos dados de treinamento. Isso é útil para perguntas sobre eventos recentes ou tópicos muito específicos.
+Para configurar a ferramenta de pesquisa, consulte Configurar a ferramenta de pesquisa.
+Comando:
+What were the major scientific breakthroughs announced last week?
+Resposta (usando a ferramenta de pesquisa):
+Based on recent search results, here are some highlights from the past week in science:
+
+...
+(gemini-2.5-pro-exp-03-25)
+Execução do código
+A ferramenta de execução de código permite que o modelo gere e execute código Python para realizar cálculos, manipular dados ou resolver problemas que são melhor tratados algoritmicamente. O modelo recebe a saída do código e pode usá-la na resposta.
+Para configurar a execução de código, consulte Ativar a execução de código no modelo.
+Comando:
+What is the sum of the first 50 prime numbers?
+Generate and run Python code for the calculation, and make sure you get all 50.
+Provide the final sum clearly.
+Resposta (usando a ferramenta de execução de código):
+Okay, I can calculate that. I will generate Python code to find the first 50 prime numbers and sum them up.
+
+```python
+def is_prime(num):
+    if num < 2:
+        return False
+    for i in range(2, int(num**0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+primes = []
+num = 2
+while len(primes) < 50:
+    if is_prime(num):
+        primes.append(num)
+    num += 1
+
+total_sum = sum(primes)
+print(total_sum)
+```
+
+Running the code...
+
+Code Execution Result:
+Outcome: OK
+Output:
+
+5117
+Use code with caution.
+The sum of the first 50 prime numbers is 5117.
+(gemini-2.5-pro-exp-03-25)
+Saída estruturada
+Com a saída estruturada, é possível restringir o Gemini para responder com JSON, um formato de saída estruturado adequado para processamento automatizado. Isso é útil principalmente para integrar a saída do modelo aos aplicativos.
+É possível especificar o formato diretamente no comando ou fornecer um esquema pela configuração do modelo.
+Comando:
+Provide a list of 3 famous physicists and their key contributions
+in JSON format.
+Use this JSON schema:
+
+Physicist = {'name': str, 'contribution': str, 'era': str}
+Return: list[Physicist]
+Resposta (instruída para JSON):
+```json
+[
+{
+"name": "Albert Einstein",
+"contribution": "Theory of Relativity (Special and General)",
+"era": "Early 20th Century"
+},
+{
+"name": "Isaac Newton",
+"contribution": "Laws of Motion and Universal Gravitation",
+"era": "Late 17th / Early 18th Century"
+},
+{
+"name": "Marie Curie",
+"contribution": "Pioneering research on radioactivity",
+"era": "Late 19th / Early 20th Century"
+}
+]
+```
+(gemini-2.5-pro-preview-03-25)
+Técnicas de estímulo para modelos de pensamento
+A solicitação eficaz é crucial para maximizar os benefícios dos modelos de pensamento do Gemini. Esta seção descreve algumas práticas de estímulo para modelos de pensamento.
+Primeiros passos
+Comece com instruções gerais que descrevam o resultado desejado. Comece com uma solicitação simples e observe as ideias iniciais do modelo sobre como enfrentar o desafio.
+Comando:
+Describe the most unusual or striking architectural feature you've ever seen in a building or structure.
+Resposta:
+<...>
+The most unusual architectural feature that has truly stayed with me is the "floating roof" of the
+ Heydar Aliyev Center in Baku, Azerbaijan, designed by Zaha Hadid Architects.
+
+Visually, it's breathtaking. Imagine a vast, undulating landscape of pure white, seemingly draped
+over the building. It's not just a roof in the traditional sense; it's an extension of the ground,
+flowing seamlessly upwards and over the building's various spaces before curving back down to meet
+the earth again. There are no sharp angles, no rigid lines. Instead, everything is fluid, organic,
+and continuous. It resembles a giant, pristine white wave frozen in motion, or perhaps a sand dune
+sculpted by an unseen wind.
+<...>
+(gemini-2.5-pro-exp-03-25)
+Fornecer instruções detalhadas
+Se a tentativa inicial não gerar o resultado desejado, refine o comando fornecendo instruções mais explícitas para guiar o Gemini pelo processo de solução de problemas e ter uma abordagem mais focada. Isso permite que você oriente a compreensão inicial do modelo da tarefa com sugestões e orientações explícitas.
+Comando:
+Now imagine that architectural feature is not just for looks, but has a specific function or
+purpose related to the building's environment or the people who use it. Explain what that
+function could be and how it enhances the building's overall design and usability.
+Resposta:
+<...>
+Let's imagine that the "floating roof" of the Heydar Aliyev Center is not purely aesthetic but
+serves a crucial environmental and user-centric function: it's designed as a sophisticated climate
+moderator and natural ventilation system for the Baku environment.
+
+Here's how this function would work and enhance the building:
+
+Function: Passive Climate Control and Natural Ventilation System
+
+Shading and Solar Heat Mitigation: The undulating curves of the white GFRC roof are strategically
+shaped and oriented to provide optimal shading throughout the day, year-round. Baku experiences
+intense sun, especially during the summer. The overhanging curves, acting like giant brise-soleils,
+would block direct sunlight from hitting the building's glass facade, significantly reducing solar
+heat gain. The varying heights and depths of the curves would create dynamic shade patterns, ensuring
+that different parts of the building are shaded at different times of the day, optimizing comfort
+and reducing the need for excessive air conditioning. The white color of the GFRC further enhances
+this by reflecting a large portion of the solar radiation.
+<...>
+(gemini-2.5-pro-exp-03-25)
+Comandos de multisaída com pensamento
+A solicitação de várias fotos em conjunto com o pensamento pode melhorar ainda mais a compreensão do Gemini e a precisão das respostas. Dê vários exemplos de pares de entrada e saída, demonstrando o comportamento e o formato de saída desejados no comando.
+Comando:
+Example 1:
+User: What is the tallest mountain in the world?
+Assistant: Mount Everest
+
+Example 2:
+User: What is the largest ocean?
+Assistant: Pacific Ocean
+
+User: What is the longest river in the world?
+Assistant:
+Resposta:
+Amazon River
+(gemini-2.5-pro-exp-03-25)
+Como definir saída e comportamento
+Ao criar um aplicativo em que os usuários interagem diretamente com o modelo, é recomendável fornecer orientações sobre como a saída e as respostas do Gemini vão soar e ser formatadas.
+Instruções do sistema
+As instruções do sistema são um conjunto de instruções que o modelo processa antes de processar comandos. Elas são recuperadas sempre que o modelo é solicitado e informam como você quer que ele se comporte e responda. Por exemplo, você pode incluir itens como o papel ou perfil, informações contextuais e instruções de formatação.
+Comando:
+System Instruction: You are a helpful and concise coding tutor. Always provide code examples and explain them briefly.
+
+User Prompt: Explain what is a closure in Javascript and give an example.
+Resposta:
+function outerFunction(outerVar) {
+ function innerFunction(innerVar) {
+ console.log(outerVar); // Accessing outerVar from outerFunction's scope
+ console.log(innerVar);
+ }
+ return innerFunction;
+ }
+
+ const closureExample = outerFunction('I am from outer');
+ closureExample('I am from inner');
+
+Explanation:
+
+A closure is created when a function (innerFunction in this example) is defined inside another function
+(outerFunction) and the inner function remembers and has access to the variables from the outer
+function's scope, even after the outer function has finished executing.
+
+In the example:
+
+outerFunction is called with 'I am from outer' and returns innerFunction.
+
+closureExample now holds a reference to innerFunction.
+
+When closureExample('I am from inner') is called, innerFunction executes.
+
+Even though outerFunction has already finished, innerFunction can still access and use outerVar
+(which is 'I am from outer') because of the closure.
+
+In essence, the innerFunction "closes over" the variables of its outer function's scope, creating
+a closure.
+(gemini-2.5-pro-exp-03-25)
+Verificação e reflexão
+Inclua etapas de verificação específicas nas instruções do sistema ou nos seus comandos. Por exemplo, peça ao Gemini para verificar as fontes, revisar o raciocínio, identificar possíveis erros e verificar a resposta final.
+Comando:
+Verify the following statement and provide your sources: The capital of Brazil is Rio de Janeiro.
+Resposta:
+The statement "The capital of Brazil is Rio de Janeiro" is incorrect.
+
+The current capital of Brazil is Brasília.
+
+Rio de Janeiro was the capital of Brazil for a significant period, from 1763 to 1960. However, the
+capital was moved to Brasília in 1960 as part of a plan to develop the country's interior and create
+a more centrally located capital.
+
+Verification and Sources:
+
+You can easily verify this information from numerous reliable sources:
+
+Encyclopedias:
+
+Britannica: Searching for "Brazil" on Britannica will clearly state Brasília as the capital.
+
+https://www.britannica.com/place/Brazil (Look for the "Capital" information in the introductory summary or "Geography" section)
+
+Wikipedia: The Wikipedia article for "Brazil" also states Brasília as the capital.
+
+https://en.wikipedia.org/wiki/Brazil (Look in the infobox or introductory section)
+
+Government and Official Sources:
+
+CIA World Factbook: This is a highly reliable source for country information. Searching for "Brazil"
+will list Brasília as the capital.
+
+https://www.cia.gov/the-world-factbook/countries/brazil/ (Look under "Government" > "Capital")
+
+Official Website of the Brazilian Government (if accessible and in English): While navigating official
+government websites can sometimes be complex, they would definitively list Brasília as the capital.
+
+Geographic Resources:
+
+National Geographic: Their website and publications will confirm Brasília as the capital of Brazil.
+
+Atlases and Geography Textbooks: Any modern atlas or geography textbook will list Brasília as the capital.
+
+Why the confusion?
+
+The confusion might arise because:
+
+Rio de Janeiro is a very famous Brazilian city: It's a major tourist destination, known for its
+beaches, Carnival, and iconic landmarks like Christ the Redeemer. Its past status as capital adds
+to its historical significance and public recognition.
+
+Historical context: Rio de Janeiro was the capital for a long time. People who learned about Brazil
+in the past might remember it as the capital.
+
+In conclusion, the statement is false. The capital of Brazil is Brasília, not Rio de Janeiro. Rio
+de Janeiro was the former capital but is no longer the current capital.
+
+You can confidently use the sources listed above to verify this information.
+(gemini-2.5-pro-exp-03-25)
+Depuração e direção
+O Google AI Studio oferece aos desenvolvedores acesso aos pensamentos do modelo na interface. Isso é útil para desenvolvedores que analisam o comando ao depurar:
+Analisar o processo de pensamento
+Analise cuidadosamente o processo de pensamento do Gemini para identificar as áreas em que ele pode ter se perdido. Essa análise pode fornecer dicas valiosas para refinar suas solicitações e receber a resposta esperada de forma consistente no seu aplicativo.
+Exemplo de cenário: se o processo de pensamento do Gemini mostrar que ele entendeu mal uma etapa em uma instrução complexa, você pode refinar a instrução para esclarecer essa etapa específica.
+Comando:
+Step 1: Summarize the following article about quantum physics.
+Step 2: Translate the summary into Spanish.
+Step 3: Extract the key entities from the Spanish summary.
+
+Article: ... [Article Text] ...
+Análise do processo de pensamento do Gemini (exemplo)
+The user wants me to process an article about Google's new quantum chip called Willow in three steps:
+Step 1: Summarize the article.
+Step 2: Translate the summary into Spanish.
+Step 3: Extract the key entities from the Spanish summary.
+
+Let's break down each step.
+
+Step 1: Summarize the article.
+I need to read the article and identify the main points. The article is about Google's new quantum
+chip, Willow, and its achievements. The key achievements are:
+
+Exponential error reduction as qubits scale up.
+
+Outperforming supercomputers in a benchmark computation (RCS).
+
+Willow is a step towards commercially relevant quantum computing.
+
+It's the first system below threshold for quantum error correction.
+
+It achieved a benchmark computation in under 5 minutes that would take a supercomputer 10 septillion years.
+
+It was fabricated in a new facility.
+
+It has state-of-the-art performance and high quality qubits.
+
+Google is looking towards real-world applications with Willow.
+
+Quantum computing will benefit AI.
+
+I will synthesize these points into a concise summary.
+
+Step 2: Translate the summary into Spanish.
+Once I have the summary in English, I will translate it into Spanish. I need to ensure the translation
+is accurate and natural-sounding in Spanish.
+
+Step 3: Extract the key entities from the Spanish summary.
+After translating the summary, I will identify and extract the key entities. Key entities are typically
+nouns or noun phrases that represent important objects, concepts, or actors. In this context, they
+will likely include:
+
+Names of chips (Willow, Sycamore)
+
+Companies/Organizations (Google Quantum AI, Google Research)
+
+Technologies (quantum chip, quantum computer, qubits, quantum error correction, superconducting
+quantum system, classical computers, supercomputers, AI)
+
+Benchmarks (random circuit sampling, RCS)
+
+People (Julian Kelly, Peter Shor, David Deutsch, Sergio Boixo, Hartmut Neven, John Preskill)
+
+Concepts (exponential error reduction, below threshold, beyond breakeven, state-of-the-art performance,
+commercially relevant applications, quantum mechanics, multiverse, T1 times, system benchmarks,
+algorithmic benchmarks)
+
+I will need to carefully review the Spanish summary to identify these entities and list them out.
+Provide Corrective Feedback
+If you observe errors or inconsistencies in Gemini's reasoning, provide corrective feedback in your prompt and/or System Instructions to anticipate where the model's response may deviate from your desired outcome.
+Prompt:
+You are an expert in botany. When asked to identify a plant, focus on leaf shape, flower structure, and stem characteristics.
+
+Identify this plant based on these characteristics: ... [Plant Characteristics Description] ...
+
+Previous incorrect response focused on habitat only. Please disregard habitat and focus on morphology.
+Instrução refinada (se necessário com base no processo de pensamento):
+Previous incorrect response focused on habitat only. Please disregard habitat and focus on morphology.
+Resposta:
+Tabebuia vellosoi
+(gemini-2.5-pro-exp-03-25)
+Como aproveitar ao máximo os formatos longos e o pensamento longo
+O pensamento gera "pensamentos" como parte da saída de token que mostra o raciocínio detalhado do Gemini. Para aproveitar ao máximo essas saídas:
+Analisar o raciocínio
+Preste atenção ao processo de raciocínio do Gemini (disponível na interface do Google AI Studio), como ele dividiu a tarefa e as escolhas feitas para a saída. Isso pode ajudar você a entender como ele chegou à conclusão.
+Orientação sobre o raciocínio
+Se a saída desejada for particularmente longa, forneça mais orientações no comando para limitar a quantidade de pensamento necessária para realizar a tarefa apresentada no comando. Isso permite que você reserve mais da saída de token para sua resposta.
+Exemplo: para um relatório detalhado, especifique seções e subseções no comando para orientar o pensamento do Gemini e estruturar o resultado de maneira eficiente.
+Comando:
+Generate a detailed report on the impact of climate change on coastal ecosystems.
+
+Report Structure:
+
+Introduction
+
+Rising Sea Levels
+2.1. Impact on Mangroves
+2.2. Impact on Coral Reefs
+
+Ocean Acidification
+3.1. Impact on Shellfish
+3.2. Impact on Plankton
+
+Extreme Weather Events
+4.1. Increased Storm Intensity
+4.2. Coastal Erosion
+
+Conclusion
+
+Provide detailed analysis within each section.
+Resposta:
+<...>
+Climate Change Impact on Coastal Ecosystems: A Detailed Report
+
+1. Introduction
+
+Coastal ecosystems, the dynamic interface between land and sea, are among the most productive and
+biodiverse environments on Earth. They provide crucial ecosystem services, including coastal protection,
+fisheries, carbon sequestration, and support for a vast array of species. However, these vital
+ecosystems are increasingly threatened by the multifaceted impacts of climate change. Driven by
+anthropogenic greenhouse gas emissions, climate change is manifesting in several interconnected ways
+that are profoundly altering the physical and chemical conditions of coastal environments. This report
+will delve into the key impacts of climate change on coastal ecosystems, focusing on rising sea levels,
+ocean acidification, and extreme weather events, and their specific consequences for critical habitats
+like mangroves and coral reefs, and key organisms like shellfish and plankton. Understanding these
+impacts is crucial for developing effective conservation and management strategies to mitigate the
+damage and enhance the resilience of these invaluable ecosystems.
+
+2. Rising Sea Levels
+
+Rising sea levels are a direct and significant consequence of global warming, driven by thermal
+expansion of seawater and the melting of land ice (glaciers and ice sheets). This phenomenon poses a
+direct threat to low-lying coastal ecosystems by inundating habitats, altering salinity regimes, and
+increasing erosion rates. The rate of sea level rise is accelerating, and projections for the 21st
+century indicate a continued upward trend, with potentially devastating consequences for coastal
+environments.
+
+2.1. Impact on Mangroves
+
+Mangrove forests are unique coastal ecosystems found in tropical and subtropical intertidal zones.
+They provide numerous benefits, including coastal protection against storms, nursery grounds for
+fish and invertebrates, and significant carbon sequestration...
+<...>
+(gemini-2.5-pro-exp-03-25)
+A seguir
+Teste a prévia do Gemini 2.5 Pro no Google AI Studio.
+Para mais informações sobre a prévia do Gemini 2.5 Pro e o Gemini Flash 2.0 Thinking, acesse a página do modelo.
+Confira mais exemplos no manual de instruções do Thinking.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

@@ -1,0 +1,129 @@
+URL: https://ai.google.dev/gemini-api/terms
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Termos de Serviço adicionais da API Gemini
+Nesta página
+Restrições de idade
+Restrições de uso
+Uso do conteúdo gerado
+Serviços não pagos
+Como o Google usa seus dados
+Serviços pagos
+Como o Google usa seus dados
+Condições de pagamento
+Observação: Atualizamos nossos Termos de Serviço Adicionais da API Gemini em 5 de fevereiro de 2024, adicionando modelos "experimentais" como não sendo para uso em produção sob os termos de "Restrições de Uso" .
+Em vigor a partir de 5 de fevereiro de 2025
+Para usar a API Gemini, o Google AI Studio e outros serviços para desenvolvedores do Google que fazem referência a estes termos (coletivamente, "APIs" ou "Serviços"), você precisa aceitar (1) os Termos de Serviço das APIs do Google ("Termos das APIs") e (2) estes Termos de Serviço adicionais da API Gemini ("Termos adicionais"). Os termos não definidos nestes Termos adicionais têm o significado atribuído nos Termos das APIs.
+Restrições de idade
+Você precisa ter pelo menos 18 anos para usar as APIs. Não é permitido usar os Serviços como parte de um site, aplicativo ou outro serviço (coletivamente, "Clientes de API") direcionado a usuários menores de 18 anos ou que possa ser acessado por eles.
+Restrições de uso
+Você pode usar Clientes de API para produção, mas o Google pode aplicar limites de taxa. Você não pode usar nenhum Serviço identificado como "Prévia" ou "Experimental" para produção.
+Você só pode acessar os Serviços (ou disponibilizar Clientes de API aos usuários) dentro de uma região disponível. É permitido usar somente os Serviços pagos ao disponibilizar Clientes de API aos usuários no Espaço Econômico Europeu, na Suíça ou no Reino Unido.
+Você não pode usar os Serviços para desenvolver modelos que concorrem com os Serviços (por exemplo, API Gemini ou Google AI Studio). Você também não pode tentar usar engenharia reversa, extrair ou replicar qualquer componente dos Serviços, incluindo os dados ou modelos de base (por exemplo, pesos dos parâmetros).
+Além da seção "Proibições das APIs" nos Termos das APIs, você precisa obedecer à nossa Política de uso proibido, que informa mais detalhes sobre a conduta adequada ao usar os Serviços.
+Os Serviços incluem recursos de segurança para bloquear conteúdo nocivo, como aquele que viola nossa Política de uso proibido. Não tente ignorar essas medidas de proteção nem usar conteúdo que viole os Termos das APIs ou estes Termos adicionais. Você deverá apenas reduzir as configurações de segurança se for necessário e adequado para seu caso de uso. Os aplicativos que têm configurações de segurança menos restritivas podem estar sujeitos à análise e aprovação do Google."
+Você não pode usar os Serviços na prática clínica, para oferecer orientação médica ou de qualquer maneira que seja supervisionada ou que exija aprovação de uma agência reguladora de dispositivos médicos.
+Uso do conteúdo gerado
+Alguns dos nossos Serviços permitem que você gere conteúdo original. O Google não reivindicará a propriedade desse conteúdo. Você confirma que o Google pode gerar um conteúdo igual ou semelhante para outras pessoas e que reservamos todos os direitos para fazer isso.
+Conforme exigido pelos Termos das APIs, você obedecerá à legislação aplicável ao uso de conteúdo gerado, que pode precisar do fornecimento de atribuição aos seus usuários quando retornado como parte de uma chamada de API. Tenha critério antes de usar o conteúdo gerado, incluindo código. Você é responsável pelo uso que faz do conteúdo gerado e pelo uso feito por qualquer pessoa com quem você o compartilhe.
+Serviços não pagos
+Quaisquer Serviços que sejam oferecidos sem custo financeiro, como interações diretas com o Google AI Studio ou cota não paga na API Gemini, são Serviços não pagos ("Serviços não pagos").
+Como o Google usa seus dados
+Quando você usa Serviços não pagos, incluindo, por exemplo, o Google AI Studio e a cota não paga na API Gemini, o Google usa o conteúdo que você envia aos Serviços e qualquer resposta gerada para fornecer, melhorar e desenvolver produtos, serviços e tecnologias de aprendizado de máquina, inclusive recursos, produtos e serviços corporativos do Google, de acordo com nossa Política de Privacidade.
+Para fins de qualidade e aprimoramento dos nossos produtos, revisores humanos podem ler, fazer anotações e tratar suas entradas e saídas das APIs. O Google toma medidas para proteger sua privacidade como parte desse processo. Isso inclui desassociar esses dados da sua Conta do Google, chave de API e projeto do Cloud antes que sejam vistos ou anotados por revisores. Não envie informações sensíveis, confidenciais ou pessoais para os Serviços não pagos.
+A licença que você concede ao Google de acordo com a seção "Envio de conteúdo" nos Termos das APIs também se estende, na medida exigida pela legislação aplicável, ao nosso uso, a qualquer conteúdo (por exemplo, comandos, incluindo instruções de sistema, conteúdo armazenado em cache e arquivos como imagens, vídeos ou documentos associados) que você envia aos Serviços e a qualquer resposta gerada.
+O Google só usa conteúdo que você importa ou faz upload no nosso recurso de ajustes de modelos para essa finalidade explícita. Os ajustes de conteúdo podem ser retidos em conexão com seus modelos ajustados para fins de reajuste quando os modelos compatíveis são mudados. Quando você exclui um modelo ajustado, o conteúdo de ajustes relacionado também é removido.
+Se você estiver no Espaço Econômico Europeu, na Suíça ou no Reino Unido, os termos de "Como o Google usa seus dados" em "Serviços pagos" são válidos para todos os Serviços, incluindo o Google AI Studio e a cota não paga na API Gemini, mesmo que sejam oferecidos sem custo financeiro.
+Serviços pagos
+Quando um Serviço é oferecido mediante uma taxa, ele é considerado pago ("Serviços pagos"). Ao ativar uma conta do Cloud Billing, todo uso da API Gemini e do Google AI Studio é um "Serviço Pago" com relação a como o Google usa seus dados, mesmo ao usar serviços oferecidos sem custo financeiro, como o Google AI Studio e a cota não paga da API Gemini.
+Para os Serviços pagos, "Google", conforme usado nestes Termos, tem o significado atribuído aqui.
+Como o Google usa seus dados
+Quando você usa os Serviços pagos, incluindo, por exemplo, a cota paga da API Gemini, o Google não usa seus comandos (incluindo instruções de sistema, conteúdo armazenado em cache e arquivos como imagens, vídeos ou documentos associados) ou respostas para melhorar os produtos. Seus comandos e respostas serão tratados de acordo com o Adendo de tratamento de dados para produtos em que o Google é um operador de dados. Para serviços pagos, o Google registra prompts e respostas por um período limitado, exclusivamente com o propósito de detectar violações da Política de uso proibido e quaisquer divulgações legais ou regulatórias necessárias. Esses dados podem ser armazenados temporariamente ou em cache em qualquer país em que o Google ou seus agentes tenham instalações.
+Outros dados que coletamos ao fornecer os Serviços pagos a você, como informações e configurações da conta, histórico de faturamento, comunicações diretas e feedback, bem como detalhes de uso (por exemplo, informações sobre uso que incluem o número de tokens por comando e resposta, status operacional, acionadores de filtros de segurança, relatórios de erros e falhas de software, detalhes de autenticação, métricas de qualidade e desempenho e outros detalhes técnicos necessários para o Google operar e manter os Serviços, como identificadores de dispositivo, de cookies ou tokens e endereços IP), permanecem sujeitos aos Termos de Proteção de Dados entre Controladores do Google e à Política de Privacidade do Google mencionada nos Termos das APIs.
+Ao usar o Embasamento com a Pesquisa Google, dados adicionais são coletados e usados, conforme detalhado na seção "Embasamento com a Pesquisa Google" abaixo.
+Condições de pagamento
+O faturamento e os pagamentos de Serviços pagos são processados pelo Cloud Billing no Google Cloud Platform.
+Portanto, as seções 2 (Condições de pagamento) e 14 (Disposições gerais) dos Termos de Serviço do Google Cloud Platform regem pagamentos, faturas, faturamentos, disputas de pagamento e problemas relacionados, enquanto estes Termos regem seu uso dos Serviços pagos. Estes Termos não regem seu uso direto de qualquer serviço do Google Cloud Platform (incluindo os listados no Resumo dos serviços do Google Cloud Platform).
+As "Taxas" (conforme usado nos Termos de Serviço do Google Cloud Platform) dos Serviços pagos estão especificadas na nossa página de preços. O Google pode fazer alterações nesses preços periodicamente, que entram em vigor 30 dias após a publicação, a menos que seja especificado de outra forma (ou no caso de novos Serviços pagos, que os preços entram em vigor imediatamente, salvo especificação em contrário). Seu uso contínuo dos Serviços pagos constitui seu consentimento com essas mudanças.
+Embasamento com a Pesquisa Google
+"Embasamento com a Pesquisa Google" é um Serviço que fornece Resultados embasados e Sugestões de pesquisa, disponível no Google AI Studio (como um Serviço não pago) e na API Gemini (como um Serviço pago). "Resultados embasados" significa respostas que o Google gera usando o comando do usuário final, as informações contextuais que você envia (conforme aplicável) e os resultados do mecanismo de pesquisa do Google. "Sugestões de pesquisa" (também conhecidas como Pontos de entrada de pesquisa) significa sugestões de pesquisa que o Google fornece com os Resultados embasados. Se um Resultado embasado recebe um clique, termos independentes (e não estes) regem a página de destino. Se uma Sugestão de pesquisa recebe um clique, os Termos de Serviço do Google regem a página de destino google.com. "Links" são qualquer outra forma de buscar páginas da Web (incluindo hiperlinks e URLs), que podem estar em um Resultado embasado ou uma Sugestão de pesquisa. Os Links também incluem títulos ou rótulos fornecidos com essas formas de buscar páginas da Web. Com exceção dos seus domínios da Web, você não declarará direitos de propriedade intelectual sobre quaisquer Sugestões de pesquisa ou Links nos Resultados embasados.
+Restrições de uso
+Só é permitido usar o Embasamento com a Pesquisa Google em um aplicativo pertencente e operado por você, bem como exibir apenas os Resultados embasados com as Sugestões de pesquisa associadas ao usuário final que enviou o comando.
+Você não poderá, nem permitirá ao usuário final ou qualquer terceiro, armazenar (exceto conforme definido abaixo), salvar em cache, copiar, colocar em uma página da Web, implementar qualquer rastreamento de cliques, de Links ou outro tipo de monitoramento (exceto conforme definido abaixo), distribuir, revender, analisar, treinar ou aprender de qualquer forma com os Resultados embasados ou as Sugestões de pesquisa.
+Você pode armazenar o texto dos Resultados embasados (exceto os Links): (1) que exibiu por até 30 (trinta) dias apenas para avaliar e otimizar a exibição dos Resultados embasados no seu aplicativo; e (2) no histórico de conversa de um usuário final do seu aplicativo por até 6 (seis) meses apenas para permitir que o usuário final veja o histórico de conversa.
+Você pode monitorar as interações do usuário final com a interface do seu aplicativo. No entanto, você não poderá monitorar se essas interações ocorreram especificamente com uma determinada Sugestão de pesquisa ou Resultado embasado (em cada caso, total ou parcialmente, incluindo qualquer Link específico).
+A menos que permitido pelo Google por escrito, você: (1) não modificará nem intercalará qualquer outro conteúdo com os Resultados embasados ou as Sugestões de pesquisa; e (2) não colocará nenhum conteúdo intersticial entre qualquer Link ou Sugestão de pesquisa e a página de destino associada, não redirecionará usuários finais para fora das páginas de destino nem minimizará, removerá ou inibirá de qualquer forma a exibição total e completa de qualquer página de destino.
+Coleta de dados e como o Google usa seus dados
+Além dos termos gerais acima ("Como o Google usa seus dados" em "Serviços não pagos" e "Serviços pagos"), ao usar o Embasamento com a Pesquisa Google, o Google armazenará comandos, informações contextuais que você enviar e saídas por 30 (trinta) dias para fins de criação dos Resultados embasados e das Sugestões de pesquisa, e as informações armazenadas podem ser usadas para depuração e teste dos sistemas que apoiam o Embasamento com a Pesquisa Google. Ao utilizar o Embasamento com a Pesquisa Google pela cota paga da API Gemini, esse tratamento para depuração e teste dos sistemas está de acordo com o Adendo de tratamento de dados para produtos em que o Google é um operador de dados.
+Essa subseção "Embasamento com a Pesquisa Google" permanecerá vigente após a rescisão do Contrato, conforme aplicável.
+As Diretrizes do Aplicativo Cliente são válidas para seu uso do Embasamento com a Pesquisa Google. Para as finalidades das Diretrizes do Aplicativo Cliente, seus aplicativos que usam o Embasamento com a Pesquisa Google são considerados Aplicativos aprovados.
+Exonerações de responsabilidade
+Os Serviços incluem tecnologia experimental e podem, às vezes, fornecer conteúdo impreciso ou ofensivo que não representa as opiniões do Google.
+Tenha critério antes de confiar, publicar ou usar de qualquer forma o conteúdo fornecido pelos Serviços.
+Não confie nos Serviços para aconselhamento médico, jurídico, financeiro ou de outra natureza profissional. Qualquer conteúdo sobre esses assuntos é oferecido somente para fins informativos e não substitui a orientação de um profissional qualificado. O conteúdo não constitui um tratamento ou diagnóstico médico.
+Observação: as versões anteriores destes Termos adicionais estão arquivadas aqui.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-19 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

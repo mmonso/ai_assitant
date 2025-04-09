@@ -1,0 +1,215 @@
+URL: https://ai.google.dev/gemini-api/docs/oauth
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Guia de início rápido do OAuth
+Nesta página
+Objetivos
+Pré-requisitos
+Configurar seu projeto na nuvem
+1. Ativar a API
+2. Configurar a tela de permissão OAuth
+3. Autorizar credenciais para um aplicativo para computador
+Configurar as credenciais padrão do aplicativo
+Curl
+A maneira mais fácil de fazer a autenticação na API Gemini é configurar uma chave de API, conforme descrito no Guia de início rápido da API Gemini. Se você precisar de controles de acesso mais rigorosos, use o OAuth. Este guia vai ajudar você a configurar a autenticação com o OAuth.
+Este guia usa uma abordagem de autenticação simplificada que é adequada para um ambiente de teste. Para um ambiente de produção, saiba mais sobre autenticação e autorização antes de escolher as credenciais de acesso adequadas para o app.
+Objetivos
+Configurar o projeto do Cloud para OAuth
+Configurar o application-default-credentials
+Gerenciar credenciais no seu programa em vez de usar gcloud auth
+Pré-requisitos
+Para executar este guia de início rápido, você precisa de:
+Um projeto do Google Cloud.
+Uma instalação local da CLI gcloud
+Configurar seu projeto na nuvem
+Para concluir este guia de início rápido, primeiro você precisa configurar seu projeto do Cloud.
+1. Ativar a API
+Antes de usar as APIs do Google, você precisa ativá-las em um projeto do Google Cloud.
+No console do Google Cloud, ative a API Google Language Transformer.
+Ativar a API
+2. Configurar a tela de permissão OAuth
+Em seguida, configure a tela de consentimento do OAuth do projeto e adicione você mesmo como um usuário de teste. Se você já concluiu esta etapa para seu projeto do Cloud, pule para a próxima seção.
+No console do Google Cloud, acesse Menu > > Visão geral.
+Acesse o
+Preencha o formulário de configuração do projeto e defina o tipo de usuário como Externo na seção Público-alvo.
+Preencha o restante do formulário, aceite os termos da Política de dados do usuário e clique em Criar.
+Por enquanto, você pode pular a adição de escopos e clicar em Salvar e continuar. No futuro, quando você criar um app para uso fora da sua organização do Google Workspace, será necessário adicionar e verificar os escopos de autorização necessários.
+Adicionar usuários de teste:
+Navegue até o do .
+Em Test users, clique em Add users.
+Insira seu endereço de e-mail e os outros usuários de teste autorizados. Depois, clique em Salvar.
+3. Autorizar credenciais para um aplicativo para computador
+Para fazer a autenticação como usuário final e acessar os dados do usuário no app, crie um ou mais IDs do cliente OAuth 2.0. Um ID do cliente é usado para identificar um único app nos servidores OAuth do Google. Se o app for executado em várias plataformas, crie um ID do cliente separado para cada plataforma.
+No console do Google Cloud, acesse Menu > > Clientes.
+Acessar "Credenciais"
+Clique em Criar cliente.
+Clique em Tipo de aplicativo > App para computador.
+No campo Nome, digite um nome para a credencial. Esse nome é mostrado apenas no console do Google Cloud.
+Clique em Criar. A tela do cliente OAuth criado aparece, mostrando o novo ID e a chave secreta do cliente.
+Clique em OK. A credencial recém-criada aparece em IDs do cliente OAuth 2.0.
+Clique no botão de download para salvar o arquivo JSON. Ela será salva como client_secret_<identifier>.json, renomeada como client_secret.json e movida para o diretório de trabalho.
+Configurar as credenciais padrão do aplicativo
+Para converter o arquivo client_secret.json em credenciais utilizáveis, transmita o local do argumento --client-id-file do comando gcloud auth application-default login.
+gcloud auth application-default login \
+    --client-id-file=client_secret.json \
+    --scopes='https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/generative-language.retriever'
+A configuração simplificada do projeto neste tutorial aciona uma caixa de diálogo "O Google não verificou este app". Isso é normal. Escolha "Continuar".
+Isso coloca o token resultante em um local conhecido para que ele possa ser acessado por gcloud ou pelas bibliotecas de cliente.
+Observação: se estiver executando no Colab, inclua --no-browser e siga cuidadosamente as instruções que aparecem (não clique no link). Verifique também se o gcloud --version local é a versão mais recente para corresponder ao Colab.
+gcloud auth application-default login 
+    --no-browser
+    --client-id-file=client_secret.json 
+    --scopes='https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/generative-language.retriever'
+Depois de definir as credenciais padrão do aplicativo (ACD), as bibliotecas de cliente na maioria dos idiomas precisam de pouca ou nenhuma ajuda para encontrá-las.
+Curl
+A maneira mais rápida de testar se isso está funcionando é usá-lo para acessar a API REST usando o curl:
+access_token=$(gcloud auth application-default print-access-token)
+project_id=<MY PROJECT ID>
+curl -X GET https://generativelanguage.googleapis.com/v1/models \
+    -H 'Content-Type: application/json' \
+    -H "Authorization: Bearer ${access_token}" \
+    -H "x-goog-user-project: ${project_id}" | grep '"name"'
+Python
+No Python, as bibliotecas de cliente precisam encontrá-las automaticamente:
+pip install google-generativeai
+Um script mínimo para testar pode ser:
+import google.generativeai as genai
+
+print('Available base models:', [m.name for m in genai.list_models()])
+Próximas etapas
+Se isso funcionar, você poderá tentar a recuperação semântica nos dados de texto.
+Gerenciar credenciais por conta própria [Python]
+Em muitos casos, o comando gcloud não está disponível para criar o token de acesso com o ID do cliente (client_secret.json). O Google fornece bibliotecas em várias linguagens para que você possa gerenciar esse processo no seu app. Esta seção demonstra o processo em Python. Há exemplos equivalentes desse tipo de procedimento, para outros idiomas, disponíveis na documentação da API Drive.
+1. Instalar as bibliotecas necessárias
+Instale a biblioteca de cliente do Google para Python e a biblioteca de cliente Gemini.
+pip install --upgrade -q google-api-python-client google-auth-httplib2 google-auth-oauthlib
+pip install google-generativeai
+2. Gravar o gerenciador de credenciais
+Para minimizar o número de vezes que você precisa clicar nas telas de autorização, crie um arquivo chamado load_creds.py no diretório de trabalho para armazenar em cache um arquivo token.json que possa ser reutilizado mais tarde ou atualizado se expirar.
+Comece com o código abaixo para converter o arquivo client_secret.json em um token que pode ser usado com genai.configure:
+import os.path
+
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
+SCOPES = ['https://www.googleapis.com/auth/generative-language.retriever']
+
+def load_creds():
+    """Converts `client_secret.json` to a credential object.
+
+    This function caches the generated tokens to minimize the use of the
+    consent screen.
+    """
+    creds = None
+    # The file token.json stores the user's access and refresh tokens, and is
+    # created automatically when the authorization flow completes for the first
+    # time.
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    # If there are no (valid) credentials available, let the user log in.
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'client_secret.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save the credentials for the next run
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    return creds
+3. Programar seu programa
+Agora crie o script.py:
+import pprint
+import google.generativeai as genai
+from load_creds import load_creds
+
+creds = load_creds()
+
+genai.configure(credentials=creds)
+
+print()
+print('Available base models:', [m.name for m in genai.list_models()])
+4. Executar o programa
+No diretório de trabalho, execute o exemplo:
+python script.py
+Na primeira vez que você executar o script, ele vai abrir uma janela do navegador e solicitar a autorização de acesso.
+Se você ainda não estiver conectado à sua Conta do Google, será solicitado que você faça login. Se você tiver feito login em várias contas, selecione a conta definida como "Conta de teste" ao configurar seu projeto.
+Observação: a configuração simplificada do projeto neste tutorial aciona uma caixa de diálogo "O Google não verificou este app". Isso é normal. Escolha "Continuar".
+As informações de autorização são armazenadas no sistema de arquivos. Assim, na próxima vez que você executar o código de exemplo, não será necessário fazer a autorização.
+Você configurou a autenticação.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

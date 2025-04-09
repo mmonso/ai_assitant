@@ -1,0 +1,108 @@
+URL: https://ai.google.dev/gemma
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Gemma
+Documentos
+Confira o repositório do Gemma Cookbook para ver exemplos de geração e ajuste. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Gemma 3
+Uma coleção de modelos abertos leves e de última geração criados com base na mesma pesquisa e tecnologia que alimentam nossos modelos do Gemini 2.0
+Testar o Gemma 3 no Google AI Studio
+Processar tarefas complexas
+A janela de contexto de 128 mil tokens do Gemma 3 permite que seus aplicativos processem e entendam grandes quantidades de informações, possibilitando recursos de IA mais sofisticados.
+Alcance o mundo inteiro instantaneamente
+Com o Gemma 3, você se comunica com facilidade em vários idiomas. Desenvolva aplicativos que alcancem um público global, com suporte para mais de 140 idiomas.
+Entender palavras e imagens
+Crie facilmente aplicativos que analisam imagens, textos e vídeos, abrindo novas possibilidades para aplicativos interativos e inteligentes.
+Leia o blog
+Crie com o melhor modelo de aceleração única do mundo
+Começar a criar com o Gemma
+Guia do Gemma
+Exemplos práticos e tutoriais sobre os modelos abertos do Google
+Conheça os notebooks
+Hugging face
+Comece a usar o Gemma com a biblioteca Transformers do Hugging Face.
+Keras
+Use o Keras com um back-end JAX para ajustar o Gemma com o LoRA e o treinamento distribuído de paralelismo de modelo em TPUs.
+Ollama
+Execute a inferência localmente em um modelo do Gemma usando o Ollama.
+Biblioteca Python do Gemma
+Converse e ajuste o Gemma com a nova biblioteca Gemma Python.
+Pesquisa avançada com o Gemma
+TxGemma
+NEW
+Uma coleção de modelos abertos para acelerar o desenvolvimento de tratamentos.
+Download from Hugging Face
+ShieldGemma 2
+NOVO
+O ShieldGemma 2 oferece uma solução pronta para a segurança de imagens, gerando rótulos em três categorias de segurança.
+Fazer o download do Kaggle
+PaliGemma 2
+NOVO
+O PaliGemma 2 traz recursos de visão facilmente ajustáveis aos modelos de linguagem Gemma 2, permitindo uma ampla gama de aplicativos que combinam a compreensão de texto e imagem.
+Fazer o download do Kaggle
+DataGemma
+Os DataGemma são os primeiros modelos abertos projetados para conectar LLMs a dados reais extraídos do Data Commons do Google.
+Fazer o download do Kaggle
+Escopo do Gemma
+O Gemma Scope oferece aos pesquisadores uma transparência sem precedentes nos processos de tomada de decisão dos nossos modelos do Gemma 2.
+Fazer o download do Hugging Face
+Slide atual: 1
+Slide atual: 2
+Slide atual: 3
+Slide atual: 4
+Slide atual: 5
+Visualizar comparativos de mercado do Gemma 3
+MMLU-Pro
+LiveCodeBench
+Bird-SQL
+GPQA Diamond
+SimpleQA
+Embasamento de FATOS
+MATH
+HiddenMath
+MMMU
+100%
+75%
+50%
+25%
+0%
+Gemma 2
+2b
+15,6
+9b
+46,8
+27b
+56,9
+Gemma 3
+1b
+14.7
+4b
+43,6
+12b
+60,6
+27b
+67,5
+*Consulte o relatório técnico para saber mais sobre a performance com outras metodologias. Leia o relatório técnico
+Conheça o Gemmaverse
+Escolher o destino da implantação
+Dispositivo móvel
+Implantar no dispositivo com a IA de borda do Google
+Implante diretamente nos dispositivos para funcionalidade off-line com baixa latência. Ideal para aplicativos que exigem privacidade e capacidade de resposta em tempo real, como apps para dispositivos móveis, dispositivos de IoT e sistemas embarcados.
+Implantar o app para dispositivos móveis
+Web
+Integração perfeita a aplicativos da Web
+Melhore seus sites e serviços da Web com recursos avançados de IA, como recursos interativos, conteúdo personalizado e automação inteligente.
+Implantar a Web
+Cloud
+Escalone sem esforço com a infraestrutura em nuvem
+Aproveite a escalabilidade e a flexibilidade da nuvem para lidar com implantações em grande escala, cargas de trabalho exigentes e aplicativos complexos de IA.
+Deploy Cloud
+Como acelerar a pesquisa acadêmica com créditos do Google Cloud
+Termos de Serviço
+Privacidade
+Português – Brasil

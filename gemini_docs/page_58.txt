@@ -1,0 +1,224 @@
+URL: https://ai.google.dev/gemini-api/tutorials/pipet-code-agent
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Aplicativo de chat
+Assistente de código
+Gerador de código do Flutter
+Pesquisa de conteúdo
+Agente de exploração de dados
+Assistente de redação
+Revisor do Apresentações Google
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Criar um assistente de código de IA com o agente do Pipet Code
+Nesta página
+Configurar o projeto
+Instalar os pré-requisitos
+Clonar e configurar o projeto
+Configurar e testar a extensão
+Modificar comando
+Criar novo comando
+Integrar o novo comando
+Testar o novo comando
+Escrever código pode ser gratificante e satisfatório, mas transformar seu código de funcionando em apresentável para colegas é frequentemente uma tarefa. Os modelos generativos de inteligência artificial podem ajudar você a adicionar comentários de código, encontrar erros antes dos revisores humanos e realizar várias outras tarefas para facilitar seu fluxo de trabalho de programação.
+Observação: este exemplo usa o SDK para JavaScript legado. Para novos aplicativos, use o SDK da IA generativa do Google para TypeScript e JavaScript.
+Neste tutorial, mostramos como estender o Pipet Code Agent, uma ferramenta de assistência de código com tecnologia de IA criada pela equipe de relações com desenvolvedores de IA do Google. Esse projeto de código aberto é uma extensão do Visual Studio Code (VS Code) da Microsoft que ajuda você a cuidar de algumas das tarefas importantes, mas menos divertidas, de programação, como comentar seu código, encontrar erros e sugerir melhorias. A extensão envia solicitações de assistência de programação para a API Gemini e incorpora as respostas à janela de edição de código.
+É possível modificar o Pipet para que essas funções funcionem melhor para você ou criar novos comandos para oferecer melhor suporte ao seu fluxo de desenvolvimento.
+Para conferir uma visão geral em vídeo do projeto e como estendê-lo, incluindo insights dos criadores, acesse AI Code Assistant: Build with Google AI. Caso contrário, você pode começar a estender o projeto seguindo as instruções abaixo.
+Configurar o projeto
+Estas instruções mostram como configurar o projeto Pipet Code Agent para desenvolvimento e teste. As etapas gerais são instalar alguns softwares pré-requisitos, definir algumas variáveis de ambiente, clonar o projeto do repositório de código e executar a instalação de configuração.
+Observação: para executar o projeto, você precisa de uma chave de API Google Gemini, que pode ser conseguida na página de configuração da API Google Gemini.
+Instalar os pré-requisitos
+O projeto Pipet Code Agent é executado como uma extensão do Visual Studio Code da Microsoft e usa Node.js e a ferramenta npm para gerenciar pacotes e executar o aplicativo. As instruções de instalação a seguir são para uma máquina host Linux.
+Para instalar o software necessário:
+Instale o Visual Studio Code para sua plataforma.
+Instale node e npm seguindo as instruções de instalação para sua plataforma.
+Clonar e configurar o projeto
+Faça o download do código do projeto e use o comando de instalação npm para fazer o download das dependências necessárias e configurar o projeto. Você precisa do software de controle de origem git para extrair o código-fonte do projeto.
+Para fazer o download e configurar o código do projeto:
+Clone o repositório do Git usando o comando abaixo.
+git clone https://github.com/google/generative-ai-docs
+Se quiser, configure seu repositório local do git para usar o checkout esparso, para que você tenha apenas os arquivos do projeto do Docs Agent.
+cd generative-ai-docs/
+git sparse-checkout init --cone
+git sparse-checkout set examples/gemini/node/pipet-code-agent/
+Navegue até o diretório raiz do projeto Pipet Code Agent.
+cd generative-ai-docs/examples/gemini/node/pipet-code-agent/
+Execute o comando de instalação para fazer o download das dependências e configurar o projeto:
+npm install
+Configurar e testar a extensão
+Agora você pode testar a instalação executando o Pipet Code Agent como uma extensão de desenvolvimento no VS Code no seu dispositivo. O teste abre uma janela separada do Extension Development Host do VS Code, em que a nova extensão está disponível. Nessa nova janela, você configura a chave de API usada pela extensão para acessar a API Google Gemini.
+Figura 1. Janela do host de desenvolvimento de extensões do VS Code com os comandos da extensão Pipet.
+Para configurar e testar a configuração:
+Inicie o aplicativo VS Code.
+No VS Code, crie uma nova janela selecionando File > New Window.
+Abra o projeto Pipet Code Agent selecionando File > Open Folder e a pasta pipet-code-agent/.
+Abra o arquivo pipet-code-agent/package.json.
+Execute a extensão no modo de depuração selecionando Run > Start Debugging. Essa etapa abre uma janela separada do Extension Development Host do VS Code.
+Abra as configurações do VS Code selecionando Code > Settings > Settings.
+Receba uma chave da API Gemini do Google no site do desenvolvedor de IA generativa e copie a string da chave.
+Defina a chave de API como uma configuração. No campo Search Settings, digite pipet, selecione a guia User e, na configuração Google > Gemini: Api Key, clique no link Edit in settings.json e adicione sua chave da API Gemini:
+"google.gemini.apiKey": "your-api-key-here"
+Salve as alterações no arquivo settings.json e feche as guias de configurações.
+Cuidado: trate a chave de API como uma senha e proteja-a adequadamente. Não incorpore sua chave em um código publicado publicamente.
+Para testar os comandos da extensão:
+Na janela Extension Development Host do VS Code, selecione qualquer código na janela do editor.
+Abra a paleta de comandos selecionando Visualizar > Paleta de comandos.
+Na paleta de comandos, digite Pipet e selecione um dos comandos com esse prefixo.
+Modificar comando
+Modificar os comandos fornecidos no Pipet Code Agent é a maneira mais simples de mudar o comportamento e os recursos da extensão. Os comandos de comentário e revisão usam uma abordagem de alguns comandos de disparo com exemplos de código e comentários para esse código, além de algumas instruções gerais para o modelo generativo de IA. Essas informações de contexto do comando orientam o modelo generativo do Gemini na formação de uma resposta. Ao mudar as instruções, exemplos ou ambos nos comandos de comentário ou revisão, você pode mudar o comportamento de cada um dos comandos atuais.
+Este conjunto de instruções explica como modificar o comando review.ts mudando o texto de comando.
+Para se preparar para editar o comando review.ts:
+Inicie o aplicativo VS Code.
+No VS Code, crie uma nova janela selecionando File > New Window.
+Abra o projeto Pipet Code Agent selecionando File > Open Folder e a pasta pipet-code-agent/.
+Abra pipet-code-agent/src/review.ts.
+Para modificar o comportamento do comando review.ts:
+No arquivo review.ts, mude o início da constante PROMPT para instruções diferentes.
+const PROMPT = '
+Write review comments for following code, identifying bugs and ways to improve code quality. Examples of bugs are syntax errors or typos, out of memory errors, and boundary value errors. Examples of improving code quality are reducing complexity of code, eliminating duplicate code, and ensuring other developers
+are able to understand the code.
+${CODE_LABEL}
+...
+Opcionalmente, no arquivo review.ts, adicione outro exemplo à lista de código e exemplos de revisão de código.
+...
+${REVIEW_LABEL}
+There are duplicate lines of code in this control structure.
+${CODE_LABEL}
+const fixed_value = 128;
+${REVIEW_LABEL}
+Make sure constant names are in all capitals (FIXED_VALUE) for clarity.
+';
+Salve as alterações no arquivo review.ts.
+Para testar o comando modificado:
+Na janela do projeto da extensão Pipet do VS Code, reinicie o depurador selecionando Run > Restart Debugging.
+Na janela Extension Development Host do VS Code, selecione qualquer código na janela do editor.
+Abra a paleta de comandos selecionando Visualizar > Paleta de comandos.
+Na paleta de comandos, digite Pipet e selecione o comando Pipet: Revise o código selecionado.
+Criar novo comando
+É possível estender o Pipet criando novos comandos que executam tarefas completamente novas com a API Gemini. Cada arquivo de comando (comment.ts e review.ts) é basicamente independente e inclui código para coletar texto do editor ativo, escrever um comando, se conectar à API Gemini, enviar um comando e processar a resposta.
+Figura 2. Novo comando de recomendação de nome de função na janela do host de desenvolvimento da extensão do VS Code.
+Este conjunto de instruções explica como criar um novo comando usando o código de um comando existente, comment.ts, como modelo.
+Para criar um comando que recomende nomes para funções:
+Faça uma cópia do arquivo pipet-code-agent/src/comment.ts chamado name.ts no diretório src/.
+No VS Code, abra o arquivo src/name.ts.
+Mude as instruções de solicitação no arquivo name.ts editando o valor PROMPT.
+// Provide instructions for the AI generative model
+const PROMPT = `Recommend a name for this function. Explain your
+reasoning in 3 sentences or less:`;
+Mude o nome da função de comando e a mensagem de informação dela.
+export async function generateName() {
+  vscode.window.showInformationMessage('Generating function name...');
+Atualize o código de montagem do comando para incluir apenas o valor PROMPT e o texto selecionado no editor.
+  // Build the full prompt using the template.
+  const fullPrompt = `${PROMPT}
+"
+${selectedCode}
+"
+`;
+Mude a saída da resposta para descrever o que ela está gerando.
+    // update prefix to describe output
+    let commentIntro = padding + commentPrefix + "Recommended name: (generated)\n";
+    editBuilder.insert(selection.start, commentIntro);
+    editBuilder.insert(selection.start, pyComment);
+Salve as alterações no arquivo review.ts.
+Integrar o novo comando
+Depois de concluir o código do novo comando, você precisa integrá-lo ao resto da extensão. Atualize os arquivos extension.ts e package.json para tornar o novo comando parte da extensão e permitir que o VS Code invoque o novo comando.
+Para integrar o comando name ao código da extensão:
+No VS Code, abra o arquivo pipet-code-agent/src/extension.ts.
+Adicione o novo arquivo de código à extensão adicionando uma nova instrução de importação.
+import { generateName } from './name';
+Registre o novo comando adicionando o seguinte código à função activate().
+export function activate(context: vscode.ExtensionContext) {
+    ...
+    vscode.commands.registerCommand('pipet-code-agent.nameFunction', generateName);
+}
+Salve as alterações no arquivo extension.ts.
+Para integrar o comando name ao pacote de extensão:
+No VS Code, abra o arquivo pipet-code-agent/package.json.
+Adicione o novo comando à seção commands do arquivo package.
+  "contributes": {
+    "commands": [
+      ...
+      {
+        "command": "pipet-code-agent.nameFunction",
+        "title": "Pipet: Name the selected function."
+      }
+    ],
+Salve as alterações no arquivo package.json.
+Testar o novo comando
+Depois de programar o comando e integrá-lo à extensão, você poderá testá-lo. O novo comando só está disponível na janela Extension Development Host do VS Code, e não na janela do VS Code em que você editou o código da extensão.
+Para testar o comando modificado:
+Na janela do projeto da extensão Pipet do VS Code, reinicie o depurador selecionando Run > Restart Debugging, que reinicia uma janela Extension Development Host separada.
+Na janela Extension Development Host do VS Code, selecione algum código na janela do editor.
+Abra a paleta de comandos selecionando Visualizar > Paleta de comandos.
+Na paleta de comandos, digite Pipet e selecione o comando Pipet: Name the selected function.
+Outros recursos
+Para mais informações sobre o projeto Pipet Code Agent, consulte o repositório de código. Se você precisar de ajuda para criar o aplicativo ou estiver procurando colaboradores de desenvolvimento, confira o servidor do Google Developers Community Discord.
+Aplicativos de produção
+Se você planeja implantar o Docs Agent para um grande público, saiba que o uso da API Google Gemini pode estar sujeito a limitação de taxa e outras restrições de uso. Se você está pensando em criar um aplicativo de produção com a API Gemini, como o Docs Agent, confira os serviços da Vertex AI do Google Cloud para aumentar a escalabilidade e a confiabilidade do seu app.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-24 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

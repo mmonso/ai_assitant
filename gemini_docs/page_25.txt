@@ -1,0 +1,227 @@
+URL: https://ai.google.dev/gemini-api/docs/text-generation
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Geração de texto
+Nesta página
+Entrada de texto
+Entrada de imagem
+Saída de streaming
+Conversas com vários turnos
+Parâmetros de configuração
+A API Gemini pode gerar saída de texto em resposta a várias entradas, incluindo texto, imagens, vídeo e áudio. Este guia mostra como gerar texto usando entradas de texto e imagem. Ele também abrange streaming, chat e instruções do sistema.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Entrada de texto
+A maneira mais simples de gerar texto usando a API Gemini é fornecer ao modelo uma única entrada de texto, conforme mostrado neste exemplo:
+Python
+JavaScript
+Go
+REST
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=["How does AI work?"]
+)
+print(response.text)
+Entrada de imagem
+A API Gemini oferece suporte a entradas multimodais que combinam arquivos de texto e mídia. O exemplo a seguir mostra como gerar texto com base em texto e imagem:
+Python
+JavaScript
+Go
+REST
+from PIL import Image
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+image = Image.open("/path/to/organ.png")
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=[image, "Tell me about this instrument"]
+)
+print(response.text)
+Saída de streaming
+Por padrão, o modelo retorna uma resposta após concluir todo o processo de geração de texto. Você pode ter interações mais rápidas usando o streaming para retornar instâncias de GenerateContentResponse conforme são geradas.
+Python
+JavaScript
+Go
+REST
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+response = client.models.generate_content_stream(
+    model="gemini-2.0-flash",
+    contents=["Explain how AI works"]
+)
+for chunk in response:
+    print(chunk.text, end="")
+Conversas com vários turnos
+O SDK do Gemini permite coletar várias rodadas de perguntas e respostas em uma conversa. O formato de chat permite que os usuários avancem gradualmente para encontrar respostas e receber ajuda com problemas de várias partes. Essa implementação do SDK do chat fornece uma interface para acompanhar o histórico de conversas, mas, nos bastidores, ela usa o mesmo método generateContent para criar a resposta.
+O exemplo de código a seguir mostra uma implementação básica de chat:
+Python
+JavaScript
+Go
+REST
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+chat = client.chats.create(model="gemini-2.0-flash")
+
+response = chat.send_message("I have 2 dogs in my house.")
+print(response.text)
+
+response = chat.send_message("How many paws are in my house?")
+print(response.text)
+
+for message in chat.get_history():
+    print(f'role - {message.role}',end=": ")
+    print(message.parts[0].text)
+Também é possível usar o streaming com chat, conforme mostrado no exemplo a seguir:
+Python
+JavaScript
+Go
+REST
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+chat = client.chats.create(model="gemini-2.0-flash")
+
+response = chat.send_message_stream("I have 2 dogs in my house.")
+for chunk in response:
+    print(chunk.text, end="")
+
+response = chat.send_message_stream("How many paws are in my house?")
+for chunk in response:
+    print(chunk.text, end="")
+
+for message in chat.get_history():
+    print(f'role - {message.role}', end=": ")
+    print(message.parts[0].text)
+Parâmetros de configuração
+Cada comando enviado ao modelo inclui parâmetros que controlam como o modelo gera respostas. É possível configurar esses parâmetros ou permitir que o modelo use as opções padrão.
+O exemplo a seguir mostra como configurar os parâmetros do modelo:
+Python
+JavaScript
+Go
+REST
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=["Explain how AI works"],
+    config=types.GenerateContentConfig(
+        max_output_tokens=500,
+        temperature=0.1
+    )
+)
+print(response.text)
+Confira alguns dos parâmetros de modelo que você pode configurar. As convenções de nomenclatura variam de acordo com a linguagem de programação.
+stopSequences: especifica o conjunto de sequências de caracteres (até 5) que interromperá a geração de saída. Se especificado, a API vai parar na primeira aparição de um stop_sequence. A sequência de paradas não será incluída como parte da resposta.
+temperature: controla a aleatoriedade da saída. Use valores mais altos para respostas mais criativas e valores mais baixos para respostas mais deterministas. Os valores podem variar de [0,0 a 2,0].
+maxOutputTokens: define o número máximo de tokens a serem incluídos em um candidato.
+topP: muda a forma como o modelo seleciona tokens para saída. Os tokens são selecionados do mais para o menos provável até que a soma das probabilidades seja igual ao valor topP. O valor padrão de topP é 0,95.
+topK: muda a forma como o modelo seleciona tokens para saída. Um topK de 1 significa que o token selecionado é o mais provável entre todos os tokens no vocabulário do modelo, enquanto um topK de 3 significa que o próximo token é selecionado entre os três mais prováveis usando a temperatura. Os tokens são filtrados com base em topP, com o token final selecionado usando a amostragem de temperatura.
+Instruções do sistema
+As instruções do sistema permitem orientar o comportamento de um modelo com base no seu caso de uso específico. Ao fornecer instruções do sistema, você proporciona ao modelo mais contexto para ajudar a entender a tarefa e gerar respostas mais personalizadas. O modelo precisa aderir às instruções do sistema durante toda a interação com o usuário, permitindo que você especifique o comportamento no nível do produto separado dos comandos fornecidos pelos usuários finais.
+É possível definir instruções do sistema ao inicializar o modelo:
+Python
+JavaScript
+Go
+REST
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    config=types.GenerateContentConfig(
+        system_instruction="You are a cat. Your name is Neko."),
+    contents="Hello there"
+)
+
+print(response.text)
+Em seguida, é possível enviar solicitações ao modelo normalmente.
+Modelos compatíveis
+Toda a família de modelos Gemini oferece suporte à geração de texto. Para saber mais sobre os modelos e os recursos deles, consulte Modelos.
+Dicas de comandos
+Para casos de uso básicos de geração de texto, talvez não seja necessário incluir exemplos de saída, instruções do sistema ou informações de formatação. Essa é uma abordagem zero-shot. Para alguns casos de uso, uma solicitação one-shot ou few-shot pode produzir uma saída mais alinhada às expectativas do usuário. Em alguns casos, também é possível fornecer instruções do sistema para ajudar o modelo a entender a tarefa ou seguir diretrizes específicas.
+A seguir
+Teste o Guia de início da API Gemini no Colab.
+Aprenda a usar a compreensão visual do Gemini para processar imagens e vídeos.
+Aprenda a usar o entendimento de áudio do Gemini para processar arquivos de áudio.
+Saiba mais sobre as estratégias de comando de arquivos multimodais.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

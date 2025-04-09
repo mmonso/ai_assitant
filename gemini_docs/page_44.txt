@@ -1,0 +1,303 @@
+URL: https://ai.google.dev/gemini-api/docs/file-prompting-strategies
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Introdução aos comandos
+Estratégias de comando
+Estratégias de solicitação de arquivos
+Guia de comandos do Imagen
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Estratégias de solicitação de arquivos
+Nesta página
+Como usar arquivos de mídia com comandos
+Estratégias para dar comandos com mídia
+Conceitos básicos do design de comandos
+Como solucionar problemas do comando multimodal
+conceitos básicos do design de comandos
+Especificar as instruções
+Adicionar alguns exemplos
+Detalhar por passo
+A família de modelos de inteligência artificial (IA) Gemini foi criada para processar vários tipos de dados de entrada, incluindo texto, imagens e áudio. Como esses modelos podem processar mais de um tipo ou modo de dados, eles são chamados de modelos multimodais ou explicados como tendo recursos multimodais.
+Observação: a ativação com arquivos de mídia é compatível com modelos específicos do Gemini. Para mais informações sobre quais modelos oferecem suporte a esse recurso, consulte os guias Vision e Áudio.
+Esta página oferece orientações e práticas recomendadas para usar arquivos de mídia com comandos para a API Gemini. Para informações sobre como usar a API Gemini Files para fazer upload de arquivos de mídia e incluí-los nos comandos, consulte os guias Vision, Áudio e Processamento de documentos.
+Como usar arquivos de mídia com comandos
+A capacidade de usar vários tipos de dados nos comandos oferece mais flexibilidade em termos de tarefas que podem ser realizadas com a API Gemini. Por exemplo, você pode enviar para o modelo uma foto de uma refeição deliciosa e pedir que ele escreva um blog curto sobre ela.
+Comando Resposta
+Escreva uma postagem curta e interessante para o blog com base nessa foto. A foto deve incluir uma descrição da refeição e falar sobre a preparação das refeições.
+
+Preparar refeições é uma ótima maneira de economizar tempo e dinheiro, além de ajudar você a comer de forma mais saudável. Essa refeição é um ótimo exemplo de uma refeição saudável e deliciosa que pode ser preparada com facilidade com antecedência.
+Esta refeição inclui arroz integral, legumes assados e frango teriyaki. O arroz integral é um carboidrato saudável e complexo que fornece energia por mais tempo. Os legumes assados são uma ótima maneira de consumir sua dose diária de vitaminas e minerais, e o frango teriyaki é uma opção deliciosa e rica em proteínas.
+Esta refeição também é muito fácil de preparar. Basta cozinhar o arroz integral, assar os vegetais e cozinhar o frango teriyaki. Quando tudo estiver cozido, divida em recipientes de preparação de refeições e armazene na geladeira. Você pode pegar um contêiner e sair em manhãs agitadas.
+Se você está procurando uma refeição saudável e deliciosa que possa ser facilmente preparada com antecedência, essa é uma ótima opção. Ele é cheio de nutrientes e sabor, e vai deixar você se sentindo satisfeito.
+Que a preparação de refeições saudáveis e deliciosas seja um sucesso!
+Estratégias para dar comandos com mídia
+Se você está com problemas para receber a saída desejada de comandos que usam arquivos de mídia, há algumas estratégias que podem ajudar a conseguir os resultados que você quer. As seções a seguir oferecem abordagens de design e dicas de solução de problemas para melhorar comandos que usam entrada multimodal.
+É possível melhorar os prompts multimodais seguindo estas práticas recomendadas:
+Conceitos básicos do design de comandos
+Seja específico nas instruções: crie instruções claras e concisas que deixem pouco espaço para interpretações equivocadas.
+Adicione alguns exemplos ao comando: use exemplos realistas de few-shot para ilustrar o que você quer alcançar.
+Detalhamento por etapas: divida tarefas complexas em submetas gerenciáveis para guiar o modelo pelo processo.
+Especifique o formato de saída: no comando, peça que a saída esteja no formato desejado, como markdown, JSON, HTML e muito mais.
+Coloque sua imagem em primeiro lugar nos comandos de imagem única: o Gemini processa entradas de imagem e texto em qualquer ordem, mas para comandos com uma única imagem, o desempenho pode ser melhor se a imagem for colocada antes do comando de texto.
+Como solucionar problemas do comando multimodal
+Se o modelo não estiver desenhando informações da parte relevante da imagem: solte dicas com os aspectos da imagem de que você quer que o comando extraia informações.
+Se a saída do modelo for muito genérica (não personalizada o suficiente para a imagem) : no início do comando, peça para o modelo descrever as imagens antes de fornecer a instrução da tarefa ou peça ao modelo para consultar o conteúdo da imagem.
+conceitos básicos do design de comandos
+Esta seção expande as práticas recomendadas listadas na seção anterior.
+Observação: os resultados do modelo dos exemplos do Gemini a seguir podem variar de acordo com a execução.
+Especificar as instruções
+As instruções têm mais sucesso quando são claras e detalhadas. Se você tiver uma saída específica em mente, é melhor incluir esse requisito no comando para garantir a saída desejada.
+Às vezes, a intenção de um comando pode parecer clara para a pessoa que a escreveu, mas, na verdade, falta especificidades. Para personalizar o comportamento do modelo, analise como o comando pode ser interpretado (incorretamente) e verifique se as instruções fornecidas são claras e específicas. Deixe espaço mínimo para interpretações erradas
+Para essa imagem de uma placa de aeroporto, pedir ao modelo apenas "descrever esta imagem" poderia gerar uma descrição geral. Se você precisa que o modelo analise a hora e a cidade a partir da imagem, inclua essa solicitação diretamente no comando.
+Comando Resposta do modelo
+Descreva esta imagem.
+A imagem mostra um painel de chegadas e partidas do aeroporto.
+Comando atualizado Resposta aprimorada
+Analise a hora e a cidade no quadro do aeroporto mostrado nesta imagem em uma lista.
+10:50 Moscow
+11:05 Edimburgo
+11:05 Londres
+11:10 Bucareste
+11:30 Kiev
+11:35 Dublin
+11:45 Midlands Orientais
+12:15 Sófia
+12:30 Londres
+12:30 Newcastle
+12:40 São Petersburgo
+12:40 Londres
+12:45 Manchester
+Adicionar alguns exemplos
+O modelo Gemini pode aceitar várias entradas que podem ser usadas como exemplos para entender a saída que você quer. Adicionar esses exemplos pode ajudar o modelo a identificar os padrões e aplicar a relação entre as imagens fornecidas e as respostas ao novo exemplo. Isso também é chamado de aprendizado "few-shot".
+No exemplo abaixo, a saída inicial é escrita na forma de frase e também contém o país (Brasil). Suponha que você queira a saída em um formato ou estilo diferente e queira apenas a cidade, não o país. Adicionar alguns exemplos ao comando pode fazer com que o modelo responda da maneira desejada.
+Comando Resposta do modelo
+Determine a cidade junto com o ponto de referência.
+O ponto turístico é a estátua do Cristo Redentor no Rio de Janeiro, Brasil.
+Comando atualizado Resposta aprimorada
+Determine a cidade junto com o ponto de referência.
+cidade: Roma, ponto de referência: o Coliseu.
+cidade: Pequim, ponto de referência: Cidade Proibida
+cidade: Rio de Janeiro, ponto de referência: estátua do Cristo Redentor
+Detalhar por passo
+Para tarefas complexas, como as que exigem compreensão e raciocínio visual, pode ser útil dividir a tarefa em etapas menores e mais diretas. Também poderia ser eficaz se você pedisse diretamente ao modelo para “pensar passo a passo” no comando.
+Comando Resposta do modelo
+Quando vou ficar sem papel higiênico?
+Em breve, você só tem mais três rolos.
+Comando atualizado Resposta aprimorada
+1. Primeiro, conte quantos rolos de papel higiênico há nessa imagem.
+2. Em seguida, determine a quantidade de papel higiênico que uma pessoa usa por dia.
+3. Calcule quanto tempo esses rolos de papel higiênico vão durar.
+1. Há três rolos de papel higiênico nesta imagem.
+2. Uma pessoa usa cerca de 20 folhas de papel higiênico por dia.
+3. Se cada rolo tiver 200 páginas, cada um deles durará cerca de 10 dias. Portanto, os três rolos durarão cerca de um mês.
+Problemas matemáticos ou outros tipos de problemas são ótimos candidatos para pedir que o modelo pense em etapas.
+Comando Resposta
+Qual é o quarto termo na sequência?
+-135
+A resposta do modelo está incorreta. Algumas maneiras de melhorar isso é pedir ao modelo que analise o problema antes de responder ao comando.
+Comando Resposta
+Analise a fórmula na imagem primeiro.
+Depois, com base na fórmula, responda "qual é o quarto termo na sequência?".
+Clique para abrir o resultado
+A resposta do modelo está correta. Agora, para simplificar ainda mais, peça ao modelo que pense em etapas detalhadas.
+Comando atualizado Resposta aprimorada
+Qual é o quarto termo na sequência? Pense em etapas.
+O primeiro termo é 15.
+O segundo termo é b(1) * (-3) = 15 * (-3) = -45.
+O terceiro termo é b(2) * (-3) = -45 * (-3) = 135.
+O quarto termo é b(3) * (-3) = 135 * (-3) = -405.
+Tente especificar o formato de saída
+Um problema comum é a necessidade de a saída do modelo estar em um determinado formato (por exemplo, markdown, JSON, HTML), especialmente se ela precisar ser ingerida por uma tarefa downstream. Você pode tentar produzir saídas nesse formato instruindo o modelo a fazer isso no comando. Veja dois exemplos:
+Comando Resposta do modelo
+Analise a tabela nesta imagem no formato markdown
+| Assunto | Status | Hora | Data de início | Prazo |
+| ------- | ------ | ---- | --------- | ------ |
+| Matemática | Concluído | 1h30 | 29/11/2023 | 01/12/2023 |
+| Geografia | Concluído | 30 min | 02/12/2023 | 04/12/2023 |
+| Física | Em andamento | 2h | 03/12/2023 | 05/12/2023 |
+| Biologia | Não começou | 6 horas | 02/11/2016 | 06/12/2023 |
+Comando Resposta do modelo
+Forneça uma lista com todos os atributos a seguir:
+Ingredientes, tipo de culinária, vegetariano ou não, no formato JSON
+```json```
+{
+"ingredients": [
+"rice",
+"shrimp",
+"clams",
+"mussels",
+"peas",
+"tomatoes",
+"onions",
+"garlic",
+"olive oil",
+"paprika",
+"salt",
+"pepper"
+],
+"type of cuisine": "Spanish",
+"vegetarian": false
+Colocar a imagem em primeiro lugar nos comandos com uma imagem
+O Gemini pode interpretar imagem e texto em qualquer ordem dentro de um comando, mas colocar uma única imagem antes do comando de texto pode levar a melhores resultados. Nos exemplos a seguir, você notará que a imagem vem antes do texto em cada comando.
+Como resolver problemas do comando multimodal
+Se você não receber uma resposta útil, talvez seja necessário resolver problemas do comando. Aqui estão algumas estratégias que você pode tentar.
+Se o modelo não estiver desenhando informações da parte relevante da imagem
+Para receber uma resposta mais específica, indique de quais aspectos da imagem você quer que a solicitação extraia informações para informar a resposta.
+Comando Resposta do modelo
+Quantos dias essas fraldas vão durar para um bebê?
+As fraldas durarão 198 dias antes de acabarem.
+Comando atualizado Resposta aprimorada
+Quanto tempo essas fraldas vão durar?
+Determine a idade da criança e o número total de fraldas na caixa com base no peso total.
+Divida o total pelo número de fraldas usadas diariamente por uma criança.
+A caixa contém 198 fraldas. Ela também informa que as fraldas são para crianças que pesam de 9 a 16 quilos.
+Crianças nessa faixa de peso geralmente têm de 1 a 2 anos de idade.
+Uma criança de dois anos costuma usar 6 fraldas por dia, logo, as fraldas vão durar cerca de 33 dias (198/6).
+Se a saída do modelo for muito genérica e não for personalizada o suficiente para a entrada de imagem
+Para ajudar o modelo a adaptar a resposta às imagens, peça para ele descrever as imagens antes de realizar a tarefa de raciocínio.
+Comando Resposta do modelo
+O que há em comum entre essas imagens?
+As quatro imagens são exemplos de fotografia de paisagem.
+Comando atualizado Resposta aprimorada
+Primeiro, descreva o que está em cada imagem em detalhes. O que há em comum entre essas imagens?
+A primeira imagem mostra uma pessoa fazendo as malas. A segunda imagem mostra um corredor vazio de um shopping. A terceira imagem mostra um rolo de papel higiênico. A quarta imagem mostra um mar escuro e tempestuoso.
+O ponto em comum entre essas imagens é que todas são exemplos de espaços liminais. Espaços liminais são lugares ou situações que estão entre dois outros lugares ou situações. Elas costumam ser caracterizadas por um senso de incerteza ou ambiguidade.
+A primeira imagem mostra a pessoa entre o momento em que está em casa e viajando. A segunda imagem mostra o corredor entre duas lojas. A terceira imagem é de papel higiênico, que pode representar um banheiro. Um banheiro é um espaço de transição entre domínios privados e públicos. É um lugar onde nos preparamos para entrar ou sair do mundo exterior.
+A quarta imagem mostra o mar entre calmo e tempestuoso.
+Espaços liminais podem ser empolgantes e perturbadores. Eles podem ser um lugar de recomeço ou de fim. Eles podem ser um local de reflexão ou ação.
+Você também pode tentar pedir explicitamente ao modelo para se referir ao que está na imagem.
+Comando atualizado Resposta aprimorada
+O que há em comum entre essas imagens? Consulte o que está nas imagens na sua resposta.
+Todas as imagens são relacionadas a viagens. A primeira imagem mostra uma pessoa fazendo as malas, a segunda mostra um corredor vazio de um shopping, a terceira imagem mostra uma pilha de papel higiênico e a quarta mostra um mar escuro e violento.
+Todas essas imagens são relacionadas a viagens, porque são tudo o que as pessoas precisam ou usam quando viajam. A primeira imagem mostra uma pessoa fazendo as malas, que é algo que as pessoas fazem quando viajam. A segunda imagem mostra um corredor vazio de um shopping, que é um lugar onde as pessoas costumam comprar itens para viagens. A terceira imagem mostra uma pilha de papel higiênico, algo que as pessoas costumam usar quando estão viajando. A quarta imagem mostra um mar escuro e tempestuoso, algo que as pessoas encontram com frequência quando estão viajando.
+As mesmas dicas funcionam para resultados criativos de imagens. No exemplo a seguir com o coelho, pedir explicitamente ao modelo para incluir aspectos da imagem pode melhorar a saída.
+Comando Resposta do modelo
+Você pode me escrever um poema sobre esta imagem?
+Coelhinho peludo e marrom
+Pulando pelo campo, para cima e para baixo.
+Suas orelhas são tão longas e sua cauda tão pequena!
+Você é a criatura mais fofa de todas.
+Você morde a grama, tão verde e doce,
+E pula quando me vê.
+Mas sempre serei seu amigo,
+Coelhinho, até o fim.
+Comando atualizado Resposta aprimorada
+Você pode escrever um poema descritivo e dramático sobre esta imagem e incluir o local?
+Coelhinho no verde
+Orelhas tão compridas e pontudas.
+O que você vê lá fora,
+À distância, onde você olha?
+É o oceano azul,
+Brilhando na tonalidade do sol?
+Ou as ondas que quebram e rugem,
+Um ritmo que você adora?
+Coelhinho, fale a verdade:
+O que chama sua atenção de verdade?
+É a brisa salgada,
+Ou o choro das gaivotas te agrada?
+Talvez seja a vastidão de tudo isso,
+Um mundo tão grande e pequeno.
+Um lugar onde os sonhos podem andar,
+e aventuras podem ser livres.
+Coelhinho me pergunto o que você sonha,
+Sentado na grama, tão sereno.
+Você quer explorar as profundezas
+Ou ficar na terra para dar um salto?
+Seja o que for, coelhinho!
+Deixe a faísca da maravilha brilhar.
+Nos seus sonhos e aspirações,
+há um mundo esperando sua criação.
+Solução de problemas em qual parte do prompt falhou
+Pode ser difícil saber se uma solicitação falhou porque o modelo não entendeu a imagem ou se ele entendeu a imagem, mas não executou as etapas de raciocínio corretas.
+Para diferenciar esses motivos, peça ao modelo que descreva o que está na imagem.
+No exemplo abaixo, se o modelo responder com um lanche que parece diferente quando combinado com chá (como pipoca), primeiro é possível resolver problemas para determinar se o modelo reconheceu corretamente que a imagem contém chá.
+Comando Prompt de solução de problemas
+Que lanchinho eu posso fazer em 1 minuto e que combina com este?
+Descreva o que há na imagem.
+Outra estratégia é pedir para o modelo explicar o raciocínio dele. Isso pode ajudar você a filtrar qual parte do raciocínio está incorreta, se houver.
+Comando Prompt de solução de problemas
+Que lanchinho eu posso fazer em 1 minuto e que combina com este?
+Que lanchinho eu posso fazer em 1 minuto e que combina com este? Explique o motivo.
+Ajustar os parâmetros de amostragem
+Em cada comando, você envia ao modelo não apenas o comando multimodal, mas um conjunto de parâmetros de amostragem. O modelo pode gerar diferentes resultados para diferentes valores de parâmetros. Teste os diferentes parâmetros para conseguir os melhores valores para a tarefa. Os parâmetros mais comumente ajustados são os seguintes:
+Temperatura
+top-P
+top-K
+Temperatura
+A temperatura é usada para amostragem durante a geração de resposta, que ocorre quando Top-P e Top-K são aplicados. A temperatura controla o grau de aleatoriedade na seleção do token. Temperaturas mais baixas são boas para comandos que exigem uma resposta mais determinista e menos aberta ou criativa, enquanto temperaturas maiores podem levar a resultados mais diversos ou criativos. Uma temperatura 0 é determinista, o que significa que a resposta de maior probabilidade é sempre selecionada.
+Na maioria dos casos de uso, é melhor começar com a temperatura 0,4. Se você precisar de resultados mais criativos, tente aumentar a temperatura. Se você observar alucinações claras, tente reduzir a temperatura.
+Top-K
+O Top-K muda a forma como o modelo seleciona tokens para saída. O valor "1" de Top-K indica que o token selecionado é o mais provável entre todos no vocabulário do modelo (também chamado de decodificação gananciosa), enquanto o valor "3" de Top-K significa que o próximo token é selecionado entre os três mais prováveis usando a temperatura.
+Para cada etapa da seleção de tokens, são amostrados os tokens Top-K com as maiores probabilidades. Em seguida, os tokens são filtrados com base no valor de Top-P com o token final selecionado por meio da amostragem de temperatura.
+Especifique um valor mais baixo para respostas menos aleatórias e um valor mais alto para respostas mais aleatórias. O valor padrão do top-K é 32.
+Top-P
+O Top-P muda a forma como o modelo seleciona tokens para saída. Os tokens são selecionados do mais provável (confira o Top-K) para o menos provável até que a soma das probabilidades seja igual ao valor do Top-P. Por exemplo, se os tokens A, B e C tiverem uma probabilidade de 0,6, 0,3 e 0,1 e o valor de Top-P for 0,9, o modelo selecionará A ou B como token seguinte usando temperatura e excluirá C como candidato.
+Especifique um valor mais baixo para respostas menos aleatórias e um valor mais alto para respostas mais aleatórias. O valor padrão do top-P é 1,0.
+Próximas etapas
+Tente escrever seus próprios comandos multimodais usando o Google AI Studio.
+Para mais orientações sobre o design de comandos, consulte a página Estratégias de comandos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

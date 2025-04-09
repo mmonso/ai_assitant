@@ -1,0 +1,100 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=vi
+
+Mô hình
+/
+Tiếng Việt
+Đăng nhập
+Tài liệu về Gemini API
+Tài liệu tham khảo API
+Sổ tay nấu ăn
+Tổng quan
+Bắt đầu
+Bắt đầu nhanh
+Khóa API
+Thư viện
+Ghi chú phát hành
+Khả năng tương thích với OpenAI
+Diễn đàn dành cho nhà phát triển
+Mô hình
+Tất cả mẫu xe
+Mức giá
+Giới hạn số lượng yêu cầu
+Thông tin về việc lập hóa đơn
+Chức năng
+Tạo văn bản
+Tạo hình ảnh
+Vision
+Hiểu âm thanh
+Ngữ cảnh dài
+Thực thi mã
+Kết quả có cấu trúc
+Đang suy nghĩ
+Gọi hàm
+Hiểu tài liệu
+Tìm hiểu thông tin cơ bản trên Google Tìm kiếm
+Tinh chỉnh
+Nhúng
+Hướng dẫn
+API trực tiếp
+Lưu ngữ cảnh vào bộ nhớ đệm
+Kỹ thuật gợi ý
+Tính số lượng mã thông báo
+An toàn
+Tài nguyên khác
+Gemini cho nghiên cứu
+Chương trình học thuật của Gemini
+Trường hợp sử dụng
+Ứng dụng
+Khắc phục sự cố
+Khắc phục sự cố API
+Khắc phục sự cố với AI Studio
+Google Workspace
+Pháp lý
+Điều khoản dịch vụ
+Khu vực khả dụng
+Các chính sách khác về việc sử dụng
+Gemini 2.5 Pro Experimental, mô hình tiên tiến nhất của chúng tôi, hiện đã ra mắt! Tìm hiểu thêm
+Trang này được dịch bởi Cloud Translation API.
+Switch to English
+Trang chủ
+Gemini API
+Mô hình
+API dành cho nhà phát triển Gemini
+Lấy khoá Gemini API
+Nhận khoá API Gemini và tạo yêu cầu API đầu tiên trong vài phút.
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+Giới thiệu về các mô hình
+Sử dụng Gemini trong Google AI Studio
+2.5 Pro experiment
+Mô hình tư duy mạnh mẽ nhất của chúng tôi với các tính năng cho hoạt động suy luận phức tạp và nhiều tính năng khác
+2.0 Flash spark
+Mô hình đa phương thức mới nhất của chúng tôi, với các tính năng thế hệ mới và khả năng cải tiến
+2.0 Flash-Lite bolt
+Mô hình đa phương thức nhanh nhất và tiết kiệm chi phí nhất của chúng tôi, với hiệu suất cao cho các tác vụ có tần suất cao
+Khám phá API
+Tạo hình ảnh gốc
+Tạo và chỉnh sửa hình ảnh có tính ngữ cảnh cao ngay trong Gemini 2.0 Flash.
+Khám phá ngữ cảnh dài
+Nhập hàng triệu mã thông báo vào các mô hình Gemini và hiểu được hình ảnh, video và tài liệu không có cấu trúc.
+Tạo đầu ra có cấu trúc
+Ràng buộc Gemini phản hồi bằng JSON, một định dạng dữ liệu có cấu trúc phù hợp để xử lý tự động.
+Bắt đầu xây dựng bằng Gemini API
+Bắt đầu
+Trừ phi có lưu ý khác, nội dung của trang này được cấp phép theo Giấy phép ghi nhận tác giả 4.0 của Creative Commons và các mẫu mã lập trình được cấp phép theo Giấy phép Apache 2.0. Để biết thông tin chi tiết, vui lòng tham khảo Chính sách trang web của Google Developers. Java là nhãn hiệu đã đăng ký của Oracle và/hoặc các đơn vị liên kết với Oracle.
+Cập nhật lần gần đây nhất: 2025-04-04 UTC.
+Điều khoản
+Quyền riêng tư
+Tiếng Việt

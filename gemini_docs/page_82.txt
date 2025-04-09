@@ -1,0 +1,101 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=id
+
+Model
+Lainnya
+/
+Indonesia
+Masuk
+Dokumen Gemini API
+Referensi API
+Cookbook
+Ringkasan
+Mulai
+Panduan memulai
+Kunci API
+Library
+Catatan rilis
+Kompatibilitas OpenAI
+Forum developer
+Model
+Semua model
+Harga
+Batas kapasitas
+Info penagihan
+Kemampuan
+Pembuatan teks
+Pembuatan gambar
+Vision
+Pemahaman audio
+Konteks panjang
+Eksekusi kode
+{i>Output<i} terstruktur
+Berpikir
+Panggilan fungsi
+Pemahaman dokumen
+Perujukan dengan Google Penelusuran
+Fine tuning
+Embeddings
+Panduan
+API Live
+Cache konteks
+Engineering prompt
+Penghitungan token
+Keamanan
+Referensi lain
+Gemini untuk Riset
+Program Akademik Gemini
+Kasus penggunaan
+Aplikasi
+Pemecahan masalah
+Pemecahan masalah API
+Pemecahan masalah AI Studio
+Google Workspace
+Hukum
+Persyaratan layanan
+Wilayah yang tersedia
+Kebijakan penggunaan tambahan
+Gemini 2.5 Pro Experimental, model kami yang paling canggih, kini tersedia. Pelajari lebih lanjut
+Halaman ini diterjemahkan oleh Cloud Translation API.
+Switch to English
+Beranda
+Gemini API
+Model
+Gemini Developer API
+Mendapatkan Kunci Gemini API
+Dapatkan kunci Gemini API dan buat permintaan API pertama Anda dalam hitungan menit.
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+Temui model
+Menggunakan Gemini di Google AI Studio
+2.5 Pro experiment
+Model pemikiran kami yang paling canggih dengan fitur untuk penalaran kompleks dan banyak lagi
+2.0 Flash spark
+Model multimodal terbaru kami, dengan fitur generasi berikutnya dan kemampuan yang lebih baik
+2.0 Flash-Lite bolt
+Model multimodal tercepat dan paling hemat biaya kami dengan performa yang luar biasa untuk tugas berfrekuensi tinggi
+Menjelajahi API
+Pembuatan Gambar Native
+Buat dan edit gambar yang sangat kontekstual secara native dengan Gemini 2.0 Flash.
+Menjelajahi konteks panjang
+Masukkan jutaan token ke model Gemini dan dapatkan pemahaman dari gambar, video, dan dokumen yang tidak terstruktur.
+Membuat output terstruktur
+Batasi Gemini untuk merespons dengan JSON, format data terstruktur yang cocok untuk pemrosesan otomatis.
+Mulai membangun aplikasi dengan Gemini API
+Mulai
+Kecuali dinyatakan lain, konten di halaman ini dilisensikan berdasarkan Lisensi Creative Commons Attribution 4.0, sedangkan contoh kode dilisensikan berdasarkan Lisensi Apache 2.0. Untuk mengetahui informasi selengkapnya, lihat Kebijakan Situs Google Developers. Java adalah merek dagang terdaftar dari Oracle dan/atau afiliasinya.
+Terakhir diperbarui pada 2025-04-04 UTC.
+Persyaratan
+Privasi
+Indonesia

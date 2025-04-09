@@ -1,0 +1,187 @@
+URL: https://ai.google.dev/pricing
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Preços da API Gemini Developer
+Nesta página
+Pré-lançamento do Gemini 2.5 Pro
+Gemini 2.0 Flash
+Gemini 2.0 Flash-Lite
+Imagem 3
+O Gemma 3
+O "nível sem custo financeiro" da API Gemini é oferecido pelo serviço da API com limites de taxa mais baixos para fins de teste. O uso do Google AI Studio é totalmente sem custo financeiro em todos os países disponíveis. O "nível pago" da API Gemini tem limites de taxa mais altos, mais recursos e diferentes formas de processamento de dados.
+Fazer upgrade para o nível pago
+Pré-lançamento do Gemini 2.5 Pro
+Testar no Google AI Studio
+Nosso modelo multiuso de última geração, que se destaca em programação e tarefas de raciocínio complexas.
+Os modelos de pré-lançamento podem mudar antes de se tornarem estáveis e disponíveis para todos.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo, use "gemini-2.5-pro-exp-03-25" US$ 1,25, comandos <= 200 mil tokens
+US$2,50, comandos > 200 mil tokens
+Preço de saída (incluindo tokens de pensamento) Sem custo, use "gemini-2.5-pro-exp-03-25" US$ 10,00, comandos <= 200 mil tokens
+US$15,00, comandos > 200 mil
+Preço do armazenamento em cache de contexto Indisponível Indisponível
+Embasamento com a Pesquisa Google Sem custo financeiro, até 500 RPD 1.500 RPD (sem custo financeiro), depois US $35 / 1.000 solicitações
+Usado para melhorar nossos produtos Sim Não
+Gemini 2.0 Flash
+Testar no Google AI Studio
+Nosso modelo multimodal mais equilibrado com ótimo desempenho em todas as tarefas, com uma janela de contexto de 1 milhão de tokens e criado para a era dos agentes.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro US$ 0,10 (texto / imagem / vídeo)
+US$0,70 (áudio)
+Preço de saída Sem custo financeiro US$ 0,40
+Preço do armazenamento em cache de contexto Sem custo financeiro US$ 0,025 / 1.000.000 tokens (texto/imagem/vídeo)
+US$0,175 / 1.000.000 tokens (áudio)
+Disponível em 15 de abril de 2025
+Armazenamento em cache de contexto Sem custo financeiro, até 1.000.000 de tokens de armazenamento por hora
+Disponível em 15 de abril de 2025 US$ 1,00 / 1.000.000 tokens por hora
+Disponível em 15 de abril de 2025
+Preço de ajuste Indisponível Indisponível
+Embasamento com a Pesquisa Google Sem custo financeiro, até 500 RPD 1.500 RPD (sem custo financeiro), depois US $35 / 1.000 solicitações
+Usado para melhorar nossos produtos Sim Não
+Gemini 2.0 Flash-Lite
+Testar no Google AI Studio
+Nosso modelo menor e mais econômico, criado para uso em grande escala.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro US$ 0,075
+Preço de saída Sem custo financeiro US$ 0,30
+Preço do armazenamento em cache de contexto Disponível em 15 de abril de 2025 Disponível em 15 de abril de 2025
+Armazenamento em cache de contexto Disponível em 15 de abril de 2025 Disponível em 15 de abril de 2025
+Preço de ajuste Indisponível Indisponível
+Embasamento com a Pesquisa Google Indisponível Indisponível
+Usado para melhorar nossos produtos Sim Não
+Imagem 3
+Testar no ImageFX
+Nosso modelo de geração de imagens de última geração, disponível para desenvolvedores no nível pago da API Gemini.
+Nível gratuito Nível pago, por imagem em USD
+Preço da imagem Indisponível US$ 0,03
+Usado para melhorar nossos produtos Sim Não
+O Gemma 3
+Testar o Gemma 3
+Nosso modelo aberto leve e de última geração, criado com a mesma tecnologia que alimenta nossos modelos Gemini.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro Indisponível
+Preço de saída Sem custo financeiro Indisponível
+Preço do armazenamento em cache de contexto Sem custo financeiro Indisponível
+Armazenamento em cache de contexto Sem custo financeiro Indisponível
+Preço de ajuste Indisponível Indisponível
+Embasamento com a Pesquisa Google Indisponível Indisponível
+Usado para melhorar nossos produtos Sim Não
+Gemini 1.5 Flash
+Testar no Google AI Studio
+Nosso modelo multimodal mais rápido, com ótimo desempenho para tarefas diversas e repetitivas e uma janela de contexto de 1 milhão de tokens.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro US$ 0,075, comandos <= 128 mil tokens
+US$0,15, comandos > 128 mil tokens
+Preço de saída Sem custo financeiro US$ 0,30, comandos <= 128 mil tokens
+US$0,60, comandos > 128 mil tokens
+Preço do armazenamento em cache de contexto Sem custo financeiro, até 1 milhão de tokens de armazenamento por hora US$ 0,01875, comandos <= 128 mil tokens
+US$0,0375, comandos > 128 mil tokens
+Armazenamento em cache de contexto Sem custo financeiro US$ 1,00 por hora
+Preço de ajuste Os preços dos tokens são os mesmos para modelos ajustados.
+O serviço de ajuste não tem custo financeiro. Os preços dos tokens são os mesmos para modelos ajustados.
+O serviço de ajuste não tem custo financeiro.
+Embasamento com a Pesquisa Google Indisponível US$ 35 / 1.000 solicitações de suspensão (até 5.000 solicitações por dia).
+Usado para melhorar nossos produtos Sim Não
+Gemini 1.5 Flash-8B
+Testar no Google AI Studio
+Nosso modelo mais pequeno para casos de uso de inteligência mais simples, com uma janela de contexto de 1 milhão de tokens.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro US$ 0,0375, comandos <= 128 mil tokens
+US$0,075, comandos > 128 mil tokens
+Preço de saída Sem custo financeiro US$ 0,15, comandos <= 128 mil tokens
+US$0,30, comandos > 128 mil tokens
+Preço do armazenamento em cache de contexto Sem custo financeiro, até 1 milhão de tokens de armazenamento por hora US$ 0,01, solicitações <= 128 mil tokens
+US$0,02, solicitações > 128 mil tokens
+Armazenamento em cache de contexto Sem custo financeiro US$ 0,25 por hora
+Preço de ajuste Os preços dos tokens são os mesmos para modelos ajustados.
+O serviço de ajuste não tem custo financeiro. Os preços dos tokens são os mesmos para modelos ajustados.
+O serviço de ajuste não tem custo financeiro.
+Embasamento com a Pesquisa Google Indisponível US$ 35 / 1.000 solicitações de suspensão (até 5.000 solicitações por dia).
+Usado para melhorar nossos produtos Sim Não
+Gemini 1.5 Pro
+Testar no Google AI Studio
+Nosso modelo de série Gemini 1.5 com a maior inteligência, com uma janela de contexto de 2 milhões de tokens.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro US$ 1,25, solicitações de até 128 mil tokens
+US$2,50, solicitações de mais de 128 mil tokens
+Preço de saída Sem custo financeiro US$ 5,00, comandos <= 128 mil tokens
+US$10,00, comandos > 128 mil tokens
+Preço do armazenamento em cache de contexto Indisponível US$ 0,3125, comandos <= 128 mil tokens
+US$0,625, comandos > 128 mil tokens
+Armazenamento em cache de contexto Indisponível US$ 4,50 por hora
+Preço de ajuste Indisponível Indisponível
+Embasamento com a Pesquisa Google Indisponível US$ 35 / 1.000 solicitações de suspensão (até 5.000 solicitações por dia).
+Usado para melhorar nossos produtos Sim Não
+Text Embedding 004
+Nosso modelo de embedding de texto de última geração.
+Nível gratuito Nível pago, por 1 milhão de tokens em USD
+Preço de entrada Sem custo financeiro Indisponível
+Preço de saída Sem custo financeiro Indisponível
+Preço de ajuste Indisponível Indisponível
+Usado para melhorar nossos produtos Sim Não
+[*] O uso do Google AI Studio é sem custo financeiro em todas as regiões disponíveis. Consulte as Perguntas frequentes sobre faturamento para mais detalhes.
+[**] Os preços podem ser diferentes dos listados aqui e dos oferecidos na Vertex AI. Para conferir os preços da Vertex, consulte a página de preços da Vertex AI.
+[***] Se você estiver usando a recuperação dinâmica para otimizar custos, apenas as solicitações que contêm pelo menos um URL de suporte de embasamento da Web na resposta são cobradas pela integração com a Pesquisa Google. Os custos do Gemini sempre se aplicam. Os limites de taxa estão sujeitos a alterações.
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

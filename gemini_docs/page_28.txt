@@ -1,0 +1,195 @@
+URL: https://ai.google.dev/gemini-api/docs/audio
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Conheça recursos de áudio com a API Gemini
+Nesta página
+Formatos de áudio compatíveis
+Detalhes técnicos sobre áudio
+Disponibilizar um arquivo de áudio para o Gemini
+Fazer upload de um arquivo de áudio e gerar conteúdo
+Receber metadados de um arquivo
+Python
+JavaScript
+Go
+REST
+O Gemini pode responder a comandos sobre áudio. Por exemplo, o Gemini pode:
+Descrever, resumir ou responder a perguntas sobre conteúdo de áudio.
+Forneça uma transcrição do áudio.
+Forneça respostas ou uma transcrição sobre um segmento específico do áudio.
+Observação: não é possível gerar output de áudio com a API Gemini.
+Este guia demonstra diferentes maneiras de interagir com arquivos de áudio e conteúdo de áudio usando a API Gemini.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Formatos de áudio compatíveis
+O Gemini oferece suporte aos seguintes tipos MIME de formato de áudio:
+WAV - audio/wav
+MP3 - audio/mp3
+AIFF - audio/aiff
+AAC - audio/aac
+OGG Vorbis - audio/ogg
+FLAC - audio/flac
+Detalhes técnicos sobre áudio
+O Gemini impõe as seguintes regras para áudio:
+O Gemini representa cada segundo de áudio como 32 tokens. Por exemplo, um minuto de áudio é representado como 1.920 tokens.
+O Gemini só pode inferir respostas a falas em inglês.
+O Gemini pode "entender" componentes não de fala, como o canto de pássaros ou sirenes.
+A duração máxima de dados de áudio em uma única instrução é de 9,5 horas. O Gemini não limita o número de arquivos de áudio em uma única instrução.No entanto, a duração total combinada de todos os arquivos de áudio em uma única instrução não pode exceder 9,5 horas.
+O Gemini reduz os arquivos de áudio para uma resolução de dados de 16 Kbps.
+Se a fonte de áudio tiver vários canais, o Gemini vai combiná-los em um único canal.
+Disponibilizar um arquivo de áudio para o Gemini
+É possível disponibilizar um arquivo de áudio para o Gemini de duas maneiras:
+Faça upload do arquivo de áudio antes de fazer a solicitação de comando.
+Forneça o arquivo de áudio como dados inline para a solicitação de comando.
+Fazer upload de um arquivo de áudio e gerar conteúdo
+Você pode usar a API File para fazer upload de um arquivo de áudio de qualquer tamanho. Sempre use a API File quando o tamanho total da solicitação (incluindo arquivos, comando de texto, instruções do sistema etc.) for maior que 20 MB.
+Observação: a API File permite armazenar até 20 GB de arquivos por projeto, com um tamanho máximo de 2 GB por arquivo. Os arquivos são armazenados por 48 horas. Eles podem ser acessados nesse período com sua chave de API, mas não podem ser transferidos por download da API. A API File está disponível sem custo financeiro em todas as regiões onde a API Gemini está disponível.
+Chame media.upload para fazer upload de um arquivo usando a API File. O código abaixo faz upload de um arquivo de áudio e o usa em uma chamada para models.generateContent.
+from google import genai
+
+client = genai.Client()
+
+myfile = client.files.upload(file='media/sample.mp3')
+
+response = client.models.generate_content(
+  model='gemini-2.0-flash',
+  contents=['Describe this audio clip', myfile]
+)
+
+print(response.text)
+Receber metadados de um arquivo
+É possível verificar se a API armazenou o arquivo enviado e acessar os metadados dele chamando files.get.
+myfile = client.files.upload(file='media/sample.mp3')
+file_name = myfile.name
+myfile = client.files.get(name=file_name)
+print(myfile)
+Listar arquivos enviados
+Você pode fazer upload de vários arquivos de áudio (e outros tipos de arquivos). O código abaixo gera uma lista de todos os arquivos enviados:
+print('My files:')
+for f in client.files.list():
+    print(' ', f.name)
+Excluir arquivos enviados
+Os arquivos são excluídos automaticamente após 48 horas. Você também pode excluir manualmente um arquivo enviado. Exemplo:
+myfile = client.files.upload(file='media/sample.mp3')
+client.files.delete(name=myfile.name)
+Fornecer o arquivo de áudio como dados inline na solicitação
+Em vez de fazer upload de um arquivo de áudio, transmita dados de áudio na mesma chamada que contém o comando.
+Em seguida, transmita esse pequeno arquivo de áudio baixado com o comando para o Gemini:
+from google.genai import types
+
+with open('media/small-sample.mp3', 'rb') as f:
+    audio_bytes = f.read()
+
+response = client.models.generate_content(
+  model='gemini-2.0-flash',
+  contents=[
+    'Describe this audio clip',
+    types.Part.from_bytes(
+      data=audio_bytes,
+      mime_type='audio/mp3',
+    )
+  ]
+)
+
+print(response.text)
+Observe o seguinte sobre o envio de áudio como dados inline:
+O tamanho máximo da solicitação é de 20 MB, incluindo comandos de texto, instruções do sistema e arquivos fornecidos inline. Se o tamanho do arquivo ultrapassar 20 MB, o tamanho total da solicitação será maior que esse valor. Nesse caso, use a API File para fazer upload de arquivos para uso em solicitações.
+Se você estiver usando um sample de áudio várias vezes, será mais eficiente usar a API File.
+Mais formas de trabalhar com áudio
+Esta seção apresenta algumas outras maneiras de aproveitar melhor o áudio.
+Receber uma transcrição do arquivo de áudio
+Para receber uma transcrição, basta pedir no comando. Exemplo:
+myfile = client.files.upload(file='media/sample.mp3')
+prompt = 'Generate a transcript of the speech.'
+
+response = client.models.generate_content(
+  model='gemini-2.0-flash',
+  contents=[prompt, myfile]
+)
+
+print(response.text)
+Consultar carimbos de data/hora no arquivo de áudio
+Um comando pode especificar carimbos de data/hora do formulário MM:SS para se referir a seções específicas em um arquivo de áudio. Por exemplo, o comando a seguir solicita uma transcrição que:
+Começa 2 minutos e 30 segundos após o início do arquivo.
+Termina em 3 minutos e 29 segundos do início do arquivo.
+# Create a prompt containing timestamps.
+prompt = "Provide a transcript of the speech from 02:30 to 03:29."
+Contar Tokens
+Chame o método countTokens para conferir a contagem de tokens no arquivo de áudio. Exemplo:
+response = client.models.count_tokens(
+  model='gemini-2.0-flash',
+  contents=[myfile]
+)
+
+print(response)
+A seguir
+Este guia mostra como fazer upload de arquivos de áudio usando a API File e gerar saídas de texto de entradas de áudio. Para saber mais, consulte os seguintes recursos:
+Estratégias de solicitação de arquivo: a API Gemini oferece suporte a solicitações com dados de texto, imagem, áudio e vídeo, também conhecidas como solicitações multimodais.
+Instruções do sistema: as instruções do sistema permitem orientar o comportamento do modelo com base nas suas necessidades e casos de uso específicos.
+Orientações de segurança: às vezes, os modelos de IA generativa produzem resultados inesperados, como respostas imprecisas, parciais ou ofensivas. O pós-processamento e a avaliação humana são essenciais para limitar o risco de danos causados por essas saídas.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-08 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

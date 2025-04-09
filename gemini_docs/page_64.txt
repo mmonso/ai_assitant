@@ -1,0 +1,141 @@
+URL: https://ai.google.dev/gemini-api/docs/troubleshooting
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Guia de solução de problemas
+Nesta página
+Códigos de erro do serviço de back-end da API Gemini
+Códigos de erro do SDK do cliente
+Verificar se há erros nos parâmetros do modelo nas chamadas de API
+Confira se você tem o modelo certo
+Problemas de segurança
+Python
+Go
+Use este guia para diagnosticar e resolver problemas comuns que surgem ao chamar a API Gemini. Você pode encontrar problemas com o serviço de back-end da API Gemini ou com os SDKs do cliente. Nossos SDKs de cliente têm código aberto nos seguintes repositórios:
+python-genai (link em inglês)
+js-genai (link em inglês)
+generative-ai-go
+Se você tiver problemas com a chave de API, verifique se ela foi configurada corretamente de acordo com o guia de configuração de chaves de API.
+Códigos de erro do serviço de back-end da API Gemini
+A tabela a seguir lista códigos de erro de back-end comuns que você pode encontrar, além de explicações sobre as causas e etapas de solução de problemas:
+Código HTTP Status Descrição Exemplo Solução
+400 INVALID_ARGUMENT O corpo da solicitação está incorreto. Há um erro de digitação ou um campo obrigatório está faltando na solicitação. Consulte a referência da API para conferir o formato da solicitação, exemplos e versões compatíveis. O uso de recursos de uma versão mais recente da API com um endpoint mais antigo pode causar erros.
+400 FAILED_PRECONDITION O nível sem custo financeiro da API Gemini não está disponível no seu país. Ative o faturamento no seu projeto no Google AI Studio. Você está fazendo uma solicitação em uma região em que o nível sem custo financeiro não é aceito e não ativou o faturamento no projeto no Google AI Studio. Para usar a API Gemini, você precisa configurar um plano pago usando o Google AI Studio.
+403 PERMISSION_DENIED Sua chave de API não tem as permissões necessárias. Você está usando a chave de API errada. Você está tentando usar um modelo ajustado sem passar pela autenticação adequada. Verifique se a chave de API está definida e tem o acesso correto. E faça a autenticação adequada para usar modelos ajustados.
+404 NOT_FOUND O recurso solicitado não foi encontrado. Um arquivo de imagem, áudio ou vídeo referenciado na sua solicitação não foi encontrado. Verifique se todos os parâmetros na solicitação são válidos para a versão da API.
+429 RESOURCE_EXHAUSTED Você excedeu o limite de taxa. Você está enviando muitas solicitações por minuto com a API Gemini do nível sem custo financeiro. Verifique se você está dentro do limite de taxa do modelo. Solicite um aumento de cota, se necessário.
+500 INTERNAL Ocorreu um erro inesperado no Google. O contexto de entrada é muito longo. Reduza o contexto de entrada ou mude temporariamente para outro modelo (por exemplo, do Gemini 1.5 Pro para o Gemini 1.5 Flash) e veja se funciona. Ou aguarde um pouco e tente novamente. Se o problema persistir após a nova tentativa, informe-o usando o botão Enviar feedback no Google AI Studio.
+503 INDISPONÍVEL O serviço pode estar temporariamente sobrecarregado ou indisponível. O serviço está temporariamente sem capacidade. Mude temporariamente para outro modelo (por exemplo, do Gemini 1.5 Pro para o Gemini 1.5 Flash) e veja se funciona. Ou aguarde um pouco e tente novamente. Se o problema persistir após a nova tentativa, informe-o usando o botão Enviar feedback no Google AI Studio.
+504 DEADLINE_EXCEEDED O serviço não consegue concluir o processamento dentro do prazo. Sua instrução (ou contexto) é muito grande para ser processada a tempo. Defina um "tempo limite" maior na solicitação do cliente para evitar esse erro.
+Códigos de erro do SDK do cliente
+A tabela a seguir lista códigos de erro do SDK do cliente Python comuns que você pode encontrar, além de explicações sobre as causas:
+Tipo de exceção/erro Turma Descrição
+APIError google.genai.errors.APIError Erros gerais gerados pela API GenAI.
+ClientError google.genai.errors.ClientError Erro do cliente gerado pela API GenAI.
+ServerError google.genai.errors.ServerError Erro do servidor gerado pela API GenAI.
+UnknownFunctionCallArgumentError google.genai.errors.UnknownFunctionCallArgumentError Gerado quando o argumento de chamada de função não pode ser convertido na anotação de parâmetro.
+UnsupportedFunctionError google.genai.errors.UnsupportedFunctionError É gerado quando a função não tem suporte.
+FunctionInvocationError google.genai.errors.FunctionInvocationError Gerado quando a função não pode ser invocada com os argumentos fornecidos.
+ValidationError pydantic.ValidationError Gerada pelo Pydantic sempre que ele encontra um erro nos dados que está validando. Consulte Como lidar com erros no Pydantic.
+Você também vai encontrar todos os erros na classe errors.
+Para processar erros gerados pelo SDK, use um bloco try-except:
+from google.genai import errors
+
+try:
+    client.models.generate_content(
+        model="invalid-model-name",
+        contents="What is your name?",
+    )
+except errors.APIError as e:
+    print(e.code) # 404
+    print(e.message)
+Verificar se há erros nos parâmetros do modelo nas chamadas de API
+Verifique se os parâmetros do modelo estão dentro dos seguintes valores:
+Parâmetro do modelo Valores (intervalo)
+Contagem de candidatos 1 a 8 (número inteiro)
+Temperatura 0.0-1.0
+Máximo de tokens de saída Use get_model (Python) para determinar o número máximo de tokens do modelo que você está usando.
+TopP 0.0-1.0
+Além de verificar os valores dos parâmetros, verifique se você está usando a versão correta da API (por exemplo, /v1 ou /v1beta) e modelo que ofereça suporte aos recursos necessários. Por exemplo, se um recurso estiver na versão Beta, ele só vai estar disponível na versão da API /v1beta.
+Confira se você tem o modelo certo
+Verifique se você está usando um modelo compatível listado na nossa página de modelos.
+Problemas de segurança
+Se um comando for bloqueado devido a uma configuração de segurança na chamada de API, revise o comando em relação aos filtros definidos na chamada de API.
+Se você encontrar BlockedReason.OTHER, a consulta ou resposta pode violar os termos de serviço ou não ter suporte.
+Problema de recitação
+Se o modelo parar de gerar saída devido ao motivo RECITATION, isso significa que a saída do modelo pode se parecer com determinados dados. Para corrigir isso, tente tornar a instrução / o contexto o mais exclusivo possível e use uma temperatura mais alta.
+Melhorar a saída do modelo
+Para saídas de modelos de maior qualidade, escreva comandos mais estruturados. A página Introdução ao design de comandos apresenta alguns conceitos básicos, estratégias e práticas recomendadas para você começar.
+Se você tiver centenas de exemplos de bons pares de entrada/saída, também poderá ajustar o modelo.
+Entender os limites de token
+Leia nosso guia de tokens para entender melhor como contar tokens e os limites deles.
+Problemas conhecidos
+A API oferece suporte apenas a alguns idiomas. Enviar comandos em idiomas não compatíveis pode gerar respostas inesperadas ou até mesmo bloqueadas. Consulte as línguas disponíveis para atualizações.
+Informar um bug
+Participe da discussão no fórum para desenvolvedores de IA do Google se tiver dúvidas.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

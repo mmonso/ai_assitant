@@ -1,0 +1,72 @@
+URL: https://ai.google.dev/api?hl=pt-br
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Versões da API
+Recursos
+Modelos
+Geração de conteúdo
+Tokens
+Arquivos
+Armazenamento em cache
+Embeddings
+Ajuste
+Recuperação semântica
+Todos os métodos
+Descontinuado
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Referência da API
+Isso foi útil?
+Envie comentários
+Gemini API reference
+Nesta página
+Instalar a biblioteca da API Gemini
+Faça sua primeira solicitação
+A seguir
+A API Gemini permite acessar os modelos generativos mais recentes do Google. Esta referência de API fornece informações detalhadas sobre as classes e os métodos disponíveis nos SDKs da API Gemini. Escolha um idioma e siga as etapas de configuração para começar a criar.
+Python
+JavaScript
+Go
+Instalar a biblioteca da API Gemini
+Observação: estamos lançando um novo conjunto de bibliotecas da API Gemini, o SDK do Google Gen AI.
+Usando o Python 3.9+, instale o pacote google-genai usando o seguinte comando pip:
+pip install -q -U google-genai
+Faça sua primeira solicitação
+Use o método generateContent para enviar uma solicitação à API Gemini.
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash", contents="Explain how AI works in a few words"
+)
+print(response.text)
+A seguir
+Se você está começando a usar a API, confira os guias a seguir, que vão ajudar a entender o modelo de programação da API Gemini:
+Guia de início rápido da API Gemini
+Guia de modelos do Gemini
+Design de comandos
+Você também pode consultar os guias de recursos, que apresentam diferentes recursos da API Gemini e fornecem exemplos de código:
+Geração de texto
+Cache de contexto
+Embeddings
+Ajuste
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

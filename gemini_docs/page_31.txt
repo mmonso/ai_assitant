@@ -1,0 +1,339 @@
+URL: https://ai.google.dev/gemini-api/docs/structured-output
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Gerar saída estruturada com a API Gemini
+Nesta página
+Gerar JSON
+Fornecer um esquema como texto no comando
+Fornecer um esquema pela configuração do modelo
+Usar um tipo enumerado para restringir a saída
+Mais informações sobre os esquemas JSON
+Ordenação de propriedades
+Python
+JavaScript
+Go
+REST
+
+O Gemini gera texto não estruturado por padrão, mas alguns aplicativos exigem texto estruturado. Para esses casos de uso, você pode restringir o Gemini para responder com JSON, um formato de dados estruturado adequado para processamento automatizado. Também é possível restringir o modelo para responder com uma das opções especificadas em um tipo enumerado.
+Confira alguns casos de uso que podem exigir uma saída estruturada do modelo:
+Crie um banco de dados de empresas extraindo informações de artigos de jornal.
+Extrair informações padronizadas dos currículos.
+Extrair ingredientes de receitas e mostrar um link para um site de compras para cada ingrediente.
+No comando, você pode pedir que o Gemini produza uma saída formatada em JSON, mas não há garantia de que o modelo vai produzir JSON e nada além disso. Para uma resposta mais determinística, transmita um esquema JSON específico em um campo responseSchema para que o Gemini sempre responda com uma estrutura esperada. Para saber mais sobre como trabalhar com esquemas, consulte Mais informações sobre esquemas JSON.
+Este guia mostra como gerar JSON usando o método generateContent pelo SDK de sua preferência ou diretamente pela API REST. Os exemplos mostram entradas somente em texto, mas o Gemini também pode produzir respostas JSON para solicitações multimodais que incluem imagens, vídeos e áudio.
+Gerar JSON
+Quando o modelo está configurado para gerar JSON, ele responde a qualquer comando com saída formatada em JSON.
+É possível controlar a estrutura da resposta JSON fornecendo um esquema. Há duas maneiras de fornecer um esquema ao modelo:
+Como texto no comando
+Como um esquema estruturado fornecido pela configuração do modelo
+Fornecer um esquema como texto no comando
+O exemplo a seguir solicita que o modelo retorne receitas de biscoitos em um formato JSON específico.
+Como o modelo recebe a especificação de formato do texto no comando, você pode ter alguma flexibilidade na representação da especificação. Qualquer formato razoável para representar um esquema JSON pode funcionar.
+from google import genai
+
+prompt = """List a few popular cookie recipes in JSON format.
+
+Use this JSON schema:
+
+Recipe = {'recipe_name': str, 'ingredients': list[str]}
+Return: list[Recipe]"""
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents=prompt,
+)
+
+# Use the response as a JSON string.
+print(response.text)
+A saída pode ser semelhante a esta:
+[
+  {
+    "recipe_name": "Chocolate Chip Cookies",
+    "ingredients": [
+      "2 1/4 cups all-purpose flour",
+      "1 teaspoon baking soda",
+      "1 teaspoon salt",
+      "1 cup (2 sticks) unsalted butter, softened",
+      "3/4 cup granulated sugar",
+      "3/4 cup packed brown sugar",
+      "1 teaspoon vanilla extract",
+      "2 large eggs",
+      "2 cups chocolate chips"
+    ]
+  },
+  ...
+]
+Fornecer um esquema pela configuração do modelo
+O exemplo a seguir faz o seguinte:
+Cria um modelo configurado por um esquema para responder com JSON.
+Solicita ao modelo que retorne receitas de biscoitos.
+Esse método mais formal de declaração do esquema JSON oferece um controle mais preciso do que depender apenas do texto no comando.
+Importante: ao trabalhar com esquemas JSON na API Gemini, a ordem das propriedades é importante. Para mais informações, consulte Ordem das propriedades.
+from google import genai
+from pydantic import BaseModel
+
+
+class Recipe(BaseModel):
+  recipe_name: str
+  ingredients: list[str]
+
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='List a few popular cookie recipes. Be sure to include the amounts of ingredients.',
+    config={
+        'response_mime_type': 'application/json',
+        'response_schema': list[Recipe],
+    },
+)
+# Use the response as a JSON string.
+print(response.text)
+
+# Use instantiated objects.
+my_recipes: list[Recipe] = response.parsed
+A saída pode ser semelhante a esta:
+[
+  {
+    "recipe_name": "Chocolate Chip Cookies",
+    "ingredients": [
+      "1 cup (2 sticks) unsalted butter, softened",
+      "3/4 cup granulated sugar",
+      "3/4 cup packed brown sugar",
+      "1 teaspoon vanilla extract",
+      "2 large eggs",
+      "2 1/4 cups all-purpose flour",
+      "1 teaspoon baking soda",
+      "1 teaspoon salt",
+      "2 cups chocolate chips"
+    ]
+  },
+  ...
+]
+Observação: os validadores Pydantic ainda não têm suporte. Se uma pydantic.ValidationError ocorrer, ela será suprimida, e .parsed poderá estar vazio/nulo.
+Sintaxe de definição de esquema
+Especifique o esquema da resposta JSON na propriedade response_schema da configuração do modelo. O valor de response_schema precisa ser:
+Um tipo, como você usaria em uma anotação de tipo. Consulte o módulo typing do Python.
+Uma instância de genai.types.Schema.
+O dict equivalente a genai.types.Schema.
+Definir um esquema com um tipo
+A maneira mais fácil de definir um esquema é com um tipo direto. Esta é a abordagem usada no exemplo anterior:
+config={'response_mime_type': 'application/json',
+        'response_schema': list[Recipe]}
+A biblioteca de cliente Python da API Gemini oferece suporte a esquemas definidos com os seguintes tipos (em que AllowedType é qualquer tipo permitido):
+int
+float
+bool
+str
+list[AllowedType]
+Para tipos estruturados:
+dict[str, AllowedType]. Essa anotação declara que todos os valores do dicionário são do mesmo tipo, mas não especifica quais chaves devem ser incluídas.
+Modelos Pydantic definidos pelo usuário. Essa abordagem permite especificar os nomes das chaves e definir diferentes tipos para os valores associados a cada uma das chaves, incluindo estruturas aninhadas.
+Usar um tipo enumerado para restringir a saída
+Em alguns casos, talvez você queira que o modelo escolha uma única opção de uma lista de opções. Para implementar esse comportamento, transmita um tipo enumerado no esquema. É possível usar uma opção de tipo enumerado em qualquer lugar em que seja possível usar um str no response_schema, porque um tipo enumerado é uma lista de strings. Assim como um esquema JSON, um tipo enumerado permite restringir a saída do modelo para atender aos requisitos do aplicativo.
+Por exemplo, suponha que você esteja desenvolvendo um aplicativo para classificar instrumentos musicais em uma das cinco categorias: "Percussion", "String", "Woodwind", "Brass" ou ""Keyboard"". Você pode criar um tipo enumerado para ajudar nesta tarefa.
+No exemplo abaixo, você transmite a classe de enumeração Instrument como response_schema, e o modelo precisa escolher a opção de enumeração mais adequada.
+from google import genai
+import enum
+
+class Instrument(enum.Enum):
+  PERCUSSION = "Percussion"
+  STRING = "String"
+  WOODWIND = "Woodwind"
+  BRASS = "Brass"
+  KEYBOARD = "Keyboard"
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='What type of instrument is an oboe?',
+    config={
+        'response_mime_type': 'text/x.enum',
+        'response_schema': Instrument,
+    },
+)
+
+print(response.text)
+# Woodwind
+O SDK do Python vai traduzir as declarações de tipo para a API. No entanto, a API aceita um subconjunto do esquema da OpenAPI 3.0 (Esquema). Também é possível transmitir o esquema como JSON:
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='What type of instrument is an oboe?',
+    config={
+        'response_mime_type': 'text/x.enum',
+        'response_schema': {
+            "type": "STRING",
+            "enum": ["Percussion", "String", "Woodwind", "Brass", "Keyboard"],
+        },
+    },
+)
+
+print(response.text)
+# Woodwind
+Além de problemas básicos de múltipla escolha, você pode usar um tipo enumerado em qualquer lugar em um esquema para JSON ou chamada de função. Por exemplo, você pode pedir ao modelo uma lista de títulos de receitas e usar um tipo enumerado Grade para dar a cada título uma nota de popularidade:
+from google import genai
+
+import enum
+from pydantic import BaseModel
+
+class Grade(enum.Enum):
+    A_PLUS = "a+"
+    A = "a"
+    B = "b"
+    C = "c"
+    D = "d"
+    F = "f"
+
+class Recipe(BaseModel):
+  recipe_name: str
+  rating: Grade
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='List 10 home-baked cookies and give them grades based on tastiness.',
+    config={
+        'response_mime_type': 'application/json',
+        'response_schema': list[Recipe],
+    },
+)
+
+print(response.text)
+# [{"rating": "a+", "recipe_name": "Classic Chocolate Chip Cookies"}, ...]
+Mais informações sobre os esquemas JSON
+Ao configurar o modelo para retornar uma resposta JSON, você pode usar um objeto Schema para definir a forma dos dados JSON. O Schema representa um subconjunto selecionado do objeto de esquema da OpenAPI 3.0.
+Confira uma representação pseudo-JSON de todos os campos Schema:
+{
+  "type": enum (Type),
+  "format": string,
+  "description": string,
+  "nullable": boolean,
+  "enum": [
+    string
+  ],
+  "maxItems": string,
+  "minItems": string,
+  "properties": {
+    string: {
+      object (Schema)
+    },
+    ...
+  },
+  "required": [
+    string
+  ],
+  "propertyOrdering": [
+    string
+  ],
+  "items": {
+    object (Schema)
+  }
+}
+O Type do esquema precisa ser um dos tipos de dados da OpenAPI. Apenas um subconjunto de campos é válido para cada Type. A lista a seguir mapeia cada Type para campos válidos para esse tipo:
+string: -> tipo enumerado, formato
+integer -> formato
+number -> formato
+boolean
+array -> minItems, maxItems, items
+object -> properties, required, propertyOrdering, nullable
+Confira alguns exemplos de esquemas que mostram combinações válidas de tipo e campo:
+{ "type": "string", "enum": ["a", "b", "c"] }
+
+{ "type": "string", "format": "date-time" }
+
+{ "type": "integer", "format": "int64" }
+
+{ "type": "number", "format": "double" }
+
+{ "type": "boolean" }
+
+{ "type": "array", "minItems": 3, "maxItems": 3, "items": { "type": ... } }
+
+{ "type": "object",
+  "properties": {
+    "a": { "type": ... },
+    "b": { "type": ... },
+    "c": { "type": ... }
+  },
+  "nullable": true,
+  "required": ["c"],
+  "propertyOrdering": ["c", "b", "a"]
+}
+Para conferir a documentação completa dos campos do esquema conforme eles são usados na API Gemini, consulte a Referência do esquema.
+Ordenação de propriedades
+Ao trabalhar com esquemas JSON na API Gemini, a ordem das propriedades é importante. Por padrão, a API ordena as propriedades em ordem alfabética e não preserva a ordem em que as propriedades são definidas, embora os SDKs do Google Gen AI possam preservar essa ordem. Se você estiver fornecendo exemplos ao modelo com um esquema configurado e a ordem das propriedades dos exemplos não for consistente com a ordem das propriedades do esquema, a saída poderá ser incoerente ou inesperada.
+Para garantir uma ordenação consistente e previsível das propriedades, use o campo propertyOrdering[] opcional.
+"propertyOrdering": ["recipe_name", "ingredients"]
+propertyOrdering[], que não é um campo padrão na especificação da OpenAPI, é uma matriz de strings usada para determinar a ordem das propriedades na resposta. Ao especificar a ordem das propriedades e fornecer exemplos com propriedades nessa mesma ordem, você pode melhorar a qualidade dos resultados.
+Importante: para melhorar os resultados ao usar um esquema JSON, defina propertyOrdering[] e forneça exemplos com uma ordem de propriedade correspondente.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

@@ -1,0 +1,104 @@
+URL: https://ai.google.dev/gemini-api/docs/gemini-for-research
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Acelere a descoberta com o Gemini for Research
+Gerar uma chave da API Gemini
+Os modelos do Gemini podem ser usados para avançar na pesquisa de base em várias disciplinas. Confira algumas maneiras de usar o Gemini para pesquisar:
+Ajuste de detalhes: é possível ajustar os modelos do Gemini para várias modalidades e avançar na pesquisa. Saiba mais.
+Analisar e controlar as saídas do modelo: para uma análise mais detalhada, é possível examinar um candidato de resposta gerado pelo modelo usando ferramentas como Logprobs e CitationMetadata. Também é possível configurar opções para geração de modelos e saídas, como responseSchema, topP e topK. Saiba mais.
+Entradas multimodais: o Gemini pode processar imagens, áudio e vídeos, permitindo uma multiplicidade de direções de pesquisa interessantes. Saiba mais.
+Capacidades de contexto longo: o Gemini 1.5 Flash vem com uma janela de contexto de um milhão de tokens, e o Gemini 1.5 Pro vem com uma janela de contexto de dois milhões de tokens. Saiba mais.
+Cresça com o Google: acesse rapidamente os modelos do Gemini pela API e pelo Google AI Studio para casos de uso de produção. Se você está procurando uma plataforma baseada no Google Cloud, a Vertex AI pode oferecer mais infraestrutura de suporte.
+Para apoiar a pesquisa acadêmica e impulsionar pesquisas de ponta, o Google oferece acesso a créditos da API Gemini para cientistas e pesquisadores acadêmicos pelo Programa Acadêmico Gemini.
+Comece a usar o Gemini
+A API Gemini e o Google AI Studio ajudam você a começar a trabalhar com os modelos mais recentes do Google e transformar suas ideias em aplicativos que podem ser escalonados.
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="How large is the universe?",
+)
+
+print(response.text)
+Acadêmicos em destaque
+"Nossa pesquisa investiga o Gemini como um modelo de linguagem visual (VLM, na sigla em inglês) e os comportamentos de agentes em diversos ambientes, considerando a robustez e a segurança. Até agora, avaliamos a robustez do Gemini em relação a distrações, como janelas pop-up quando os agentes de VLM realizam tarefas de computador, e aproveitamos o Gemini para analisar interação social, eventos temporais e fatores de risco com base no vídeo."
+"O Gemini Pro e o Flash, com sua janela de contexto longa, têm nos ajudado no OK-Robot, nosso projeto de manipulação móvel de vocabulário aberto. O Gemini permite consultas e comandos complexos em linguagem natural na "memória" do robô: neste caso, observações anteriores feitas pelo robô durante uma operação de longa duração. Mahi Shafiullah e eu também estamos usando o Gemini para decompor tarefas em código que o robô pode executar no mundo real."
+Programa acadêmico do Gemini
+Pesquisadores acadêmicos qualificados (como professores, funcionários e estudantes de doutorado) nos países com suporte podem se inscrever para receber créditos da API Gemini e limites de taxa mais altos para projetos de pesquisa. Esse suporte permite uma maior taxa de transferência para experimentos científicos e pesquisas avançadas.
+Estamos particularmente interessados nas áreas de pesquisa da seção a seguir, mas aceitamos inscrições de diversas disciplinas científicas:
+Avaliações e comparativos: métodos de avaliação aprovados pela comunidade que podem fornecer um indicador de desempenho forte em áreas como factualidade, segurança, cumprimento de instruções, raciocínio e planejamento.
+Acelerar a descoberta científica para beneficiar a humanidade: possíveis aplicações da IA em pesquisas científicas interdisciplinares, incluindo áreas como doenças raras e negligenciadas, biologia experimental, ciência de materiais e sustentabilidade.
+Incorporação e interações: uso de modelos de linguagem grandes para investigar novas interações nos campos da IA incorporada, interações ambientais, robótica e interação humano-computador.
+Recursos emergentes: conhecer novos recursos de agentes necessários para melhorar o raciocínio e o planejamento e como os recursos podem ser expandidos durante a inferência (por exemplo, usando o Gemini Flash).
+Interação e compreensão multimodais: identificar lacunas e oportunidades para modelos de base multimodais para análise, raciocínio e planejamento em várias tarefas.
+Elegibilidade: somente indivíduos (professores, pesquisadores ou equivalentes) afiliados a uma instituição acadêmica válida ou a uma organização de pesquisa acadêmica podem se inscrever. O acesso e os créditos da API serão concedidos e removidos a critério do Google. Analisamos as inscrições mensalmente.
+Começar a pesquisar com a API Gemini
+Faça sua inscrição agora
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-01 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

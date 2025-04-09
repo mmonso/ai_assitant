@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => { // Make async
     const conversationList = document.getElementById('conversation-list');
     const newChatButton = document.getElementById('new-chat-button');
     const openSettingsButton = document.getElementById('open-settings-button');
+    const createFolderButton = document.getElementById('create-folder-button'); // Add reference for create folder button
     const settingsPopoverLevel1 = document.getElementById('settings-popover-level1');
     const settingsModalPlaceholder = document.getElementById('settings-modal-placeholder');
     const fontSelector = document.getElementById('font-selector');
@@ -316,52 +317,78 @@ document.addEventListener('DOMContentLoaded', async () => { // Make async
         });
     }
 
+    // Updated Sidebar Click Listener (Handles Folders and Conversations)
     if (conversationList) {
         conversationList.addEventListener('click', (e) => {
             const target = e.target;
-            const listItem = target.closest('.conversation-item');
-            if (!listItem) return;
-            const conversationId = listItem.dataset.conversationId;
-            const action = target.dataset.action || target.closest('[data-action]')?.dataset.action;
-            if (action === 'select') {
+            const actionTarget = target.closest('[data-action]');
+            if (!actionTarget) return;
+
+            const action = actionTarget.dataset.action;
+            const convItem = target.closest('.conversation-item');
+            const folderItem = target.closest('.folder-item'); // Check if click is within a folder item
+
+            if (action === 'select' && convItem) {
+                const conversationId = convItem.dataset.conversationId;
                 hideAttachPopover();
-                clearFilePreview();
+                clearFilePreview(); // Clear file preview when switching convos
                 convManager.handleConversationSelect(conversationId);
-            } else if (action === 'toggle-popover') {
+            } else if (action === 'toggle-conversation-popover' && convItem) {
                 e.stopPropagation();
-                ui.toggleConversationActionsPopover(listItem);
+                ui.toggleActionsPopover(convItem, 'conversation');
+            } else if (action === 'toggle-folder-popover' && folderItem) {
+                e.stopPropagation();
+                ui.toggleActionsPopover(folderItem, 'folder');
+            } else if (action === 'toggle-folder' && folderItem) {
+                // Toggle folder open/closed state
+                const contents = folderItem.querySelector('.folder-contents');
+                const icon = folderItem.querySelector('.folder-toggle-icon');
+                const isOpen = folderItem.classList.toggle('folder-open');
+                if (contents) contents.style.display = isOpen ? 'block' : 'none';
+                if (icon) icon.innerHTML = isOpen ? '&#9660;' : '&#9654;'; // Down or Right arrow
             }
         });
     }
 
+    // Updated Body Click Listener (Handles Popover Actions for Folders and Conversations)
     document.body.addEventListener('click', (e) => {
         const target = e.target;
         const popoverButton = target.closest('.actions-popover button[data-action]');
+
         if (popoverButton) {
-            e.stopPropagation();
+            e.stopPropagation(); // Prevent body listener from immediately closing the popover
             const action = popoverButton.dataset.action;
             const conversationId = popoverButton.dataset.conversationId;
-            if (!conversationId) {
-                console.warn("Could not find conversation ID on popover button.");
-                ui.hideAllPopovers(null, settingsPopoverLevel1);
-                hideAttachPopover();
-                return;
+            const folderId = popoverButton.dataset.folderId;
+
+            // Find the corresponding list item
+            let listItem = null;
+            if (conversationId) {
+                listItem = conversationList?.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+            } else if (folderId) {
+                listItem = conversationList?.querySelector(`.folder-item[data-folder-id="${folderId}"]`);
             }
-            const listItem = conversationList?.querySelector(`.conversation-item[data-conversation-id="${conversationId}"]`);
+
             if (!listItem) {
-                console.warn(`Could not find list item for conversation ID: ${conversationId}`);
-                ui.hideAllPopovers(null, settingsPopoverLevel1);
-                 hideAttachPopover();
-                return;
+                console.warn("Could not find list item for popover action:", action, conversationId || folderId);
+            } else {
+                // Handle actions
+                if (action === 'edit' && conversationId) {
+                    convManager.handleEditConversation(listItem);
+                } else if (action === 'delete' && conversationId) {
+                    convManager.handleDeleteConversation(listItem);
+                } else if (action === 'edit-folder' && folderId) {
+                    convManager.handleEditFolder(listItem);
+                } else if (action === 'delete-folder' && folderId) {
+                    convManager.handleDeleteFolder(listItem);
+                }
             }
-            if (action === 'edit') {
-                convManager.handleEditConversation(listItem);
-            } else if (action === 'delete') {
-                convManager.handleDeleteConversation(listItem);
-            }
+
+            // Always hide popovers after an action is triggered
             ui.hideAllPopovers(null, settingsPopoverLevel1);
-             hideAttachPopover();
+            hideAttachPopover(); // Also hide attach popover if open
         }
+        // No 'else' here, the general click listener below handles clicks outside popovers
     });
 
     document.addEventListener('click', (e) => {
@@ -410,22 +437,143 @@ document.addEventListener('DOMContentLoaded', async () => { // Make async
         console.warn("Sidebar toggle button, sidebar, or overlay element not found.");
     }
 
+    // Create Folder Button Listener
+    if (createFolderButton) {
+        createFolderButton.addEventListener('click', () => {
+            convManager.handleCreateFolder();
+        });
+    }
+
+    // --- Drag and Drop ---
+    let draggedItem = null; // To store the element being dragged
+    let originalFolderId = null; // To store the original folder ID for revert
+
+    if (conversationList) {
+        // Drag Start: Identify the conversation being dragged
+        conversationList.addEventListener('dragstart', (e) => {
+            const target = e.target.closest('.conversation-item');
+            if (target && target.draggable) {
+                draggedItem = target; // Store the element being dragged
+                // No need to store originalFolderId here, get it from draggedItem on drop
+                e.dataTransfer.setData('text/plain', target.dataset.conversationId);
+                e.dataTransfer.effectAllowed = 'move';
+                setTimeout(() => { // Make item semi-transparent during drag
+                    if (draggedItem) draggedItem.classList.add('dragging'); // Check if draggedItem still exists
+                }, 0);
+                console.log(`Drag Start: Conv ${target.dataset.conversationId}`);
+            } else {
+                e.preventDefault(); // Prevent dragging non-draggable items
+            }
+        });
+
+        // Drag Over: Indicate valid drop targets
+        conversationList.addEventListener('dragover', (e) => {
+            // console.log('Drag Over Target:', e.target); // Log the raw target
+            const dropTarget = e.target.closest('[data-drop-target]');
+            // console.log('Closest Drop Target:', dropTarget); // Log the identified drop target
+            if (dropTarget && draggedItem) {
+                // console.log('Allowing drop on:', dropTarget.dataset.dropTarget, dropTarget.dataset.folderId);
+                e.preventDefault(); // Allow drop
+                e.dataTransfer.dropEffect = 'move';
+                // Add visual cue to the target area
+                dropTarget.classList.add('drag-over');
+            } else {
+                // console.log('Drop not allowed on this element.');
+            }
+        });
+
+        // Drag Leave: Remove visual cue when leaving a drop target
+        conversationList.addEventListener('dragleave', (e) => {
+            const dropTarget = e.target.closest('[data-drop-target]');
+            // Only remove the class from the specific target being left
+            if (dropTarget && !dropTarget.contains(e.relatedTarget)) {
+                 dropTarget.classList.remove('drag-over');
+            }
+            // If leaving the main list container entirely, ensure all drag-over classes are removed
+            if (!conversationList.contains(e.relatedTarget)) {
+                conversationList.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            }
+        });
+
+        // Drag End: Clean up regardless of drop success
+        conversationList.addEventListener('dragend', (e) => {
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+            }
+            conversationList.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            draggedItem = null;
+            // originalFolderId = null; // No longer stored globally
+            console.log("Drag End");
+        });
+
+        // Drop: Handle the actual move
+        conversationList.addEventListener('drop', async (e) => {
+            e.preventDefault(); // Prevent default browser drop behavior
+            console.log('Drop Event Raw Target:', e.target); // Log the actual element clicked
+            const dropTargetElement = e.target.closest('[data-drop-target]');
+            console.log('Closest Drop Target on Drop:', dropTargetElement);
+
+            if (!dropTargetElement || !draggedItem) {
+                console.log("Drop ignored: Outside target or no dragged item.");
+                // Ensure cleanup even if drop is invalid
+                if (draggedItem) draggedItem.classList.remove('dragging');
+                conversationList.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                draggedItem = null;
+                // originalFolderId = null; // No longer used here
+                return;
+            }
+
+            dropTargetElement.classList.remove('drag-over'); // Remove visual cue
+
+            const conversationId = e.dataTransfer.getData('text/plain');
+            const targetType = dropTargetElement.dataset.dropTarget; // 'root' or 'folder'
+            const targetFolderId = targetType === 'folder' ? dropTargetElement.dataset.folderId : null;
+
+            // Determine current folder by checking the direct parent element
+            let currentFolderId = null;
+            const directParent = draggedItem.parentElement;
+            console.log('Dragged Item Parent:', directParent); // Log the parent
+
+            if (directParent && directParent.classList.contains('folder-contents')) {
+                console.log('Parent is folder-contents. Finding parent folder item...'); // Log entry
+                const parentFolderItem = directParent.closest('.folder-item');
+                console.log('Found Parent Folder Item:', parentFolderItem); // Log found item
+                if (parentFolderItem) {
+                    currentFolderId = parentFolderItem.dataset.folderId || null;
+                }
+            } else {
+                console.log('Parent is NOT folder-contents. Assuming root.'); // Log else case
+            }
+
+            console.log(`Drop: Conv ${conversationId} onto Target Type: ${targetType}, Target Folder: ${targetFolderId}, Current Folder (determined): ${currentFolderId}`);
+
+            // Add specific logging before comparison
+            console.log(`Values before comparison: targetFolderId=${targetFolderId} (type: ${typeof targetFolderId}), currentFolderId=${currentFolderId} (type: ${typeof currentFolderId})`);
+
+            // Only proceed if the target folder is different from the item's current folder
+            if (targetFolderId !== currentFolderId) {
+                await convManager.handleMoveConversation(conversationId, targetFolderId, draggedItem, dropTargetElement);
+            } else {
+                console.log("Dropped in the same location (no change needed).");
+            }
+            // Cleanup happens in dragend
+        });
+    }
+
+
     // --- Initialization ---
-    console.log("Initializing conversation list and model selector..."); // Updated log
+    console.log("Initializing conversation list, folders, and model selector..."); // Updated log
     if (sidebarSpinner) sidebarSpinner.style.display = 'flex';
 
     try {
         // Load conversations and model selector in parallel for faster loading
         await Promise.all([
             // Load conversations
+            // Load conversations and folders
             (async () => {
+                // This function now handles both conversations and folders internally
                 await convManager.loadAndDisplayConversations();
-                console.log("Conversation list initialized.");
-            })(),
-            // Load conversations
-            (async () => {
-                await convManager.loadAndDisplayConversations();
-                console.log("Conversation list initialized.");
+                console.log("Conversation and folder list initialized.");
             })()
             // Model selector loading removed
             /*

@@ -1,0 +1,355 @@
+URL: https://ai.google.dev/gemini-api/docs/openai
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Compatibilidade com o OpenAI
+Nesta página
+Listar modelos
+Recuperar um modelo
+Streaming
+Chamadas de função
+Compreensão de imagens
+Os modelos do Gemini podem ser acessados usando as bibliotecas OpenAI (Python e TypeScript / Javascript) com a API REST, atualizando três linhas de código e usando sua chave da API Gemini. Se você ainda não usa as bibliotecas OpenAI, recomendamos chamar a API Gemini diretamente.
+Python
+JavaScript
+REST
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+response = client.chat.completions.create(
+    model="gemini-2.0-flash",
+    n=1,
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {
+            "role": "user",
+            "content": "Explain to me how AI works"
+        }
+    ]
+)
+
+print(response.choices[0].message)
+O que mudou? Apenas três linhas.
+api_key="GEMINI_API_KEY": substitua "GEMINI_API_KEY" pela chave de API Gemini, que você pode encontrar no Google AI Studio.
+base_url="https://generativelanguage.googleapis.com/v1beta/openai/":instrui a biblioteca OpenAI a enviar solicitações para o endpoint da API Gemini em vez do endpoint padrão da OpenAI.
+model="gemini-2.0-flash": estamos especificando o modelo gemini-2.0-flash, que é poderoso e eficiente.
+Listar modelos
+Confira uma lista de modelos do Gemini disponíveis:
+Python
+JavaScript
+REST
+from openai import OpenAI
+
+client = OpenAI(
+  api_key="GEMINI_API_KEY",
+  base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+models = client.models.list()
+for model in models:
+  print(model.id)
+Recuperar um modelo
+Extraia um modelo do Gemini:
+Python
+JavaScript
+REST
+from openai import OpenAI
+
+client = OpenAI(
+  api_key="GEMINI_API_KEY",
+  base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+model = client.models.retrieve("gemini-2.0-flash")
+print(model.id)
+Streaming
+A API Gemini oferece suporte a respostas de streaming.
+Python
+JavaScript
+REST
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+response = client.chat.completions.create(
+  model="gemini-2.0-flash",
+  messages=[
+    {"role": "system", "content": "You are a helpful assistant."},
+    {"role": "user", "content": "Hello!"}
+  ],
+  stream=True
+)
+
+for chunk in response:
+    print(chunk.choices[0].delta)
+Chamadas de função
+A chamada de função facilita a geração de saídas de dados estruturados de modelos generativos e é compatível com a API Gemini.
+Python
+JavaScript
+REST
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+tools = [
+  {
+    "type": "function",
+    "function": {
+      "name": "get_weather",
+      "description": "Get the weather in a given location",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string",
+            "description": "The city and state, e.g. Chicago, IL",
+          },
+          "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+        },
+        "required": ["location"],
+      },
+    }
+  }
+]
+
+messages = [{"role": "user", "content": "What's the weather like in Chicago today?"}]
+response = client.chat.completions.create(
+  model="gemini-2.0-flash",
+  messages=messages,
+  tools=tools,
+  tool_choice="auto"
+)
+
+print(response)
+Compreensão de imagens
+Os modelos Gemini são multimodais por natureza e oferecem a melhor performance da categoria em muitas tarefas de visão comuns.
+Python
+JavaScript
+REST
+import base64
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+# Function to encode the image
+def encode_image(image_path):
+  with open(image_path, "rb") as image_file:
+    return base64.b64encode(image_file.read()).decode('utf-8')
+
+# Getting the base64 string
+base64_image = encode_image("Path/to/agi/image.jpeg")
+
+response = client.chat.completions.create(
+  model="gemini-2.0-flash",
+  messages=[
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "What is in this image?",
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url":  f"data:image/jpeg;base64,{base64_image}"
+          },
+        },
+      ],
+    }
+  ],
+)
+
+print(response.choices[0])
+Gerar uma imagem
+Observação: a geração de imagens está disponível apenas no nível pago.
+Gerar uma imagem:
+Python
+JavaScript
+REST
+import base64
+from openai import OpenAI
+from PIL import Image
+from io import BytesIO
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+)
+
+response = client.images.generate(
+    model="imagen-3.0-generate-002",
+    prompt="a portrait of a sheepadoodle wearing a cape",
+    response_format='b64_json',
+    n=1,
+)
+
+for image_data in response.data:
+  image = Image.open(BytesIO(base64.b64decode(image_data.b64_json)))
+  image.show()
+Compreensão de áudio
+Analisar a entrada de áudio:
+Python
+JavaScript
+REST
+import base64
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+with open("/path/to/your/audio/file.wav", "rb") as audio_file:
+  base64_audio = base64.b64encode(audio_file.read()).decode('utf-8')
+
+response = client.chat.completions.create(
+    model="gemini-2.0-flash",
+    messages=[
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Transcribe this audio",
+        },
+        {
+              "type": "input_audio",
+              "input_audio": {
+                "data": base64_audio,
+                "format": "wav"
+          }
+        }
+      ],
+    }
+  ],
+)
+
+print(response.choices[0].message.content)
+Saída estruturada
+Os modelos do Gemini podem gerar objetos JSON em qualquer estrutura definida.
+Python
+JavaScript
+from pydantic import BaseModel
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+class CalendarEvent(BaseModel):
+    name: str
+    date: str
+    participants: list[str]
+
+completion = client.beta.chat.completions.parse(
+    model="gemini-2.0-flash",
+    messages=[
+        {"role": "system", "content": "Extract the event information."},
+        {"role": "user", "content": "John and Susan are going to an AI conference on Friday."},
+    ],
+    response_format=CalendarEvent,
+)
+
+print(completion.choices[0].message.parsed)
+Embeddings
+Os embeddings de texto medem a relação entre strings de texto e podem ser gerados usando a API Gemini.
+Python
+JavaScript
+REST
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="GEMINI_API_KEY",
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+response = client.embeddings.create(
+    input="Your text string goes here",
+    model="text-embedding-004"
+)
+
+print(response.data[0].embedding)
+Limitações atuais
+O suporte para as bibliotecas do OpenAI ainda está na versão Beta enquanto ampliamos o suporte a recursos.
+Se você tiver dúvidas sobre parâmetros compatíveis, recursos futuros ou problemas para começar a usar o Gemini, participe do nosso fórum para desenvolvedores.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-01 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

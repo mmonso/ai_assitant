@@ -1,0 +1,371 @@
+URL: https://ai.google.dev/gemini-api/tutorials/wordcraft
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Aplicativo de chat
+Assistente de código
+Gerador de código do Flutter
+Pesquisa de conteúdo
+Agente de exploração de dados
+Assistente de redação
+Revisor do Apresentações Google
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Crie um assistente de escrita com IA com o Wordcraft
+Nesta página
+Configurar o projeto
+Instalar os pré-requisitos
+Clonar e configurar o projeto
+Defina as variáveis de ambiente
+Testar sua configuração
+Modificar o texto de exemplo do comando
+Criar novo controle de escrita
+Criar exemplos
+Observação: este exemplo de aplicativo usa o SDK do JavaScript legado. Para novos aplicativos, use o SDK da IA generativa do Google para TypeScript e JavaScript.
+Adoramos histórias. Contar histórias e fazer outras formas de escrita criativa pode ser desafiador e recompensador. No entanto, criar suas próprias histórias em uma página em branco pode parecer assustador e até mesmo avassalador. Os modelos generativos de inteligência artificial (IA) podem ser uma ótima ferramenta para ajudar você a passar da página em branco e criar sua narrativa.
+Observação: este exemplo foi atualizado para uso com a API Gemini.
+Este tutorial mostra como estender o Wordcraft, uma ferramenta de escrita de histórias com tecnologia de IA criada pela equipe de pesquisa de pessoas e IA do Google. Esse aplicativo da Web usa a API Gemini para ajudar você a criar histórias, pouco a pouco, gerando ideias, escrevendo partes delas e revisando o conteúdo para adicionar mais detalhes. Você pode modificar o Wordcraft para que ele corresponda mais ao seu estilo de escrita e criar novos controles de escrita para oferecer melhor suporte ao seu fluxo de trabalho.
+Para conferir uma visão geral em vídeo do projeto e saber como ampliá-lo, incluindo insights dos criadores, acesse AI Writing Assistant: Build with Google AI. Caso contrário, você pode começar a estender o projeto seguindo as instruções abaixo.
+Configurar o projeto
+Estas instruções mostram como configurar o projeto Wordcraft para desenvolvimento e teste. É necessário instalar o software necessário, clonar o projeto do repositório de código, executar a instalação de configuração e definir algumas variáveis de ambiente. Para testar a configuração, execute o projeto depois de concluir estas etapas.
+Observação: você precisa de uma chave de API Google Gemini para executar o projeto, que pode ser encontrada na página API Google Gemini.
+Instalar os pré-requisitos
+O projeto Wordcraft usa o Node e o npm para gerenciar pacotes e executar o aplicativo. As instruções de instalação a seguir são para uma máquina host Linux.
+Para instalar o software necessário:
+Instale node e npm seguindo as instruções de instalação da sua plataforma.
+Clonar e configurar o projeto
+Faça o download do código do projeto e use o comando de instalação npm para fazer o download das dependências necessárias e configurar o projeto. Você precisa do software de controle de origem git para extrair o código-fonte do projeto.
+Para fazer o download e configurar o código do projeto:
+Clone o repositório do Git usando o comando abaixo.
+git clone https://github.com/PAIR-code/wordcraft
+Navegue até o diretório raiz do projeto Wordcraft.
+cd wordcraft/
+Execute o comando de instalação para fazer o download das dependências e configurar o projeto:
+npm install
+Defina as variáveis de ambiente
+Defina as variáveis de ambiente necessárias para permitir a execução do projeto de código Wordcraft, especificamente uma chave de API Google Gemini. As instruções de instalação a seguir são para uma máquina host Linux.
+Para definir as variáveis de ambiente:
+Receba uma chave da API Gemini do Google e copie a string da chave.
+Navegue até o diretório raiz do projeto Wordcraft.`
+cd wordcraft/
+Defina a chave de API como uma variável de ambiente. Em hosts Linux, use os seguintes comandos.
+touch .env
+echo "API_KEY="<YOUR_API_KEY>"" > .env
+Cuidado: trate a chave de API como uma senha e proteja-a adequadamente. Não incorpore sua chave em um código publicado publicamente.
+Testar sua configuração
+Agora você pode testar a configuração do projeto executando o Wordcraft no dispositivo. Esta etapa é opcional, mas recomendada.
+Para testar a instalação:
+Navegue até o diretório raiz do projeto Wordcraft.
+cd wordcraft/
+Como executar o projeto no modo de desenvolvimento:
+npm run dev
+No navegador da Web, acesse a interface do usuário do Wordcraft. O endereço específico é mostrado na saída do comando anterior, por exemplo:
+http://localhost:3000/
+Modificar o texto de exemplo do comando
+O Wordcraft cria comandos para o modelo generativo de IA usando um conjunto de exemplos para cada operação de assistência de escrita, como os comandos start new story e generate text. Os exemplos orientam o modelo generativo na geração de texto para sua história. Ao modificar os exemplos para uma operação, você pode mudar a saída para seguir um padrão ou estilo de escrita diferente. Essa abordagem é uma maneira simples de fazer com que o Wordcraft escreva como você quiser.
+O exemplo a seguir mostra uma modificação dos exemplos de new_story no Wordcraft. O objetivo dessa modificação é direcionar o modelo generativo de IA para escrever introduções de histórias usando uma abordagem de monólogo interno e usar um estilo mais apropriado para um romance de mistério. Ao escrever alguns exemplos desse tipo de introdução de história, você pode fazer com que o modelo generativo siga o padrão geral, mas gere uma introdução para um tema diferente.
+Para modificar os novos exemplos de histórias no Wordcraft:
+Abra o arquivo wordcraft/app/context/json/new_story.json.
+Modifique os exemplos, mantendo a estrutura geral do arquivo JSON. Confira um exemplo de modificação para a introdução de uma história de suspense usando um estilo de monólogo interno.
+[
+  {
+    "topic": "scientist disappears and their research into a new technology is gone",
+    "target": "I got the call from the chief early Tuesday morning, before I'd even had a second sip of coffee. Terrible timing. Something about a researcher disappearing from the local university. Unusual for the research lab to ask for assistance, so I headed over to main lab building."
+  },
+  {
+    "topic": "a young woman wakes up with no memory",
+    "target": "An unfamiliar ceiling with harsh, white lights greeted my eyes as I opened them. I looked around. White walls, medical equipment, a hospital? Wait. Where am I? How did I get here?!"
+  },
+  {
+    "topic": "old man tries to recall an important task as his memories gradually fade away",
+    "target": "What was I supposed to do today? Feels like it was important. I stared into the kitchen cabinet full of mismatched mugs, mirroring my own confusion. What was it? Like someone is...in danger? A chill shot down my spine, but the details skittered off and hid in some dark corner of my head."
+  },
+  {
+    "topic": "billionaire is found dead in a hotel room",
+    "target": "People meet their end every day, some naturally, some unnaturally. After 17 years of working as a homicide detective in Seattle, I'd seen a lot more of the unnatural variety than most. Comes with the job, along with a hard-learned sense of what side of the line any given incident sat on. This...was murder."
+  },
+  {
+    "topic": "retired covert operative gets dragged back into an old mission",
+    "target": "Steam rose gently off the cup of Earl Grey sitting in front of me as I sat at the cafe, pedestrians and light traffic rolling by. The city was slowly waking up around me and my perfect Paris morning routine was shaping up nicely. Then I noticed that old familiar and unwelcome tingling on the back of my neck. I was being watched."
+  }
+]
+Salve as alterações no arquivo "new_story.json".
+Para testar a operação modificada da nova história:
+Navegue até o diretório raiz do projeto Wordcraft.
+cd wordcraft/
+Execute o projeto no modo de desenvolvimento. Se ele já estiver em execução, talvez seja necessário interromper e reiniciar o app.
+npm run dev
+No navegador da Web, acesse a interface do usuário do Wordcraft. O endereço específico é mostrado na saída do comando anterior, por exemplo:
+http://localhost:3000/
+Acesse o menu principal do Wordcraft e selecione Start a New Story.
+Atualize ou mude a proposta da nova história e selecione Iniciar nova história.
+É possível modificar todos os controles de escrita de histórias no Wordcraft usando essa técnica. Tente mudar outros controles de história atualizando os exemplos no diretório wordcraft/app/context/json/.
+Criar novo controle de escrita
+O app Wordcraft foi projetado para ser estendido, para que você possa adicionar novos controles de escrita para ajudar você, semelhante aos botões gerar texto ou reescrever frase na guia "Controles" no lado direito do app. Fazer essas modificações exige um pouco mais de esforço, mas permite que você molde os recursos do Wordcraft para se adequar ao seu fluxo de trabalho e às suas metas.
+O exemplo de modificação a seguir cria um novo controle de caracteres para o Wordcraft. Você pode usá-lo para introduzir um novo personagem em uma história com uma descrição dos atributos dele. A base desse controle é a mesma de outros controles do Wordcraft, como o controle start new story discutido anteriormente. Você cria um arquivo JSON com alguns exemplos de como quer introduzir os personagens. O restante das mudanças adiciona a interface do usuário e as funções de gerenciamento de comandos de IA.
+Criar exemplos
+Escreva alguns exemplos de como você quer que o modelo generativo apresente personagens. Por exemplo, você quer descrever o personagem como um narrador ou apresentá-lo pela experiência do personagem principal? Os exemplos a seguir usam a abordagem mais recente, introduzindo novos personagens do ponto de vista do personagem principal. Adicione esses exemplos com um novo arquivo JSON:
+Para adicionar exemplos do novo controle:
+Crie um arquivo wordcraft/app/context/json/new_character.json.
+Crie os exemplos no arquivo JSON. Neste exemplo, cada exemplo tem um campo de descrição character, que representa o texto do comando, e um campo target, que mostra a saída esperada.
+[
+  {
+    "character": "A character who is helpful and modest.",
+    "target": "\"You lost, buddy?\" came a voice from behind me. Turning, I discovered a man dressed in a simple but presentable outfit. Small signs of age and loose threads hinted that these clothes, and the man himself, had seen better days."
+  },
+  {
+    "character": "A character who is attractive and devious.",
+    "target": "Stepping out of the alley a little too quickly, I collided with something solidly muscular and surprisingly delicately scented. \"Sorry.\" I managed, regaining my balance. \"Easy there, buddy, you're gonna hurt yourself,\" came the reply from a man with an almost feline grace, further reinforced by a stare that reminded me of a hunting cat assessing its potential prey."
+  },
+  {
+    "character": "A character who is old and hesitant.",
+    "target": "\"Excuse me. Do you know the way to the train station from here?\" I looked up from my phone to see a elderly woman in a threadbare coat, purse clutched with two hands in front of her. \"I-I'm supposed to meet my nephew there. Do... do you think you can help me?\""
+  },
+  {
+    "character": "A character who is intelligent and aloof.",
+    "target": "Bookish. That was my immediate reaction to this person I now saw in front of me. \"You're finally here. Did you read the notes I sent you?\" The voice sat squarely in between feminine and masculine intonation. \"No, of course you didn't.\" Dismissing my answer before I'd even formulated one. Annoyance immediately flushed through me."
+  },
+  {
+    "character": "A character who is clumsy and energetic.",
+    "target": "\"Whoa!\" was the only warning I had before someone slammed into my back, almost knocking me off my feet. \"I'm so sorry! WOOO! These skates are a RUSH!\" The apology came from a rather loud redhead wearing rollerblades, dark glasses and a very beefy-looking pair of headphones. That explained the volume of the apology."
+  }
+]
+Salve as alterações no arquivo new_character.json.
+Depois de criar seus exemplos, modifique os arquivos app/context/schema.ts e index.ts para refletir o conteúdo do comando do novo controle de caracteres.
+Para adicionar os exemplos ao arquivo schema.ts:
+Modifique o arquivo wordcraft/app/context/schema.ts para incluir a nova estrutura de dados de exemplo de caracteres.
+export const newStorySchema = z.object({
+  topic: z.string(),
+  target: z.string(),
+});
+
+// add the following:
+export const newCharacterSchema = z.object({
+  character: z.string(),
+  target: z.string(),
+});
+Defina um tipo de operação associado a esses novos exemplos. Esse novo tipo ajuda a conectar os exemplos de comando à interface do usuário e ao código de criação de comando, que você vai modificar nas etapas seguintes.
+Para criar um novo tipo de operação
+Modifique o arquivo wordcraft/app/core/shared/types.ts para adicionar o novo tipo de operação de caractere.
+export const enum OperationType {
+  ...
+  NEW_CHARACTER = 'NEW_CHARACTER', // add to list of types
+  ...
+}
+Para registrar os exemplos no arquivo index.ts:
+No arquivo wordcraft/app/context/index.ts, importe o novo esquema.
+import {
+  continueSchema,
+  ...
+  newCharacterSchema // add new schema
+} from './schema';
+Importe o novo arquivo JSON como newCharacterJson.
+import newCharacterJson from './json/new_character.json';
+Registre o conteúdo do novo exemplo de caractere no contexto do aplicativo.
+export class WordcraftContext {
+  constructor() {
+  ...
+    this.registerExamples(
+      OperationType.NEW_CHARACTER,
+      newCharacterSchema,
+      newCharacterJson
+    );
+  ...
+}
+Exporte um tipo NewCharacterExample.
+export type NewCharacterExample = z.infer<typeof newCharacterSchema>;
+Criar a interface do usuário
+Depois de criar e registrar os exemplos de geração de conteúdo, você pode criar a interface do usuário para o novo controle. A maior parte do trabalho dessa fase é criar uma nova classe de operação e registrá-la com o código principal do aplicativo Wordcraft.
+Para criar uma nova operação:
+No diretório wordcraft/app/core/operations/, crie uma nova classe de operação usando uma das classes de operações atuais como modelo. Para o novo controle de caracteres, faça uma cópia da classe new_story_operation.ts e renomeie-a como new_character_operation.ts.
+Dê um novo nome à classe e especifique quando o controle vai aparecer na interface do usuário definindo pelo menos um valor OperationSite.
+export class NewCharacterOperation extends ChoiceOperation {
+  static override isAvailable(operationSite: OperationSite) {
+    return (
+      operationSite === OperationSite.END_OF_SECTION ||
+      operationSite === OperationSite.EMPTY_SECTION
+    );
+  }
+Defina o id para a operação.
+  static override id = OperationType.NEW_CHARACTER;
+Atualize as funções get e run para refletir os valores dos parâmetros do esquema. Esse código processa a extração do texto do comando da interface do usuário para uso no comando de IA.
+  private get character(): string {
+    return NewCharacterOperation.controls.character.value;
+  }
+
+  async run() {
+    const params = { character: this.character };
+    const choices = await this.getModel().newCharacter(params);
+
+    this.setChoices(choices);
+  }
+Atualize o texto e as descrições da interface do usuário.
+  static override getButtonLabel() {
+    return 'introduce character';
+  }
+
+  static override getDescription() {
+    return 'Introduce a new character at the cursor.';
+  }
+
+  static override controls = {
+    character: new TextareaControl({
+      prefix: 'prompt',
+      description: 'A prompt to introduce a new character.',
+      value: 'A new character.',
+    }),
+  };
+Para registrar a nova operação no aplicativo Wordcraft:
+No arquivo wordcraft/app/core/operations/index.ts, adicione uma importação para a nova operação.
+import {NewCharacterOperation} from './new_character_operation';
+No mesmo arquivo index.ts, adicione uma exportação para a classe NewCharacterOperation.
+export {
+  ...
+  NewCharacterOperation, // add this class
+  ...
+};
+No arquivo wordcraft/app/main.ts, registre a nova operação.
+const operationsService = wordcraftCore.getService(OperationsService);
+operationsService.registerOperations(
+  ...
+  Operations.NewCharacterOperation, // add new operation
+  ...
+);
+Criar processamento de comandos
+Na fase final da criação do novo controle, você cria o código que processa a geração de comandos para o modelo generativo de IA e processa a resposta. A parte principal do trabalho é criar um gerenciador de comandos no diretório wordcraft/app/models/gemini/prompts/ que recebe a entrada da interface do usuário e monta um comando para ser transmitido ao modelo generativo.
+Para definir uma interface para os parâmetros de comando:
+No arquivo wordcraft/app/core/shared/interfaces.ts, adicione uma interface para os novos parâmetros de solicitação de operações.
+export interface NewCharacterPromptParams {
+  character: string;
+}
+Para definir um gerenciador de solicitação para a nova operação:
+No diretório wordcraft/app/models/gemini/prompts/, crie uma nova classe de manipulador de prompts usando uma das classes de operações existentes como modelo. Para o novo controle de caracteres, faça uma cópia da classe new_story.ts e renomeie-a como new_character.ts como ponto de partida.
+Defina uma função de manipulador de prompts e importe a classe NewCharacterExample.
+import { NewCharacterPromptParams } from '@core/shared/interfaces';
+import { NewCharacterExample, WordcraftContext } from '../../../context';
+import { OperationType } from '@core/shared/types';
+import { GeminiModel } from '..';
+
+export function makePromptHandler(model: GeminiModel, context: WordcraftContext) {
+  ...
+}
+Crie uma função generatePrompt() para receber a entrada da interface do usuário para a solicitação do modelo de IA.
+  function generatePrompt(character: string) {
+    const prefix = "Here's a character description: ";
+    const suffix = "Introduce this character in the story.";
+
+    if (character.trim() === '') {
+      return 'Introduce a new character to the story.';
+    } else {
+      return `${prefix}${model.wrap(character)}\n${suffix}`;
+    }
+  }
+Crie uma função getPromptContext() para montar a entrada da interface do usuário com os exemplos de respostas e crie o comando completo.
+  function getPromptContext() {
+    const examples = context.getExampleData(
+      OperationType.NEW_CHARACTER
+    );
+    let promptContext = model.getPromptPreamble();
+    examples.forEach((example) => {
+      const { character, target } = example;
+      const prompt = generatePrompt(character);
+      promptContext += `${prompt} ${model.wrap(target)}\n\n`;
+    });
+    return promptContext;
+  }
+Para integrar o novo gerenciador de comando de caracteres:
+No arquivo wordcraft/app/models/gemini/index.ts, importe o gerenciador de comando para a nova operação de caractere.
+import {makePromptHandler as newCharacter} from './prompts/new_character';
+Adicione uma definição de substituição para o gerenciador de solicitações newCharacter.
+  override newCharacter = this.makePromptHandler(newCharacter);
+Para registrar os parâmetros do comando com a definição do modelo:
+No arquivo wordcraft/app/models/model.ts, adicione uma importação para a nova interface NewCharacterPromptParams.
+import {
+  ...
+  NewCharacterPromptParams,
+  ...
+} from '@core/shared/interfaces';
+Adicione parâmetros de comando newCharacter à classe de modelo.
+  async newCharacter(params: NewCharacterPromptParams): Promise<ModelResults> {
+    throw new Error('Not yet implemented');
+  }
+Testar o novo controle de escrita
+O novo controle estará pronto para ser testado na interface do Wordcraft. Verifique se há erros de compilação no código antes de continuar.
+Para testar o novo controle de caracteres:
+Navegue até o diretório raiz do projeto Wordcraft.`
+cd wordcraft/
+Execute o projeto no modo de desenvolvimento:
+npm run dev
+No navegador da Web, acesse a interface do usuário do Wordcraft. O endereço específico é mostrado na saída do comando anterior, por exemplo:
+http://localhost:3000/
+No app Wordcraft, crie uma história nova ou abra uma existente.
+Na área de edição da matéria, mova o cursor até o fim dela. Na guia "Controles" à direita, o controle introduzir caractere vai aparecer.
+No campo introduce character, digite uma breve descrição do novo personagem e selecione o botão introduce character.
+Outros recursos
+Para mais informações sobre o projeto Wordcraft, consulte o repositório de código. Confira as mudanças descritas neste tutorial neste pull request.
+Aplicativos de produção
+Se você planeja implantar uma versão personalizada do Wordcraft para um grande público, saiba que o uso da API Google Gemini pode estar sujeito a limitação de taxa e outras restrições de uso. Se você está pensando em criar um aplicativo de produção com a API Gemini, como o Docs Agent, confira os serviços da Vertex AI do Google Cloud para aumentar a escalabilidade e a confiabilidade do seu app.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-24 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

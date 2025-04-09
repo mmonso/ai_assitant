@@ -1,0 +1,217 @@
+URL: https://ai.google.dev/gemini-api/docs/caching
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+O armazenamento em cache de contexto
+Nesta página
+Quando usar o armazenamento em cache de contexto
+Como o armazenamento em cache reduz custos
+Como usar o armazenamento em cache de contexto
+Gerar conteúdo usando um cache
+Listar caches
+Atualizar um cache
+Excluir um cache
+Outras considerações
+Python
+JavaScript
+Go
+REST
+Em um fluxo de trabalho típico de IA, é possível transmitir os mesmos tokens de entrada repetidamente para um modelo. Usando o recurso de armazenamento em cache de contexto da API Gemini, é possível transmitir algum conteúdo ao modelo uma vez, armazenar os tokens de entrada em cache e, em seguida, consultar os tokens em cache para solicitações subsequentes. Em determinados volumes, o uso de tokens em cache tem um custo menor do que o envio repetido do mesmo corpus de tokens.
+Ao armazenar em cache um conjunto de tokens, você pode escolher por quanto tempo o cache vai existir antes que os tokens sejam excluídos automaticamente. Essa duração de armazenamento em cache é chamada de time to live (TTL). Se não for definido, o TTL será definido como 1 hora. O custo do armazenamento em cache depende do tamanho do token de entrada e de quanto tempo você quer que os tokens persistam.
+O armazenamento em cache de contexto é compatível com o Gemini 1.5 Pro e o Gemini 1.5 Flash.
+Observação: o armazenamento em cache de contexto está disponível apenas para modelos estáveis com versões fixas (por exemplo, gemini-1.5-pro-001). É necessário incluir o sufixo de versão (por exemplo, -001 em gemini-1.5-pro-001).
+Quando usar o armazenamento em cache de contexto
+O armazenamento em cache de contexto é particularmente adequado para cenários em que um contexto inicial substancial é referenciado repetidamente por solicitações mais curtas. Use armazenamento em cache de contexto para casos de uso como estes:
+Chatbots com instruções do sistema extensas
+Análise repetitiva de arquivos de vídeo longos
+Consultas recorrentes em grandes conjuntos de documentos
+Análise frequente do repositório de código ou correção de bugs
+Como o armazenamento em cache reduz custos
+O armazenamento em cache de contexto é um recurso pago projetado para reduzir os custos operacionais gerais. O faturamento é baseado nos seguintes fatores:
+Contagem de tokens de cache: o número de tokens de entrada armazenados em cache, faturados com uma taxa reduzida quando incluído nos comandos subsequentes.
+Duração do armazenamento:o tempo de armazenamento e cobrança dos tokens em cache (TTL), faturado com base na duração do TTL da contagem de tokens em cache. Não há limites mínimos ou máximos no TTL.
+Outros fatores: outras cobranças se aplicam, como tokens de entrada não armazenados em cache e tokens de saída.
+Para detalhes atualizados sobre preços, consulte a página de preços da API Gemini. Para saber como contar tokens, consulte o guia de tokens.
+Como usar o armazenamento em cache de contexto
+Nesta seção, presumimos que você instalou um SDK do Gemini (ou o curl) e configurou uma chave de API, conforme mostrado no Guia de início rápido.
+Gerar conteúdo usando um cache
+O exemplo a seguir mostra como gerar conteúdo usando um arquivo de vídeo e instruções do sistema em cache.
+import os
+import pathlib
+import requests
+import time
+
+from google import genai
+from google.genai import types
+
+# Get your API key from https://aistudio.google.com/app/apikey
+# Put it in a "GOOGLE_API_KEY" environment variable.
+# For more details, see
+# https://github.com/google-gemini/cookbook/blob/main/quickstarts/Authentication.ipynb
+client = genai.Client()
+
+# Download video file
+url = 'https://storage.googleapis.com/generativeai-downloads/data/Sherlock_Jr_FullMovie.mp4'
+path_to_video_file = pathlib.Path('Sherlock_Jr_FullMovie.mp4')
+if not path_to_video_file.exists():
+  with path_to_video_file.open('wb') as wf:
+    response = requests.get(url, stream=True)
+    for chunk in response.iter_content(chunk_size=32768):
+      wf.write(chunk)
+
+# Upload the video using the Files API
+video_file = client.files.upload(file=path_to_video_file)
+
+# Wait for the file to finish processing
+while video_file.state.name == 'PROCESSING':
+  print('Waiting for video to be processed.')
+  time.sleep(2)
+  video_file = client.files.get(name=video_file.name)
+
+print(f'Video processing complete: {video_file.uri}')
+
+# You must use an explicit version suffix. "-flash-001", not just "-flash".
+model='models/gemini-1.5-flash-001'
+
+# Create a cache with a 5 minute TTL
+cache = client.caches.create(
+    model=model,
+    config=types.CreateCachedContentConfig(
+      display_name='sherlock jr movie', # used to identify the cache
+      system_instruction=(
+          'You are an expert video analyzer, and your job is to answer '
+          'the user\'s query based on the video file you have access to.'
+      ),
+      contents=[video_file],
+      ttl="300s",
+  )
+)
+
+# Construct a GenerativeModel which uses the created cache.
+response = client.models.generate_content(
+  model = model,
+  contents= (
+    'Introduce different characters in the movie by describing '
+    'their personality, looks, and names. Also list the timestamps '
+    'they were introduced for the first time.'),
+  config=types.GenerateContentConfig(cached_content=cache.name)
+)
+
+print(response.usage_metadata)
+
+# The output should look something like this:
+#
+# prompt_token_count: 696219
+# cached_content_token_count: 696190
+# candidates_token_count: 214
+# total_token_count: 696433
+
+print(response.text)
+Listar caches
+Não é possível recuperar ou visualizar o conteúdo armazenado em cache, mas é possível recuperar metadados de cache (name, model, display_name, usage_metadata, create_time, update_time e expire_time).
+Para listar os metadados de todos os caches enviados, use CachedContent.list():
+for cache in client.caches.list():
+  print(cache)
+Para buscar os metadados de um objeto de cache, se você souber o nome dele, use get:
+client.caches.get(name=name)
+Atualizar um cache
+É possível definir um novo ttl ou expire_time para um cache. Não é possível mudar qualquer outra coisa sobre o cache.
+O exemplo a seguir mostra como atualizar o ttl de um cache usando client.caches.update().
+from google import genai
+from google.genai import types
+
+client.caches.update(
+  name = cache.name,
+  config  = types.UpdateCachedContentConfig(
+      ttl='300s'
+  )
+)
+Para definir o tempo de expiração, ele aceita um objeto datetime ou uma string de data e hora formatada em ISO (dt.isoformat(), como 2025-01-27T16:02:36.473528+00:00). O tempo precisa incluir um fuso horário (datetime.utcnow() não anexa um fuso horário, datetime.now(datetime.timezone.utc) anexa um fuso horário).
+from google import genai
+from google.genai import types
+import datetime
+
+# You must use a time zone-aware time.
+in10min = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=10)
+
+client.caches.update(
+  name = cache.name,
+  config  = types.UpdateCachedContentConfig(
+      expire_time=in10min
+  )
+)
+Excluir um cache
+O serviço de cache oferece uma operação de exclusão para remover manualmente o conteúdo do cache. O exemplo a seguir mostra como excluir um cache:
+client.caches.delete(cache.name)
+Outras considerações
+Considere as seguintes considerações ao usar o armazenamento em cache de contexto:
+A contagem de tokens de entrada mínima para o armazenamento em cache de contexto é 32.768, e a máxima é igual ao máximo do modelo. Para saber mais sobre como contar tokens, consulte o guia de tokens.
+O modelo não faz distinção entre tokens em cache e tokens de entrada normais. O conteúdo armazenado em cache é simplesmente um prefixo para o comando.
+Não há taxas ou limites de uso especiais no armazenamento em cache de contexto. Os limites de taxa padrão para GenerateContent são aplicados, e os limites de token incluem tokens em cache.
+O número de tokens em cache é retornado no usage_metadata das operações de criação, acesso e listagem do serviço de cache e também em GenerateContent ao usar o cache.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-01 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

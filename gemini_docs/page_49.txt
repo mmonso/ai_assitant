@@ -1,0 +1,102 @@
+URL: https://ai.google.dev/gemini-api/docs/get-started/android_aicore
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Introdução ao Gemini Nano no Android (no dispositivo)
+Nesta página
+Benefícios da execução no dispositivo
+Como funciona
+A seguir
+O Gemini Nano, a versão menor da família de modelos Gemini, pode ser executado em dispositivos Android compatíveis, começando com o Google Pixel 8 Pro e a série Samsung S24.
+Para executar o modelo Gemini Nano no Android, use o SDK AI Edge do Google para Android, que oferece APIs para:
+Determine se o dispositivo Android em questão é compatível.
+Acesse o modelo Gemini Nano.
+Ajuste as configurações de segurança.
+Execute a inferência com alto desempenho e implemente substitutos.
+Opcionalmente, forneça um bloco de ajuste fino da LoRa para melhorar o desempenho do modelo para seu caso de uso.
+As APIs para acessar o Gemini Nano oferecem suporte à modalidade de texto para texto, e mais modalidades serão lançadas no futuro.
+Benefícios da execução no dispositivo
+A execução no dispositivo permite o seguinte:
+Processamento local de dados sensíveis: processar dados localmente pode ajudar a evitar o envio de dados do usuário para a nuvem. Isso é importante para apps que lidam com dados sensíveis, como apps de mensagens com criptografia de ponta a ponta.
+Acesso off-line: os usuários podem acessar os recursos de IA mesmo quando não há conexão à Internet. Isso é útil para aplicativos que precisam funcionar off-line ou com conectividade variável.
+Economia de custos: é possível reduzir os custos de inferência transferindo a execução para hardwares de consumo. Isso pode gerar economias significativas para fluxos de usuários usados com frequência.
+A execução no dispositivo do Gemini tem muitos benefícios. No entanto, para casos de uso que exigem modelos maiores do Gemini e para oferecer suporte a uma ampla variedade de dispositivos, considere usar a API Gemini para acessar o Gemini no servidor. Isso pode ser feito por meio da integração de back-end (com Python, Go, Node.js ou REST) ou diretamente do app Android pelo novo SDK do cliente de IA do Google para Android.
+Como funciona
+A execução no dispositivo do Gemini Nano é feita pelo Android AICore, um novo recurso do sistema que oferece acesso a modelos de fundação para execução no dispositivo, introduzido no Android 14. Os modelos de base são pré-instalados usando o AICore, então você não precisa fazer o download nem distribuir esses modelos no seu app. Você pode ajustar esses modelos para tarefas posteriores usando o LoRa. O Android AICore já está disponível para produção nos dispositivos Google Pixel 8 Pro e Samsung S24 Series e já está oferecendo recursos inovadores nos apps do Google.
+Para mais informações, consulte Android AICore.
+Figura 1. Arquitetura do AICore
+A seguir
+Para saber como aproveitar a inferência do Gemini Pro nos servidores do Google no seu app Android, leia o Guia de início rápido do SDK do cliente da IA do Google para Android.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-06 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

@@ -89,13 +89,18 @@ export function clearChatbox(chatBox) {
  * @param {string | null} conversationId - The ID of the conversation to activate, or null.
  * @param {HTMLElement} conversationListElement - The conversation list DOM element.
  */
-export function setActiveConversationInSidebar(conversationId, conversationListElement) {
-    if (!conversationListElement) return;
-    conversationListElement.querySelectorAll('li').forEach(item => {
+export function setActiveConversationInSidebar(conversationId, listContainerElement) {
+    if (!listContainerElement) return;
+    // Search for conversation items anywhere within the container (root or inside folders)
+    listContainerElement.querySelectorAll('.conversation-item').forEach(item => {
         item.classList.remove('active', 'editing'); // Remove editing class too
         if (item.dataset.conversationId === conversationId) {
             item.classList.add('active');
         }
+    });
+    // Also remove active state from any folders
+    listContainerElement.querySelectorAll('.folder-item').forEach(item => {
+        item.classList.remove('active'); // Folders don't usually have an 'active' state like convos
     });
 }
 
@@ -128,6 +133,35 @@ function createConversationActionsPopover(conversationId) {
         </button>
     `;
     // Prevent clicks inside popover from propagating to the list item listener
+    popover.addEventListener('click', (e) => e.stopPropagation());
+    return popover;
+}
+
+/**
+ * Creates the HTML structure for the folder actions popover.
+ * @param {string} folderId - The ID of the folder.
+ * @returns {HTMLElement} The popover element.
+ */
+function createFolderActionsPopover(folderId) {
+    const popover = document.createElement('div');
+    popover.classList.add('actions-popover', 'folder-actions-popover'); // Add specific class
+    popover.dataset.popoverFor = folderId;
+
+    popover.innerHTML = `
+        <button class="popover-button" data-action="edit-folder" data-folder-id="${folderId}" title="Rename folder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-pencil-fill icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.5.5 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11z"/>
+            </svg>
+            Rename
+        </button>
+        <button class="popover-button delete-button" data-action="delete-folder" data-folder-id="${folderId}" title="Delete folder">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" class="bi bi-trash-fill icon" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+            </svg>
+            Delete
+        </button>
+    `;
+    // Prevent clicks inside popover from propagating
     popover.addEventListener('click', (e) => e.stopPropagation());
     return popover;
 }
@@ -318,24 +352,31 @@ export function hideAllPopovers(event, settingsPopoverLevel1) {
 
 
 /**
- * Toggles the visibility and position of a conversation item's action popover.
- * @param {HTMLElement} listItem - The conversation list item element.
+ * Toggles the visibility and position of an item's action popover (conversation or folder).
+ * @param {HTMLElement} listItem - The list item element (conversation or folder).
+ * @param {'conversation' | 'folder'} itemType - The type of item.
  */
-export function toggleConversationActionsPopover(listItem) {
+export function toggleActionsPopover(listItem, itemType) {
     const popover = listItem._popoverElement; // Assumes popover HTML is stored here
-    if (!popover) return;
-
-    const button = listItem.querySelector('.conversation-actions-button');
-    const currentlyVisiblePopover = document.querySelector('body > .actions-popover.visible');
-
-    // If this popover is already visible, hide and remove it
-    if (currentlyVisiblePopover === popover) {
-        popover.remove();
+    if (!popover) {
+        console.error("Popover element not found on list item:", listItem);
         return;
     }
-    // If another popover is visible, hide and remove it first
+
+    const button = listItem.querySelector('.actions-button'); // Use generic class
+    if (!button) {
+        console.error("Actions button not found on list item:", listItem);
+        return;
+    }
+    const currentlyVisiblePopover = document.querySelector('body > .actions-popover.visible');
+
+    // Hide any currently visible popover first
     if (currentlyVisiblePopover) {
         currentlyVisiblePopover.remove();
+        // If the currently visible one was the one we clicked the button for, just return (toggle off)
+        if (currentlyVisiblePopover === popover) {
+            return;
+        }
     }
 
     // Append the new popover to the body and calculate position
@@ -366,65 +407,144 @@ export function toggleConversationActionsPopover(listItem) {
 }
 
 /**
- * Displays the list of conversations in the sidebar.
+ * Displays folders and conversations in the sidebar.
  * Event listeners should be attached separately using delegation.
- * @param {Array} conversations - Array of conversation objects { conversation_id, title }.
- * @param {HTMLElement} conversationListElement - The <ul> element to populate.
+ * @param {Array} conversations - Array of conversation objects { conversation_id, title, folder_id }.
+ * @param {Array} folders - Array of folder objects { folder_id, name }.
+ * @param {HTMLElement} listContainerElement - The main container element (e.g., <ul> or <div>) to populate.
  * @param {string | null} currentConversationId - The ID of the currently active conversation.
  */
-export function displayConversations(conversations, conversationListElement, currentConversationId) {
-    if (!conversationListElement) return;
-    conversationListElement.innerHTML = ''; // Clear existing list
+export function displayConversationsAndFolders(conversations, folders, listContainerElement, currentConversationId) {
+    if (!listContainerElement) return;
+    listContainerElement.innerHTML = ''; // Clear existing list
 
-    if (!conversations || conversations.length === 0) {
-        const noConvItem = document.createElement('li');
-        noConvItem.textContent = 'No conversations yet.';
-        noConvItem.style.fontStyle = 'italic';
-        conversationListElement.appendChild(noConvItem);
+    const hasConversations = conversations && conversations.length > 0;
+    const hasFolders = folders && folders.length > 0;
+
+    if (!hasConversations && !hasFolders) {
+        const emptyStateItem = document.createElement('div'); // Use div for general empty state
+        emptyStateItem.textContent = 'No folders or conversations yet.';
+        emptyStateItem.classList.add('empty-list-message');
+        listContainerElement.appendChild(emptyStateItem);
         return;
     }
+
+    const fragment = document.createDocumentFragment(); // Use fragment for performance
+    const folderElementsMap = new Map(); // To easily find folder containers
+
+    // 1. Create Folder Elements
+    if (hasFolders) {
+        folders.forEach(folder => {
+            const folderItem = document.createElement('div'); // Use div for folder container
+            folderItem.classList.add('folder-item');
+            folderItem.dataset.folderId = folder.folder_id;
+            folderItem.dataset.dropTarget = 'folder'; // Make the whole folder item a drop target
+
+            const folderHeader = document.createElement('div');
+            folderHeader.classList.add('folder-header');
+            // Make header draggable/droppable? Maybe later.
+
+            const toggleIcon = document.createElement('span');
+            toggleIcon.classList.add('folder-toggle-icon');
+            toggleIcon.innerHTML = '&#9654;'; // Right-pointing triangle (closed)
+            toggleIcon.dataset.action = 'toggle-folder'; // For event delegation
+
+            const titleSpan = document.createElement('span');
+            titleSpan.classList.add('folder-title');
+            titleSpan.textContent = folder.name || `Folder ${folder.folder_id}`;
+            titleSpan.dataset.action = 'toggle-folder'; // Click title also toggles
+
+            const actionsButton = document.createElement('button');
+            actionsButton.classList.add('actions-button', 'folder-actions-button'); // Generic and specific class
+            actionsButton.innerHTML = '&#8943;'; // More options icon
+            actionsButton.title = "Folder options";
+            actionsButton.dataset.action = 'toggle-folder-popover'; // Specific action
+
+            folderHeader.appendChild(toggleIcon);
+            folderHeader.appendChild(titleSpan);
+            folderHeader.appendChild(actionsButton);
+
+            const folderContents = document.createElement('ul'); // Use UL for conversations inside folder
+            folderContents.classList.add('folder-contents'); // Initially hidden via CSS
+            folderContents.dataset.dropTarget = 'folder'; // Mark as drop target
+            folderContents.dataset.folderId = folder.folder_id;
+
+            folderItem.appendChild(folderHeader);
+            folderItem.appendChild(folderContents);
+
+            // Store popover element
+            folderItem._popoverElement = createFolderActionsPopover(folder.folder_id);
+
+            fragment.appendChild(folderItem);
+            folderElementsMap.set(folder.folder_id, folderContents); // Map ID to contents container
+        });
+    }
+
+    // 2. Create and Place Conversation Elements
+    if (hasConversations) {
+        conversations.forEach(conv => {
+            const listItem = createConversationListItem(conv, currentConversationId);
+
+            const targetContainer = folderElementsMap.get(conv.folder_id);
+            if (targetContainer) {
+                targetContainer.appendChild(listItem); // Append to folder's content list
+            } else {
+                fragment.appendChild(listItem); // Append to root fragment
+            }
+        });
+    }
+
+    // 3. Append the fragment to the actual DOM container
+    listContainerElement.appendChild(fragment);
+
+    // Add drop target capability to the root list as well
+    listContainerElement.dataset.dropTarget = 'root';
     
-    conversations.forEach(conv => {
-        const listItem = document.createElement('li');
-        listItem.dataset.conversationId = conv.conversation_id;
-        listItem.classList.add('conversation-item');
-        if (conv.conversation_id === currentConversationId) {
-            listItem.classList.add('active');
-        }
+}
 
-        const itemContent = document.createElement('div');
-        itemContent.classList.add('conversation-item-content');
+/**
+ * Helper function to create a single conversation list item element.
+ * @param {object} conv - Conversation object { conversation_id, title, folder_id }.
+ * @param {string | null} currentConversationId - The ID of the currently active conversation.
+ * @returns {HTMLElement} The created list item element (<li>).
+ */
+function createConversationListItem(conv, currentConversationId) {
+    const listItem = document.createElement('li');
+    listItem.dataset.conversationId = conv.conversation_id;
+    // Store folder_id if present (useful for drag/drop revert)
+    if (conv.folder_id !== null && conv.folder_id !== undefined) {
+        listItem.dataset.folderId = conv.folder_id;
+    }
+    listItem.classList.add('conversation-item');
+    listItem.draggable = true; // Make draggable
+    listItem.dataset.draggableType = 'conversation'; // Identify draggable type
 
-        const titleSpan = document.createElement('span');
-        titleSpan.classList.add('conversation-title');
-        titleSpan.textContent = conv.title || `Conversation ${conv.conversation_id}`;
-        // Add data-action for event delegation
-        titleSpan.dataset.action = 'select';
+    if (conv.conversation_id === currentConversationId) {
+        listItem.classList.add('active');
+    }
 
-        const actionsButton = document.createElement('button');
-        actionsButton.classList.add('conversation-actions-button');
-        actionsButton.innerHTML = '&#8943;';
-        actionsButton.title = "More options";
-        // Add data-action for event delegation
-        actionsButton.dataset.action = 'toggle-popover';
+    const itemContent = document.createElement('div');
+    itemContent.classList.add('conversation-item-content');
 
-        // Conversation Actions Popover (initially hidden, built but not attached to body)
-        // Event listeners removed, will use delegation based on data-action
-        const convPopover = document.createElement('div');
-        convPopover.classList.add('actions-popover');
-        // Add conversation ID to the popover buttons for delegation
-        // Use the same HTML structure as createConversationActionsPopover
-        convPopover.innerHTML = createConversationActionsPopover(conv.conversation_id).innerHTML;
+    const titleSpan = document.createElement('span');
+    titleSpan.classList.add('conversation-title');
+    titleSpan.textContent = conv.title || `Conversation ${conv.conversation_id}`;
+    titleSpan.dataset.action = 'select'; // For click delegation
 
-        itemContent.appendChild(titleSpan);
-        itemContent.appendChild(actionsButton);
-        listItem._popoverElement = convPopover; // Store reference for easy access later
-        listItem.appendChild(itemContent);
-        conversationListElement.appendChild(listItem);
-    });
+    const actionsButton = document.createElement('button');
+    actionsButton.classList.add('actions-button', 'conversation-actions-button'); // Generic and specific
+    actionsButton.innerHTML = '&#8943;'; // More options icon
+    actionsButton.title = "Conversation options";
+    actionsButton.dataset.action = 'toggle-conversation-popover'; // Specific action
 
-    // Global listener for closing popovers is NOT added here.
-    // It should be added once in the main script.
+    // Create and store popover element reference
+    listItem._popoverElement = createConversationActionsPopover(conv.conversation_id);
+
+    itemContent.appendChild(titleSpan);
+    itemContent.appendChild(actionsButton);
+    listItem.appendChild(itemContent);
+
+    return listItem;
 }
 
 /**

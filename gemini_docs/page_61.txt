@@ -1,0 +1,175 @@
+URL: https://ai.google.dev/gemini-api/tutorials/sql-talk
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Aplicativo de chat
+Assistente de código
+Gerador de código do Flutter
+Pesquisa de conteúdo
+Agente de exploração de dados
+Assistente de redação
+Revisor do Apresentações Google
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Crie um agente de exploração de dados de IA com o Gemini
+Nesta página
+Configurar o projeto
+Criar uma instância do Cloud Shell para o projeto
+Conseguir um ID de projeto do Cloud
+Configurar o projeto SQL Talk
+Testar o projeto
+Modificar o aplicativo
+Adicionar uma definição de chamada de função
+Outros recursos
+Crie uma interface de chat com tecnologia de inteligência artificial (IA) para suas interfaces de programação de sistemas empresariais e permita que seus colegas façam perguntas sobre seus dados de negócios. Fazer análises e relatórios sobre os dados da sua organização é essencial para melhorar a forma como você faz negócios. Encontrar problemas, descobrir tendências e investigar resultados são possíveis com os dados certos, mas, como desenvolvedor, ajudar colegas que não codificam a descobrir os dados certos pode ser desafio.
+O projeto SQL Talk é um aplicativo de código aberto que usa a tecnologia de IA generativa para responder a perguntas sobre dados de negócios. O projeto usa a API Gemini e o recurso de chamada de função para transformar perguntas de dados de negócios em consultas SQL e chamadas de API e, em seguida, transformar os resultados em linguagem simples. Você pode usar este projeto como um ponto de partida para criar um agente de dados para sua própria empresa e ajudar seus colegas a encontrar respostas sem precisar escrever um monte de código de uso único.
+Para conferir uma visão geral em vídeo do projeto e saber como ele pode ser estendido, incluindo insights dos criadores, acesse Agente de dados de IA | Crie com a IA do Google. Caso contrário, você pode começar a estender o projeto usando as seguintes instruções.
+Figura 1. Interface do usuário do aplicativo do projeto SQL Talk.
+Configurar o projeto
+Estas instruções mostram como configurar o projeto SQL Talk para desenvolvimento e teste. As etapas gerais são criar o projeto SQL Talk, configurar um projeto de desenvolvimento do Google Cloud Shell Editor, receber um ID do projeto do Google Cloud e usar um script para configurar as configurações do projeto. Estas instruções descrevem como configurar o projeto usando o editor do Cloud Shell, que torna a configuração, a execução e a atualização do projeto rápidas e convenientes.
+Criar uma instância do Cloud Shell para o projeto
+É possível configurar o projeto SQL Talk clonando o repositório do projeto em uma instância do Cloud Shell. Esse processo configura uma instância de ambiente de desenvolvimento virtual na infraestrutura do Google Cloud para o projeto e clona o repositório de código nesse ambiente virtual.
+Para criar uma instância do Cloud Shell para o SQL Talk:
+Clique no link a seguir para criar uma instância do Cloud Shell do SQL Talk.
+Este link configura uma instância do editor do Google Cloud Shell e clona o repositório do SQL Talk na instância.
+Figura 2. Projeto SQL Talk clonado em um ambiente de desenvolvimento do editor do Google Cloud Shell.
+Conseguir um ID de projeto do Cloud
+O projeto SQL Talk usa um ID de projeto do Google Cloud para se conectar aos serviços do Google Cloud, incluindo os modelos Gemini. Você configura um ID de projeto no editor do Cloud Shell para permitir que o aplicativo se conecte a esses serviços.
+Para conectar o editor do Cloud Shell a um ID de projeto:
+Acesse o console do Google Cloud e faça login, se necessário.
+Selecione um projeto do Cloud ou crie um novo.
+Anote o ID do projeto do Cloud.
+Conecte a instância do Editor ao projeto e configure-o. Na janela do editor do Cloud Shell, no painel do terminal, digite o seguinte comando:
+gcloud config set project YOUR_PROJECT_ID
+Importante: a API Vertex AI exige que o faturamento seja ativado nos projetos em que você a usa. Verifique se o faturamento está ativado para o ID do projeto do Cloud que você está usando.
+Configurar o projeto SQL Talk
+O projeto SQL Talk usa os serviços do Google Cloud para executar o projeto, incluindo o serviço de banco de dados BigQuery e a API Vertex AI para se conectar aos modelos Gemini. O projeto SQL Talk inclui um script setup.sh que configura o projeto com os serviços do Google Cloud necessários e inicia a versão padrão do projeto.
+Para configurar e executar a instância do editor do Cloud Shell do projeto:
+No painel do terminal da janela do Editor do Cloud Shell, navegue até o diretório do projeto do SQL Talk (/sql-talk-app) do Cloud Shell:
+cd ~/cloudshell_open/generative-ai/gemini/function-calling/sql-talk-app
+No painel do terminal, digite o seguinte comando:
+bash setup.sh
+Quando o script de configuração for concluído, você verá uma mensagem semelhante a esta na janela do terminal do editor do Cloud Shell. Essa mensagem indica que o processo de configuração foi concluído e que o aplicativo SQL Talk está em execução:
+You can now view your Streamlit app in your browser.
+Network URL: http://##.##.##.##:8080
+External URL: http://##.##.##.##:8080
+Testar o projeto
+Depois de concluir a configuração do projeto SQL Talk, teste o aplicativo para verificar se ele está funcionando como esperado. O script de configuração inicializa o aplicativo automaticamente quando você o executa. Você pode reiniciar o aplicativo usando as etapas a seguir.
+Para executar o aplicativo SQL Talk:
+Se o Editor do Cloud Shell estiver ocioso e desconectado, talvez seja necessário se reconectar ao ID do projeto do Cloud.
+gcloud config set project YOUR_PROJECT_ID
+No painel do terminal da janela do editor do Cloud Shell, navegue até o diretório do projeto SQL Talk do Cloud Shell.
+cd ~/cloudshell_open/generative-ai/gemini/function-calling/sql-talk-app
+No painel do terminal, digite o seguinte comando.
+~/miniforge/bin/streamlit run app.py --server.enableCORS=false \
+    --server.enableXsrfProtection=false --server.port 8080
+Confira o aplicativo SQL Talk. No canto superior direito da janela do editor do Cloud Shell, selecione o botão Visualização da Web e, em seguida, Visualizar na porta 8080.
+Para conferir as atualizações do aplicativo SQL Talk:
+Na visualização da Web do aplicativo da Web SQL Talk, atualize o navegador ou a guia do navegador.
+Para interromper o aplicativo SQL Talk:
+No painel do terminal da janela do editor do Cloud Shell, digite Ctrl-C.
+Modificar o aplicativo
+É possível mudar o comportamento e adicionar recursos ao aplicativo SQL Talk modificando o código Python dele. Esta seção descreve como adicionar uma nova chamada de função ao aplicativo SQL Talk.
+O recurso Function Calling da API Gemini usa uma sintaxe específica para definir funções que serão usadas pelo modelo generativo para responder a perguntas ou resolver problemas. Essa sintaxe não precisa corresponder exatamente à sintaxe de uma chamada de API real. Em vez disso, use o recurso de chamada de função para forçar o modelo generativo a fornecer entradas de dados ou parâmetros específicos que estejam em conformidade com a sintaxe de chamada de API e, em seguida, use esses parâmetros para executar as chamadas de API reais no código do aplicativo.
+Este exemplo de implementação mostra como criar uma definição de chamada de função para listar jobs ou consultas de banco de dados recentes e, em seguida, mapear essa definição para a chamada de API real no código do aplicativo SQL Talk.
+Adicionar uma definição de chamada de função
+Adicione uma nova chamada de função para listar jobs ou consultas recentes do banco de dados. Essa definição é usada pelo modelo generativo para entender o que a chamada de API faz e quais parâmetros de entrada ela exige. Esta definição de função de exemplo é definida sem parâmetros.
+Para adicionar uma nova chamada de função ao aplicativo:
+Na janela do editor do Cloud Shell, abra o arquivo de código sql-talk-app/app.py.
+Depois da declaração da função list_datasets_func, adicione uma nova FunctionDeclaration.
+list_jobs_func = FunctionDeclaration(
+    name="list_jobs",
+    description="Get a list of the 10 most recent database requests to help answer the user's question",
+    parameters={
+        "type": "object",
+        "properties": {
+  },
+},
+)
+Adicione a nova função ao objeto sql_query_tool.
+sql_query_tool = Tool(
+    function_declarations=[
+        sql_query_func,
+        list_datasets_func,
+        List_jobs_func,  # add this new function
+        list_tables_func,
+        get_table_func,
+    ],
+)
+Para adicionar código para executar a chamada de API da nova função:
+No arquivo de código sql-talk-app/app.py, adicione uma nova cláusula if ao loop while function_calling_in_process:.
+if response.function_call.name == "list_datasets":
+    ...
+
+# add this if clause for list_jobs function
+if response.function_call.name == "list_jobs":
+    api_response = client.list_jobs(max_results=10)  # API request(s)
+    api_response = str([job.job_id for job in api_response])
+    api_requests_and_responses.append(
+      [response.function_call.name,params, api_response])
+Outros recursos
+Para mais informações sobre o projeto de consulta SQL, consulte o repositório de código e confira a postagem do blog da Comunidade do Google Cloud sobre o projeto SQL Talk. Se você precisar de ajuda para criar o aplicativo ou quiser colaborar com outros desenvolvedores, confira o servidor Google Developers Community Discord e o fórum de IA/ML do Google Cloud. Para conferir mais projetos do Build with Google AI, acesse a playlist de vídeos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

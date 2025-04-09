@@ -1,0 +1,142 @@
+URL: https://ai.google.dev/gemini-api/docs/billing
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Faturamento
+Nesta página
+Sobre o faturamento
+Por que usar o nível pago?
+Cloud Billing
+Ativar faturamento
+Monitorar o uso
+Perguntas frequentes
+Por que estou recebendo uma cobrança?
+Onde posso conferir minha cota?
+Este guia apresenta uma visão geral das diferentes opções de faturamento da API Gemini, explica como ativar o faturamento e monitorar o uso e oferece respostas a perguntas frequentes sobre o faturamento.
+Fazer upgrade para o nível pago da API Gemini
+Sobre o faturamento
+O faturamento da API Gemini é baseado em dois níveis de preço: sem custo financeiro (ou free) e pagamento por uso (ou paid). Os preços e os limites de taxa são diferentes entre esses níveis e também variam de acordo com o modelo. Confira as páginas limites de taxa e preços para mais informações. Para um detalhamento dos recursos de cada modelo, consulte a página Modelos do Gemini.
+Como solicitar um upgrade
+A API Gemini usa o Cloud Billing para todos os serviços de faturamento. Para fazer a transição do nível sem custo financeiro para o pago, primeiro é necessário ativar o faturamento do Cloud no seu projeto do Google Cloud.
+Quando seu projeto atende aos critérios especificados, ele se qualifica para um upgrade para o próximo nível. Para solicitar um upgrade, siga estas etapas:
+Acesse a página Chaves de API do AI Studio.
+Encontre o projeto que você quer atualizar e clique em Fazer upgrade.
+O sistema vai verificar automaticamente a qualificação do seu projeto. Esse processo leva alguns segundos.
+Se o projeto atender a todos os requisitos, ele será atualizado instantaneamente para o próximo nível.
+Por que usar o nível pago?
+Quando você ativa o faturamento e usa o nível pago, tem limites de taxa mais altos, e seus comandos e respostas não são usados para melhorar os produtos do Google. Para mais informações sobre o uso de dados para serviços pagos, consulte os termos de serviço.
+Cloud Billing
+A API Gemini usa o Cloud Billing para serviços de faturamento. Para usar o nível pago, configure o faturamento do Cloud no seu projeto. Depois de ativar o Cloud Billing, você pode usar as ferramentas do Cloud Billing para acompanhar os gastos, entender os custos, fazer pagamentos e acessar o suporte do Cloud Billing.
+Ativar faturamento
+É possível ativar o faturamento do Cloud a partir do Google AI Studio:
+Abra o Google AI Studio.
+Na parte de baixo da barra lateral esquerda, selecione Configurações > Informações do plano.
+Clique em Configurar faturamento para o projeto escolhido e ative o Cloud Billing.
+Monitorar o uso
+Depois de ativar o Cloud Billing, você pode monitorar o uso da API Gemini no console do Google Cloud. O nome do serviço da API é generativelanguage.googleapis.com, e no console, a API Gemini também é chamada de API Linguagem Generativa.
+Para saber mais, consulte a documentação do Google Cloud sobre como monitorar o uso da API.
+Perguntas frequentes
+Esta seção contém respostas para perguntas frequentes.
+Por que estou recebendo uma cobrança?
+O preço da API Gemini é baseado no seguinte:
+Contagem de tokens de entrada
+Contagem de tokens de saída
+Contagem de tokens em cache
+Duração do armazenamento de tokens em cache
+Para mais informações sobre preços, consulte a página de preços.
+Onde posso conferir minha cota?
+É possível conferir a cota e os limites do sistema no console do Google Cloud.
+Como solicitar mais cota?
+Para solicitar mais cota, siga as instruções em Como solicitar um upgrade.
+Posso usar a API Gemini sem custo financeiro no EEE (incluindo a UE), no Reino Unido e na Suíça?
+Sim, disponibilizamos o nível sem custo financeiro e o pago em várias regiões.
+Se eu configurar o faturamento com a API Gemini, vou receber uma cobrança pelo uso do Google AI Studio?
+Não, o uso do Google AI Studio continua sem custo financeiro, mesmo que você configure o faturamento em todas as regiões com suporte.
+Posso usar 1 milhão de tokens no nível sem custo financeiro?
+O nível sem custo financeiro da API Gemini varia de acordo com o modelo selecionado. Por enquanto, é possível testar a janela de contexto com 1 milhão de tokens das seguintes maneiras:
+No Google AI Studio
+Com planos de pagamento por uso
+Com planos sem cobrança para alguns modelos
+Consulte os limites de taxa sem custo por modelo na página de limites de taxa.
+Como posso calcular o número de tokens que estou usando?
+Use o método GenerativeModel.count_tokens para contar o número de tokens. Consulte o guia de tokens para saber mais sobre o assunto.
+Posso usar meus créditos do Google Cloud com a API Gemini?
+Sim, os créditos do Google Cloud podem ser usados para o uso da API Gemini.
+Como o faturamento é processado?
+O faturamento da API Gemini é processado pelo sistema do Cloud Billing.
+Vou receber cobranças por solicitações com falha?
+Se a solicitação falhar com um erro 400 ou 500, não haverá cobrança pelos tokens usados. No entanto, a solicitação ainda vai contar para sua cota.
+Há cobrança pelo ajuste dos modelos?
+O ajuste de modelo é sem custo financeiro, mas a inferência em modelos ajustados é cobrada na mesma taxa dos modelos básicos.
+O GetTokens é cobrado?
+As solicitações à API GetTokens não são faturadas e não são contabilizadas na cota de inferência.
+Como meus dados do Google AI Studio são processados se eu tiver uma conta de API paga?
+Consulte os termos para saber como os dados são processados quando o faturamento do Cloud está ativado. Consulte "Como o Google usa seus dados" em "Serviços pagos". Os comandos do Google AI Studio são tratados sob os mesmos termos de "Serviços pagos", desde que pelo menos um projeto de API tenha o faturamento ativado. Você pode validar isso na página da chave da API Gemini se houver projetos marcados como "Pago" em "Plano".
+Onde posso receber ajuda com o faturamento?
+Para receber ajuda com o faturamento, consulte Receber suporte do Cloud Billing.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

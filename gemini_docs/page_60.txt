@@ -1,0 +1,194 @@
+URL: https://ai.google.dev/gemini-api/tutorials/docs-agent
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Aplicativo de chat
+Assistente de código
+Gerador de código do Flutter
+Pesquisa de conteúdo
+Agente de exploração de dados
+Assistente de redação
+Revisor do Apresentações Google
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Crie uma pesquisa de conteúdo de IA com o agente do Documentos
+Nesta página
+Visão geral
+Configurar o projeto
+Instalar os pré-requisitos
+Defina as variáveis de ambiente
+Clonar e configurar o projeto
+Preparar o conteúdo
+Usar a documentação do Flutter para testes
+Processar conteúdo
+A pesquisa de informações é um dos usos mais comuns de modelos generativos de inteligência artificial (IA). Criar uma interface de pesquisa de conversação para seu conteúdo usando a IA permite que os usuários façam perguntas específicas e recebam respostas diretas.
+Observação: este exemplo foi atualizado para uso com a API Gemini.
+Neste tutorial, mostramos como criar uma interface de pesquisa de conversação com tecnologia de IA para seu conteúdo. Ele é baseado no Docs Agent, um projeto de código aberto que usa a API Google Gemini para criar uma interface de pesquisa conversacional, sem treinar um novo modelo de IA ou fazer ajustes com modelos Gemini. Isso significa que você pode criar esse recurso de pesquisa rapidamente e usá-lo para conjuntos de conteúdo pequenos e grandes.
+Para conferir uma visão geral em vídeo do projeto e saber como ampliá-lo, incluindo insights dos criadores, acesse: Pesquisa de conteúdo de IA | Build with Google AI. Caso contrário, você pode começar a estender o projeto seguindo as instruções abaixo.
+Visão geral
+O projeto do agente do app Documentos oferece uma interface de pesquisa de conversação para um conjunto de conteúdo específico, com suporte da API Google Gemini e dos modelos generativos. Os usuários podem fazer uma pergunta detalhada em um estilo de conversa e receber uma resposta detalhada com base em um conjunto de conteúdo específico. Nos bastidores, o agente de documentos pega a pergunta e pesquisa em um banco de dados vetorial do conteúdo, além de criar uma instrução detalhada para o modelo generativo, incluindo fragmentos de texto relevantes. O modelo generativo gera uma resposta para a pergunta, e o agente do Documentos a formata e a apresenta ao usuário.
+Figura 1. Diagrama funcional do app de projeto do Docs Agent.
+A chave para que o Docs Agent possa responder a perguntas sobre seu conteúdo é a criação de um banco de dados vetorial desse conteúdo. Você separa seu conteúdo em partes lógicas de texto e gera um vetor para cada uma delas. Esses vetores são representações numéricas das informações em cada bloco e são gerados com uma função de incorporação de texto de IA dos modelos generativos do Google.
+Quando um usuário faz uma pergunta, o agente de documentos usa a mesma função de incorporação de texto para criar uma representação numérica dessa pergunta e usa esse valor para pesquisar no banco de dados vetorial e encontrar conteúdo relacionado. Ele pega os melhores resultados e adiciona essas informações a um comando para o modelo generativo. O modelo de IA usa a pergunta e as informações de contexto adicionais para gerar uma resposta.
+Configurar o projeto
+Estas instruções mostram como configurar o projeto do agente do Documentos para desenvolvimento e teste. As etapas gerais são instalar alguns pré-requisitos de software, definir algumas variáveis de ambiente, clonar o projeto do repositório de código e executar a instalação de configuração. O projeto de código usa o Python Poetry para gerenciar pacotes e o ambiente de execução do Python.
+Observação: você precisa de uma chave de API Google Gemini para executar o projeto, que pode ser encontrada na página API Google Gemini.
+Instalar os pré-requisitos
+O projeto do Docs Agent usa o Python 3 e o Python Poetry para gerenciar pacotes e executar o aplicativo. As instruções de instalação a seguir são para uma máquina host Linux.
+Para instalar o software necessário:
+Instale o Python 3 e o pacote de ambiente virtual venv para Python.
+sudo apt update
+sudo apt install git pip python3-venv
+Instale o Python Poetry para gerenciar dependências e empacotamentos do projeto.
+curl -sSL https://install.python-poetry.org | python3 -
+Você pode usar o Python Poetry para adicionar mais bibliotecas do Python se estender o projeto.
+Defina as variáveis de ambiente
+Defina algumas variáveis de ambiente necessárias para permitir a execução do projeto de código do agente do Documentos, incluindo uma chave da API Google Gemini e a configuração do Python Poetry. Talvez seja necessário adicionar essas variáveis ao arquivo $HOME/.bashrc se você estiver usando o Linux, para que elas sejam as configurações padrão das sessões do terminal.
+Atenção: trate a chave de API como uma senha e proteja-a adequadamente. Não incorpore sua chave em um código publicado publicamente.
+Para definir as variáveis de ambiente:
+Receba uma chave da API Gemini do Google e copie a string da chave.
+Defina a chave de API como uma variável de ambiente. Em hosts Linux, use o seguinte comando.
+export API_KEY=<YOUR_API_KEY_HERE>
+Resolva um problema conhecido do Python Poetry definindo o parâmetro PYTHON_KEYRING_BACKEND. Em hosts Linux, use o comando a seguir.
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
+Clonar e configurar o projeto
+Faça o download do código do projeto e use o comando de instalação do Poetry para fazer o download das dependências necessárias e configurar o projeto. Você precisa do software de controle de origem git para extrair o código-fonte do projeto. externo Para fazer o download e configurar o código do projeto:
+Clone o repositório do Git usando o comando abaixo.
+git clone https://github.com/google/generative-ai-docs
+Opcionalmente, configure seu repositório local do Git para usar o checkout esparso, para que você tenha apenas os arquivos do projeto do agente do Docs.
+cd generative-ai-docs/
+git sparse-checkout init --cone
+git sparse-checkout set examples/gemini/python/docs-agent/
+Mova para o diretório raiz do projeto docs-agent.
+cd examples/gemini/python/docs-agent/
+Execute o comando de instalação do Poetry para fazer o download das dependências e configurar o projeto:
+poetry install
+Preparar o conteúdo
+O projeto do Docs Agent foi projetado para funcionar com conteúdo de texto e inclui ferramentas específicas para trabalhar com sites que usam o Markdown como formato de origem. Se você estiver trabalhando com conteúdo do site, preserve (ou replique) a estrutura de diretórios do site servido para permitir que a tarefa de processamento de conteúdo mapeie e crie links para esse conteúdo.
+Dependendo do formato e dos detalhes do seu conteúdo, talvez seja necessário limpá-lo para remover informações não públicas, notas internas ou outras informações que você não quer que sejam pesquisáveis. Você precisa manter a formatação básica, como títulos e cabeçalhos, que ajudam a criar divisões lógicas de texto, ou blocos, na etapa de processamento de conteúdo.
+Para preparar o conteúdo para processamento:
+Crie um diretório para o conteúdo que você quer que o agente de IA pesquise.
+mkdir docs-agent/content/
+Copie o conteúdo para o diretório docs-agent/content/. Se o conteúdo for um site, preserve (ou replique) a estrutura de diretórios do site servido.
+Limpe ou edite o conteúdo conforme necessário para remover informações não públicas ou outras informações que você não quer incluir nas pesquisas.
+Usar a documentação do Flutter para testes
+Se você precisar de um conjunto de conteúdo para testar o Docs Agent, use os documentos para desenvolvedores do Flutter.
+Para acessar a documentação para desenvolvedores do Flutter:
+Vá para o diretório do conteúdo que você quer que o agente de IA pesquise.
+cd docs-agent/content/
+Clone os documentos do Flutter no diretório docs-agent/content/.
+git clone --recurse-submodules https://github.com/flutter/website.git
+Processar conteúdo
+Para que o agente de pesquisa pesquise conteúdo relacionado às perguntas dos usuários, é necessário criar um banco de dados de vetores que representem seu conteúdo. Os vetores são gerados usando uma função de modelo generativo de IA chamada incorporação de texto. Os embeddings de texto são representações numéricas do conteúdo textual. Eles aproximam o significado semântico do texto como um conjunto de números. Ter representações numéricas de informações permite que o sistema tome a pergunta de um usuário, aproxime o significado dela usando a mesma função de incorporação de texto e encontre informações relacionadas como um cálculo matemático, usando um algoritmo de vizinhos k-mais próximos (k-NN).
+Dividir o conteúdo de texto
+A quantidade de texto que um vetor de embedding de texto pode representar de forma eficaz é limitada. Esse projeto limita o texto representado em um vetor a 3.000 caracteres ou menos. Isso significa que você precisa dividir seu conteúdo em partes menores que esse limite. Esta seção descreve como usar um script fornecido com o projeto do agente do Documentos para dividir arquivos Markdown em blocos de texto menores. Para dicas sobre como trabalhar com outros formatos de conteúdo, consulte Processar outros formatos.
+Importante:os embeddings de texto têm como objetivo aproximar o significado. A divisão do texto do conteúdo em partes semi-aleatórias, como sempre que você atinge o limite de caracteres, geralmente faz com que o agente do Documentos produza respostas de qualidade inferior. Em vez disso, use a estrutura do conteúdo, incluindo títulos, títulos e parágrafos relacionados para dividir o texto do conteúdo.
+Observação: os comandos agent a seguir precisam ser executados no ambiente poetry shell.
+Para dividir o conteúdo no formato Markdown:
+Configure os parâmetros de entrada do script de processamento editando o arquivo docs-agent/config.yaml. Este exemplo é destinado a um subconjunto das documentações do Flutter:
+input:
+- path: "content/website/src/ui"
+  url_prefix: "https://docs.flutter.dev/ui"
+Salve as alterações neste arquivo de configuração.
+Navegue até o diretório do projeto docs-agent:
+cd docs-agent/
+Divida o conteúdo de origem do Markdown executando o comando agent chunk:
+agent chunk
+O script processa o conteúdo de entrada e cria arquivos de texto de saída no diretório docs-agent/data, dividindo o texto com base em títulos, cabeçalhos e parágrafos relacionados. O processamento pode levar algum tempo, dependendo do tamanho do conteúdo.
+Criar vetores de embedding de texto
+Depois de dividir o conteúdo em blocos significativos de tamanho adequado, é possível preencher o banco de dados vetorial com o conteúdo usando uma função de embedding de texto. O projeto do agente do Documentos usa o banco de dados de vetores Chroma para armazenar vetores de embedding de texto. Estas instruções abrangem como usar o script dos agentes do Documentos para preencher um banco de dados vetorial com seu conteúdo dividido.
+Observação: os comandos agent a seguir precisam ser executados no ambiente poetry shell.
+Para gerar embeddings de texto e preencher o banco de dados de vetores:
+Navegue até o diretório do projeto docs-agent:
+cd docs-agent/
+Preencha o banco de dados de vetor com seu conteúdo usando o comando agent populate:
+agent populate
+Esse script usa a API Google Gemini para gerar vetores de text embedding e salvar a saída no banco de dados de vetores. O processamento pode levar algum tempo, dependendo do tamanho do conteúdo.
+Processar outros formatos
+O projeto do agente de documentos foi criado para funcionar com conteúdo de sites no formato Markdown. Os autores do projeto criaram alguns scripts de conversão para gerar outros tipos de conteúdo no formato Markdown, incluindo Documentos Google, formato de documento portátil (PDF) e Gmail. Para mais informações sobre o uso desses conversores, consulte o diretório docs-agent/apps_script do repositório de código.
+Converter outros formatos de conteúdo
+Você pode usar outros formatos de conteúdo com o projeto, mas esses outros métodos precisam ser criados por você ou por outros membros da comunidade. Verifique o repositório de código Issues e Pull Requests para conferir se alguém está criando soluções semelhantes.
+O código principal que você precisa criar para oferecer suporte a outros formatos de conteúdo é um script de divisão, como o files_to_plain_text.py. Crie um script ou programa que gere uma saída semelhante a este script. A saída de texto final precisa ter formatação mínima e informações desnecessárias. Se você estiver usando formatos de conteúdo como HTML ou JSON, remova o máximo possível da formatação não informativa (tags, scripts, CSS), para que ela não distorça os valores das incorporações de texto geradas a partir deles.
+Depois de criar um script de divisão para o formato de conteúdo, será possível executar o script populate_vector_database.py para preencher o banco de dados de vetores. Para mais informações sobre o processamento de arquivos para uso com o Docs Agent, consulte o Preprocess Readme do Docs Agent.
+Testar o app
+Quando você terminar de preencher o banco de dados de vetores, o projeto estará pronto para testes. O projeto fornece uma função de empacotamento para executar o projeto localmente.
+Observação: os comandos agent a seguir precisam ser executados no ambiente poetry shell.
+Para executar e testar a interface da Web do projeto:
+Navegue até o diretório do projeto docs-agent:
+cd docs-agent/
+Execute o script de inicialização do aplicativo da Web:
+agent chatbot
+Usando o navegador da Web, navegue até o endereço da Web do URL mostrado na saída do script de inicialização e teste o aplicativo.
+* Running on http://your-hostname-here:5000
+Observação: é possível personalizar ainda mais o aplicativo, incluindo o nome do produto que aparece na interface do usuário de pesquisa, atualizando o arquivo docs-agent/config.yaml. Para mais informações, consulte o readme do agente de documentos.
+Opções de implementação
+A API Gemini oferece ferramentas de programação que podem substituir componentes da implementação do agente de documentos, especificamente: variante de modelo Gemini de recuperação semântica e resposta a perguntas atribuídas (AQA, na sigla em inglês). É possível usar o recurso de recuperação semântica da API Gemini para substituir o banco de dados de vetores separado. O recurso de recuperação semântica permite gerar embeddings para seu conteúdo e armazená-lo. O modelo AQA Gemini é ajustado para responder a perguntas com o material de origem fornecido em um comando. Você usa a recuperação semântica com o modelo AQA para responder a perguntas sobre seu conteúdo na API Gemini.
+O agente de documentos inclui opções de configuração para usar o recurso da API Semantic Retrieval, o modelo AQA Gemini ou ambos. Para mais informações, consulte o README do agente de documentos.
+Outros recursos
+Para mais informações sobre o projeto do agente do Google Docs, consulte o repositório de código. Se você precisar de ajuda para criar o aplicativo ou estiver procurando colaboradores de desenvolvimento, confira o servidor do Google Developers Community Discord.
+Aplicativos de produção
+Se você planeja implantar o Docs Agent para um grande público, saiba que o uso da API Google Gemini pode estar sujeito a limitação de taxa e outras restrições de uso. Se você está pensando em criar um aplicativo de produção com a API Gemini, como o Docs Agent, confira os serviços da Vertex AI do Google Cloud para aumentar a escalabilidade e a confiabilidade do seu app.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-26 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

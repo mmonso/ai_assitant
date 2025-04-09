@@ -1,0 +1,37 @@
+URL: https://ai.google.dev/showcase
+
+Mais
+/
+Português – Brasil
+Fazer login
+Confira os vencedores da competição para desenvolvedores da API Gemini. Ver
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Gemini Showcase
+Conheça apps reais que aproveitam os recursos multimodais mais recentes e as janelas de contexto longas.
+Apps criados com a API Gemini
+Vite Vere
+Confira como o app para dispositivos móveis usa o Gemini para ajudar pessoas com deficiências cognitivas a terem mais autonomia.
+MODELO
+Gemini 1.5 Flash
+Mais histórias
+Vôlei
+O Volley cria um protótipo de jogo com foco em áudio com o Gemini 2.0 Flash e a API Multimodal Live
+Tldraw
+Prototipagem de uma nova experiência de computação de linguagem natural em uma tela infinita com o Gemini 2.0
+Salas
+Desbloqueie interações mais ricas com os recursos de texto e áudio do Gemini 2.0
+Toonsutra
+Aproveitar as capacidades de tradução multilíngue contextual do Gemini 2.0 para tornar os quadrinhos e webtoons acessíveis ao público da Índia em idiomas regionais.
+Viggle
+Experimentar o Gemini 2.0 para criar personagens virtuais e narração de áudio para uma plataforma de vídeo com tecnologia de IA
+Subcamada
+Saiba como a estrutura de agente de IA baseada em Ruby ajuda as equipes de desenvolvimento a aumentar a produtividade com o poder dos modelos Gemini.
+Sourcegraph
+Saiba como a Cody AI teve grandes ganhos de qualidade usando a janela de contexto enorme do Gemini.
+AgentOps
+Saiba como o AgentOps oferece uma observabilidade de agentes com LLM econômica e eficiente para empresas que usam a API Gemini.
+Comece a criar com a API Gemini
+Termos de Serviço
+Privacidade
+Português – Brasil

@@ -2,15 +2,21 @@ import os
 from werkzeug.utils import secure_filename
 import mimetypes
 import logging
+import asyncio # Adicionado para MCP
+import json    # Adicionado para processar JSON da SerpApi
 from flask import Blueprint, request, jsonify, session
 import google.generativeai as genai
-from google.generativeai.types import File # Import File type for type hinting/checking
+# Remover 'Part' e 'Content' da importação direta, pois causam erro. Usar dicts onde necessário.
+from google.generativeai.types import File, Tool, FunctionDeclaration
 from google.generativeai.types import GenerationConfig # Import GenerationConfig
+from mcp import ClientSession, StdioServerParameters # Adicionado para MCP
+from mcp.client.stdio import stdio_client           # Adicionado para MCP
 import db_utils
 import config
 from db_utils import (
     DatabaseError, DatabaseOperationalError,
-    ConversationNotFoundError, PermissionDeniedError
+    ConversationNotFoundError, PermissionDeniedError,
+    FolderNotFoundError, DuplicateFolderError # Import new exceptions
 )
 import time
 import base64 # Import base64 for image data encoding
@@ -20,7 +26,19 @@ log = logging.getLogger(__name__)
 # Define the blueprint
 chat_api_bp = Blueprint('chat_api', __name__, url_prefix='/api/chat')
 
-# --- Helper Functions ---
+# --- Constantes e Configurações MCP ---
+# Caminho para o script do servidor MCP (ajuste conforme necessário)
+# Usar raw string para evitar problemas com barras invertidas no Windows
+SERPAPI_SERVER_SCRIPT_PATH = r"C:\mcp_servers\serpapi-server\build\index.js"
+
+# Parâmetros para conectar ao servidor MCP via stdio
+mcp_server_params = StdioServerParameters(
+    command="node",
+    args=[SERPAPI_SERVER_SCRIPT_PATH],
+    # env={} # Não precisamos passar env aqui, pois o servidor lê do .env ou foi passado via mcp_settings.json
+)
+
+# --- Helper Functions (Non-Route Specific) ---
 
 def _allowed_file(filename):
     """Checks if the file extension is allowed based on config."""
@@ -82,20 +100,10 @@ def _prepare_message_and_model_args(user_id, original_user_message):
     model_args = {}
     message_to_send = original_user_message
 
-    if user_details:
-        system_prompt_raw = user_details.get('system_prompt')
-        if system_prompt_raw:
-            system_instruction = system_prompt_raw.strip()
-            if system_instruction:
-                model_args['system_instruction'] = system_instruction
-                if message_to_send:
-                    message_to_send = f"IMPORTANT SYSTEM PROMPT (Follow these instructions carefully):\n{system_instruction}\n\nUSER MESSAGE:\n{original_user_message}"
+    # Remover completamente o prompt do sistema para testar
+    model_args['system_instruction'] = None
+    message_to_send = original_user_message # Usar apenas a mensagem do usuário
 
-        user_info_raw = user_details.get('user_info')
-        if user_info_raw and user_info_raw.strip():
-            formatted_user_info = f"\n\nADDITIONAL USER INFORMATION (Provided by User):\n{user_info_raw.strip()}\n"
-            if message_to_send:
-                 message_to_send = f"{formatted_user_info}\n{message_to_send}"
 
     return message_to_send, model_args
 
@@ -108,7 +116,7 @@ def _get_or_create_conversation_context(user_id):
 
     if not conversation_id:
         try:
-            conversation_id = db_utils.create_conversation(user_id)
+            conversation_id = db_utils.create_conversation(user_id, folder_id=None)
             session['current_conversation_id'] = conversation_id
         except (DatabaseOperationalError, DatabaseError) as e:
             log.error(f"Failed to create new conversation for user {user_id}: {e}")
@@ -133,119 +141,35 @@ def _get_or_create_conversation_context(user_id):
     return conversation_id, is_new_conversation, history_raw, None
 
 
-def _format_history_for_gemini(history_raw):
-    """Formats conversation history for the Gemini API, including file references."""
-    gemini_history = []
-    for msg in history_raw:
-        role = 'model' if msg['role'] == 'assistant' else msg['role']
-        parts = []
-        if msg.get('content'):
-            parts.append({'text': msg['content']})
-
-        google_file_name = msg.get('google_file_name')
-        if google_file_name:
-            try:
-                retrieved_file = genai.get_file(name=google_file_name)
-                parts.append(retrieved_file)
-            except Exception as e:
-                log.warning(f"Could not retrieve file '{google_file_name}' from history (likely expired/deleted): {e}")
-                parts.append({'text': f"[Previous file '{msg.get('file_display_name', 'file')}' is no longer available]"})
-
-        if parts:
-            gemini_history.append({'role': role, 'parts': parts})
-        else:
-             log.warning(f"Skipping message ID {msg.get('message_id')} in history reconstruction as it had no text and its file ('{google_file_name}') could not be retrieved.")
-
-    return gemini_history
-
-
-# MODIFIED Helper: Call Gemini API (adds generation config, processes image response)
-def _call_gemini_api(parts_to_send, gemini_history, model_args):
-    """Calls the Gemini API using the session's selected model, requesting image modality, and processes response."""
-    # Use the default model defined in config
-    model_name = config.GEMINI_MODEL_NAME
-    log.debug(f"Using default model: {model_name}")
-    response_text = ""
-    response_image_data = None # To store base64 image data if generated
-
-    # Define generation config to request image output
-    # Initialize GenerationConfig without the unsupported 'response_modalities'
-    generation_config = GenerationConfig(
-        # Add other valid config like temperature, top_p etc. here if needed
-    )
+# MODIFIED Helper: Save messages (agora salva apenas uma mensagem por vez)
+def _save_single_message(conversation_id, role, content=None, google_file_object=None):
+    """Saves a single message (user or assistant) to the database."""
+    if not content and not google_file_object:
+        log.warning(f"Tentativa de salvar mensagem vazia para conv {conversation_id}, role {role}. Pulando.")
+        return None, "Cannot save empty message"
 
     try:
-        log.info(f"Attempting to initialize GenerativeModel with model_name='{model_name}', args={model_args}")
-        model = genai.GenerativeModel(
-            model_name,
-            **model_args,
-            generation_config=generation_config # Apply config here if needed by model init
-            )
-        log.info(f"Model initialized. Starting chat session with history length: {len(gemini_history)}")
-        chat_session = model.start_chat(history=gemini_history)
-        log.info(f"Chat session started. Sending parts to Gemini: {[(type(p), p.name if hasattr(p, 'name') else p) for p in parts_to_send]}")
-
-        # Apply generation config to the send_message call
-        response = chat_session.send_message(
-            parts_to_send
-            # generation_config=generation_config # Apply config during model init instead
-            )
-
-        # Process response parts
-        for part in response.candidates[0].content.parts:
-            if part.text:
-                response_text += part.text + "\n" # Concatenate text parts
-            elif part.inline_data:
-                # Assuming only one image part for now
-                image_data = part.inline_data.data
-                mime_type = part.inline_data.mime_type
-                # Encode image data as base64 string with data URI prefix
-                response_image_data = f"data:{mime_type};base64,{base64.b64encode(image_data).decode('utf-8')}"
-                log.info(f"Received image data part (MIME: {mime_type}, Size: {len(image_data)} bytes)")
-
-        return response_text.strip(), response_image_data, None # Return text, image_data, no error
-
-    except Exception as e:
-        # Log the specific exception type and message
-        log.error(f"Error calling Gemini API ({type(e).__name__}): {e}", exc_info=True)
-        # Return a slightly more specific error message if possible, otherwise generic
-        error_message = f"Error communicating with AI model ({type(e).__name__}). Check server logs for details."
-        return None, None, error_message
-
-
-# MODIFIED Helper: Save messages (no change needed here, already handles file refs)
-def _save_chat_messages(conversation_id, original_user_message, bot_response, google_file_object=None):
-    """Saves user and assistant messages to the database, including file reference if provided."""
-    # Note: Bot response currently only saves text. If bot generates image, it's not saved to DB history.
-    try:
-        user_msg_id = None
-        if original_user_message or google_file_object:
-            user_msg_id = db_utils.add_message(
-                conversation_id=conversation_id,
-                role='user',
-                content=original_user_message or "",
-                google_file_name=google_file_object.name if google_file_object else None,
-                file_display_name=google_file_object.display_name if google_file_object else None,
-                file_mime_type=google_file_object.mime_type if google_file_object else None
-            )
-
-        assistant_msg_id = db_utils.add_message(
+        message_id = db_utils.add_message(
             conversation_id=conversation_id,
-            role='assistant',
-            content=bot_response # Only saving text part of bot response
+            role=role,
+            content=content or "",
+            google_file_name=google_file_object.name if google_file_object else None,
+            file_display_name=google_file_object.display_name if google_file_object else None,
+            file_mime_type=google_file_object.mime_type if google_file_object else None
         )
-        return user_msg_id, assistant_msg_id, None
+        return message_id, None
     except (DatabaseOperationalError, DatabaseError) as e:
-        return None, None, "Failed to save messages to database"
+        log.error(f"Erro DB ao salvar msg ({role}) para conv {conversation_id}: {e}", exc_info=True)
+        return None, f"Failed to save {role} message to database"
     except Exception as e:
-        log.error(f"Unexpected error saving messages for conversation {conversation_id}: {e}", exc_info=True)
-        return None, None, "Unexpected error saving messages"
+        log.error(f"Erro inesperado ao salvar msg ({role}) para conv {conversation_id}: {e}", exc_info=True)
+        return None, f"Unexpected error saving {role} message"
 
 
 def _handle_new_conversation_title(is_new_conversation, conversation_id, user_id, user_msg_id, title_source_message):
     """Generates and saves title for a new conversation based on provided text."""
     title = None
-    if is_new_conversation and title_source_message:
+    if is_new_conversation and title_source_message and user_msg_id: # Precisa do user_msg_id
         try:
             title = _generate_title_from_message(title_source_message)
             success = db_utils.set_conversation_title(conversation_id, user_id, title)
@@ -255,7 +179,77 @@ def _handle_new_conversation_title(is_new_conversation, conversation_id, user_id
              log.error(f"Database error setting title for new conversation {conversation_id}: {e}", exc_info=True)
         except Exception as e:
             log.error(f"Unexpected error generating/saving title for new conversation {conversation_id}: {e}", exc_info=True)
+    elif is_new_conversation and not user_msg_id:
+         log.warning(f"Cannot generate title for new conversation {conversation_id} because user message ID is missing.")
     return title
+
+# --- Funções Auxiliares MCP ---
+
+def _convert_mcp_tool_to_gemini(mcp_tool) -> Tool | None:
+    """Converte um schema de ferramenta MCP para o formato Gemini Tool."""
+    try:
+        properties = mcp_tool.inputSchema.get('properties', {})
+        cleaned_properties = {k: v for k, v in properties.items() if k not in ['$schema', 'additionalProperties']}
+
+        parameters = {
+            'type': mcp_tool.inputSchema.get('type', 'object'),
+            'properties': cleaned_properties,
+            'required': mcp_tool.inputSchema.get('required', [])
+        }
+
+        declaration = FunctionDeclaration(
+            name=mcp_tool.name,
+            description=mcp_tool.description or "",
+            parameters=parameters
+        )
+        return Tool(function_declarations=[declaration])
+    except Exception as e:
+        log.error(f"Erro ao converter ferramenta MCP '{mcp_tool.name}': {e}", exc_info=True)
+        return None
+
+def _extract_serpapi_summary(json_string: str) -> str:
+    """Extrai um resumo útil da resposta JSON (string) da SerpApi."""
+    try:
+        data = json.loads(json_string)
+        summary_parts = []
+
+        # Prioridade: Answer Box
+        if data.get('answer_box'):
+            box = data['answer_box']
+            if box.get('title'): summary_parts.append(f"**{box['title']}**")
+            if box.get('snippet'): summary_parts.append(box['snippet'])
+            elif box.get('answer'): summary_parts.append(box['answer'])
+            if box.get('result'): summary_parts.append(box['result'])
+            if box.get('link'): summary_parts.append(f"(Fonte: {box['link']})")
+            if summary_parts: return "\n".join(summary_parts).strip()
+
+        # Segunda Prioridade: Knowledge Graph
+        if data.get('knowledge_graph'):
+            kg = data['knowledge_graph']
+            if kg.get('title'): summary_parts.append(f"**{kg['title']}**")
+            if kg.get('description'): summary_parts.append(kg['description'])
+            if kg.get('source', {}).get('link'): summary_parts.append(f"(Fonte: {kg['source']['link']})")
+            if summary_parts: return "\n".join(summary_parts).strip()
+
+        # Terceira Prioridade: Top Organic Result Snippet
+        if data.get('organic_results') and len(data['organic_results']) > 0:
+            top_result = data['organic_results'][0]
+            if top_result.get('snippet'):
+                 summary_parts.append(f"'{top_result['snippet']}'")
+                 if top_result.get('link'): summary_parts.append(f"(Fonte: {top_result['link']})")
+                 if summary_parts: return "\n".join(summary_parts).strip()
+
+        # Fallback: JSON bruto (limitado)
+        log.info("Não foi possível extrair resumo estruturado da SerpApi, retornando JSON bruto.")
+        return f"Resultado da busca (JSON): {json_string[:1000]}{'...' if len(json_string) > 1000 else ''}"
+
+    except json.JSONDecodeError:
+        log.warning("Não foi possível parsear a resposta JSON da SerpApi.")
+        return f"A busca retornou dados não-JSON: {json_string[:500]}{'...' if len(json_string) > 500 else ''}"
+    except Exception as e:
+        log.error(f"Erro ao extrair resumo da SerpApi: {e}", exc_info=True)
+        return "Erro ao processar os resultados da busca na web."
+
 
 # --- API Routes ---
 
@@ -291,13 +285,44 @@ def get_conversation_list():
     if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
     user_id = session['user_id']
     try:
-        conversations = db_utils.get_conversations(user_id)
-        return jsonify({"conversations": conversations})
+        conversations_raw = db_utils.get_conversations(user_id)
+        folders_raw = db_utils.get_folders(user_id)
+
+        conversations = []
+        for conv in conversations_raw:
+            conv_dict = dict(conv)
+            if 'created_at' in conv_dict and conv_dict['created_at']:
+                 try:
+                     if not isinstance(conv_dict['created_at'], str):
+                         conv_dict['created_at'] = conv_dict['created_at'].isoformat()
+                 except AttributeError:
+                     log.warning(f"Could not format created_at for conversation {conv_dict.get('conversation_id')}: {conv_dict.get('created_at')}")
+                     conv_dict['created_at'] = str(conv_dict['created_at'])
+            conversations.append(conv_dict)
+
+        folders = []
+        for folder in folders_raw:
+            folder_dict = dict(folder)
+            if 'created_at' in folder_dict and folder_dict['created_at']:
+                 try:
+                     if not isinstance(folder_dict['created_at'], str):
+                         folder_dict['created_at'] = folder_dict['created_at'].isoformat()
+                 except AttributeError:
+                     log.warning(f"Could not format created_at for folder {folder_dict.get('folder_id')}: {folder_dict.get('created_at')}")
+                     folder_dict['created_at'] = str(folder_dict['created_at'])
+            folders.append(folder_dict)
+
+        response_data = {
+            "conversations": conversations,
+            "folders": folders
+        }
+        return jsonify(response_data)
     except (DatabaseOperationalError, DatabaseError) as e:
-        return jsonify({"error": "Failed to retrieve conversation list"}), 500
+        log.error(f"Database error fetching conversation/folder list for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "Failed to retrieve conversation list or folders"}), 500
     except Exception as e:
-        log.error(f"Unexpected error fetching conversation list for user {user_id}: {e}", exc_info=True)
-        return jsonify({"error": "An unexpected error occurred"}), 500
+        log.exception(f"UNEXPECTED error in /list route for user {user_id}: {e}")
+        return jsonify({"error": "An unexpected server error occurred while fetching data."}), 500
 
 @chat_api_bp.route('/rename/<int:conversation_id>', methods=['PUT'])
 def rename_conversation(conversation_id):
@@ -355,6 +380,102 @@ def delete_conversation(conversation_id):
         return jsonify({"error": "An unexpected internal error occurred"}), 500
 
 
+# --- Folder API Routes ---
+
+@chat_api_bp.route('/folders', methods=['POST'])
+def create_folder():
+    if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json: return jsonify({"error": "Request must be JSON"}), 400
+    data = request.get_json()
+    name = data.get('name')
+    if not name or len(name.strip()) == 0: return jsonify({"error": "Folder name cannot be empty"}), 400
+    user_id = session['user_id']
+    try:
+        folder_id = db_utils.create_folder(user_id, name.strip())
+        return jsonify({"message": "Folder created successfully", "folder_id": folder_id, "name": name.strip()}), 201
+    except DuplicateFolderError as e:
+        return jsonify({"error": str(e)}), 409 # Conflict
+    except (DatabaseOperationalError, DatabaseError) as e:
+        return jsonify({"error": "An internal error occurred creating the folder"}), 500
+    except Exception as e:
+        log.exception(f"UNEXPECTED error in POST /folders route for user {user_id}: {e}")
+        return jsonify({"error": "An unexpected server error occurred while creating the folder."}), 500
+
+@chat_api_bp.route('/folders', methods=['GET'])
+def get_folders():
+    if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
+    user_id = session['user_id']
+    try:
+        folders = db_utils.get_folders(user_id)
+        return jsonify({"folders": folders})
+    except (DatabaseOperationalError, DatabaseError) as e:
+        return jsonify({"error": "Failed to retrieve folder list"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error fetching folder list for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+@chat_api_bp.route('/folders/<int:folder_id>', methods=['PUT'])
+def rename_folder(folder_id):
+    if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json: return jsonify({"error": "Request must be JSON"}), 400
+    data = request.get_json()
+    new_name = data.get('name')
+    if not new_name or len(new_name.strip()) == 0: return jsonify({"error": "New folder name cannot be empty"}), 400
+    user_id = session['user_id']
+    try:
+        success = db_utils.update_folder_name(folder_id, user_id, new_name.strip())
+        if success: return jsonify({"message": "Folder renamed successfully"}), 200
+        else: return jsonify({"error": "Folder not found or permission denied"}), 404
+    except FolderNotFoundError: return jsonify({"error": "Folder not found"}), 404
+    except PermissionDeniedError: return jsonify({"error": "Permission denied"}), 403
+    except DuplicateFolderError as e: return jsonify({"error": str(e)}), 409
+    except (DatabaseOperationalError, DatabaseError) as e: return jsonify({"error": "An internal error occurred during rename"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error renaming folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+@chat_api_bp.route('/folders/<int:folder_id>', methods=['DELETE'])
+def delete_folder(folder_id):
+    if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
+    user_id = session['user_id']
+    try:
+        db_utils.delete_folder(folder_id, user_id)
+        return jsonify({"message": "Folder deleted successfully"}), 200
+    except FolderNotFoundError: return jsonify({"error": "Folder not found"}), 404
+    except PermissionDeniedError: return jsonify({"error": "Permission denied"}), 403
+    except (DatabaseOperationalError, DatabaseError) as e: return jsonify({"error": "An internal error occurred during deletion"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error deleting folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected internal error occurred"}), 500
+
+@chat_api_bp.route('/conversations/<int:conversation_id>/move', methods=['PUT'])
+def move_conversation(conversation_id):
+    if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
+    if not request.is_json: return jsonify({"error": "Request must be JSON"}), 400
+    data = request.get_json()
+    folder_id = data.get('folder_id')
+    if folder_id is not None:
+        try:
+            folder_id = int(folder_id)
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid 'folder_id' format"}), 400
+
+    user_id = session['user_id']
+    try:
+        success = db_utils.move_conversation_to_folder(conversation_id, user_id, folder_id)
+        if success: return jsonify({"message": "Conversation moved successfully"}), 200
+        else: return jsonify({"error": "Failed to move conversation"}), 500
+    except ConversationNotFoundError: return jsonify({"error": "Conversation not found"}), 404
+    except FolderNotFoundError: return jsonify({"error": "Target folder not found"}), 404
+    except PermissionDeniedError: return jsonify({"error": "Permission denied"}), 403
+    except (DatabaseOperationalError, DatabaseError) as e: return jsonify({"error": "An internal error occurred during move"}), 500
+    except Exception as e:
+        log.error(f"Unexpected error moving conversation {conversation_id} to folder {folder_id} for user {user_id}: {e}", exc_info=True)
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+
+# --- Message Routes ---
+
 @chat_api_bp.route('/messages', methods=['GET'])
 def get_conversation_messages():
     """Fetches messages for a specific conversation, including file info."""
@@ -373,103 +494,305 @@ def get_conversation_messages():
         return jsonify({"error": "An unexpected error occurred"}), 500
 
 
-# MODIFIED Route: /send (Handles image generation response)
+# --- Rota de Chat Principal (com MCP e Function Calling) ---
 @chat_api_bp.route('/send', methods=['POST'])
-def chat():
-    """Handles chatbot requests, uploads files via Google File API, saves file refs, handles image generation."""
-    if 'user_id' not in session: return jsonify({"error": "Authentication required"}), 401
-    user_id = session['user_id']
-    if not request.form: return jsonify({"error": "Request must be form data"}), 400
+async def chat(): # Função agora é async
+    if 'user_id' not in session:
+        return jsonify({"error": "Authentication required"}), 401
 
-    original_user_message = request.form.get('message', '')
+    user_id = session['user_id']
+    original_user_message = request.form.get('message', '') # Garantir default ''
     uploaded_file_storage = request.files.get('file')
 
     if not original_user_message and not uploaded_file_storage:
         return jsonify({"error": "Missing 'message' or file in request"}), 400
 
+    # --- Variáveis para o fluxo ---
+    conversation_id = None
+    is_new_conversation = False
+    history_raw = []
     google_file_object = None
     local_filepath_to_remove = None
+    bot_response_text = "Desculpe, ocorreu um erro inesperado." # Default error
+    bot_response_image = None
+    final_title = None
+    user_msg_id = None
+    error_message = None
+    mcp_session_active = None # Para rastrear a sessão MCP
 
     try:
-        # 1. Process local file upload
+        # --- 1. Processar Upload (se houver) ---
         if uploaded_file_storage:
             local_filepath, mime_type, local_file_error = _process_uploaded_file(uploaded_file_storage)
             if local_file_error: return jsonify({"error": local_file_error}), 400
-            local_filepath_to_remove = local_filepath
+            local_filepath_to_remove = local_filepath # Marcar para remoção posterior
 
-            # 2. Upload to Google File API
             if local_filepath and mime_type:
                 google_file_object, google_upload_error = _upload_file_to_google(local_filepath, mime_type)
                 if google_upload_error: return jsonify({"error": google_upload_error}), 500
-                # Optional: Clean up local file
+                # Limpar arquivo local imediatamente após upload para Google bem-sucedido
                 try:
                     if local_filepath_to_remove and os.path.exists(local_filepath_to_remove):
                         log.info(f"Removing local temporary file: {local_filepath_to_remove}")
                         os.remove(local_filepath_to_remove)
-                        local_filepath_to_remove = None
+                        local_filepath_to_remove = None # Resetar após remoção
                 except OSError as e:
                     log.warning(f"Could not remove local file {local_filepath_to_remove} after successful Google upload: {e}")
+                    # Não resetar local_filepath_to_remove para tentar no finally
 
-        # 3. Prepare message text and model arguments
-        message_with_context, model_args = _prepare_message_and_model_args(user_id, original_user_message)
-
-        # 4. Get conversation context
+        # --- 2. Obter Contexto da Conversa ---
         conversation_id, is_new_conversation, history_raw, context_error = _get_or_create_conversation_context(user_id)
         if context_error:
-            status_code = 500 if "create" in context_error else 404
-            return jsonify({"error": context_error}), status_code
+             status_code = 500 if "create" in context_error else 404 # Ajustar status code
+             return jsonify({"error": context_error}), status_code
 
-        # 5. Format history
-        gemini_history = _format_history_for_gemini(history_raw)
+        # Formatar histórico para Gemini (lista de dicts representando Content)
+        gemini_history_contents = []
+        for msg in history_raw:
+             role = 'model' if msg['role'] == 'assistant' else msg['role']
+             # Usar dict para parts
+             parts = []
+             if msg.get('content'): parts.append({'text': msg['content']})
+             # TODO: Lidar com arquivos no histórico se necessário
+             if parts:
+                  # Usar dict em vez de objeto Content
+                  gemini_history_contents.append({'role': role, 'parts': parts})
 
-        # 6. Construct parts for current message
-        parts_to_send = []
-        if message_with_context: parts_to_send.append(message_with_context)
-        if google_file_object: parts_to_send.append(google_file_object)
-        if not parts_to_send: return jsonify({"error": "No content to send"}), 400
+        # --- 3. Preparar Mensagem e Argumentos do Modelo ---
+        message_base, model_args = _prepare_message_and_model_args(user_id, original_user_message)
 
-        # 7. Call the Gemini API (now returns text and optional image data)
-        bot_response_text, bot_response_image_data, api_error = _call_gemini_api(parts_to_send, gemini_history, model_args)
-        if api_error:
-            if google_file_object:
-                try: genai.delete_file(google_file_object.name)
-                except Exception as del_err: log.error(f"Failed to delete Google file {google_file_object.name} after API error: {del_err}")
-            return jsonify({"error": api_error}), 500
+        # --- 4. Conectar ao MCP e Obter Ferramentas ---
+        gemini_tools = []
+        async with stdio_client(mcp_server_params) as (read, write):
+            async with ClientSession(read, write) as mcp_session:
+                mcp_session_active = mcp_session # Guardar referência
+                await mcp_session.initialize()
+                log.info("Conectado ao servidor MCP.")
+                mcp_tools_response = await mcp_session.list_tools()
+                if mcp_tools_response and mcp_tools_response.tools:
+                    for mcp_tool in mcp_tools_response.tools:
+                        converted_tool = _convert_mcp_tool_to_gemini(mcp_tool)
+                        if converted_tool:
+                            gemini_tools.append(converted_tool)
+                            log.info(f"Ferramenta MCP '{mcp_tool.name}' preparada para Gemini.")
+                else:
+                    log.warning("Nenhuma ferramenta encontrada no servidor MCP.")
 
-        # 8. Save messages to the database
-        user_msg_id, assistant_msg_id, db_save_error = _save_chat_messages(
-            conversation_id, original_user_message, bot_response_text, google_file_object # Save only text part of bot response
-        )
-        if db_save_error:
-            if google_file_object:
-                try: genai.delete_file(google_file_object.name)
-                except Exception as del_err: log.error(f"Failed to delete Google file {google_file_object.name} after DB error: {del_err}")
-            return jsonify({"error": db_save_error}), 500
+                # --- 5. Preparar 'parts' e Configuração para Gemini ---
+                current_message_parts = []
+                if message_base:
+                    current_message_parts.append({'text': message_base}) # Usar dict
+                if google_file_object:
+                    # Enviar como texto placeholder por enquanto
+                    current_message_parts.append({'text': f"[Arquivo anexado: {google_file_object.display_name}]"}) # Usar dict
+                    log.warning("Anexo de arquivo via referência não totalmente implementado/testado.")
 
-        # 9. Handle title generation
-        title_source = original_user_message or (google_file_object.display_name if google_file_object else "File Upload")
-        title = _handle_new_conversation_title(is_new_conversation, conversation_id, user_id, user_msg_id, title_source)
+                if not current_message_parts:
+                     if google_file_object:
+                          current_message_parts.append({'text': f"Analise o arquivo: {google_file_object.display_name}"}) # Usar dict
+                     else:
+                          return jsonify({"error": "Conteúdo da mensagem vazio."}), 400
 
-        # 10. Prepare and return the response (including image data if present)
-        response_data = {"response": bot_response_text} # Always include text response
-        if bot_response_image_data:
-            response_data["image_data"] = bot_response_image_data # Add base64 image data if generated
+                # Usar dict em vez de objeto Content
+                current_content = {'role': "user", 'parts': current_message_parts}
+                contents_to_send = gemini_history_contents + [current_content]
 
-        if is_new_conversation:
-            response_data["new_conversation_id"] = conversation_id
-            response_data["new_conversation_title"] = title
+                generation_config = GenerationConfig() # Configuração padrão
+                # Voltar para o modo padrão AUTO para permitir resposta textual após function call
+                tool_config = {'function_calling_config': {'mode': 'AUTO'}}
+                # log.info("Configurando Gemini para forçar chamada de função (mode: ANY).") # Remover log antigo
 
-        return jsonify(response_data)
+                # --- 6. Primeira Chamada ao Gemini ---
+                log.info(f"Chamando Gemini com {len(gemini_tools)} ferramentas.")
+                model = genai.GenerativeModel(
+                    config.GEMINI_MODEL_NAME,
+                    **model_args,
+                    generation_config=generation_config,
+                    tools=gemini_tools,
+                    tool_config=tool_config # Passar tool_config aqui
+                )
+
+                response = await asyncio.to_thread(
+                    model.generate_content,
+                    contents=contents_to_send,
+                )
+
+                # --- 7. Lidar com Function Calling ---
+                candidate = response.candidates[0]
+                # A resposta pode não ter 'parts' se for bloqueada, etc.
+                first_part = candidate.content.parts[0] if candidate.content and candidate.content.parts else None
+
+                # Verificar se 'function_call' existe no objeto 'part'
+                if first_part and hasattr(first_part, 'function_call') and first_part.function_call:
+                    function_call = first_part.function_call
+                    tool_name = function_call.name
+                    tool_args = dict(function_call.args)
+                    log.info(f"Gemini solicitou chamada de função: {tool_name} com args: {tool_args}")
+
+                    tool_response_content = "Erro ao chamar a ferramenta."
+                    try:
+                        tool_result = await mcp_session_active.call_tool(tool_name, arguments=tool_args)
+                        if tool_result.content and tool_result.content[0].text:
+                            tool_response_content = _extract_serpapi_summary(tool_result.content[0].text)
+                            log.info(f"Resumo extraído da ferramenta '{tool_name}': {tool_response_content[:100]}...")
+                        else:
+                            log.warning(f"Ferramenta MCP '{tool_name}' não retornou conteúdo de texto.")
+                            tool_response_content = "A ferramenta foi chamada, mas não retornou informações."
+                    except Exception as mcp_call_err:
+                        log.error(f"Erro ao chamar ferramenta MCP '{tool_name}': {mcp_call_err}", exc_info=True)
+                        tool_response_content = f"Erro ao executar a ferramenta '{tool_name}'."
+
+                    # Preparar FunctionResponse para Gemini - Construir o dict esperado diretamente
+                    function_response_part_dict = {
+                        'function_response': {
+                             'name': tool_name,
+                             'response': {
+                                 'result': tool_response_content
+                             }
+                        }
+                    }
+
+                    # Adicionar a chamada da IA e a resposta da ferramenta ao histórico
+                    contents_for_next_call = contents_to_send + [
+                        # Adicionar a resposta do modelo que continha a function_call (como dict)
+                        {'role': candidate.content.role, 'parts': candidate.content.parts},
+                        # Adicionar a resposta da ferramenta como um novo 'content' com role 'function' (como dict)
+                        {'role': "function", 'parts': [function_response_part_dict]}
+                    ]
+
+
+                    log.info("Enviando resposta da função de volta ao Gemini.")
+                    final_response = await asyncio.to_thread(
+                        model.generate_content,
+                        contents=contents_for_next_call, # Enviar histórico atualizado
+                        tools=gemini_tools,
+                        tool_config=tool_config
+                    )
+
+                    # Tentar extrair texto iterando pelas partes, em vez de usar .text diretamente
+                    extracted_text = ""
+                    try:
+                        if final_response.candidates and final_response.candidates[0].content and final_response.candidates[0].content.parts:
+                            for part in final_response.candidates[0].content.parts:
+                                # Verificar se a parte tem o atributo 'text' antes de acessar
+                                if hasattr(part, 'text'):
+                                     extracted_text += part.text + "\n"
+                        bot_response_text = extracted_text.strip() if extracted_text else None # Define como None se vazio
+
+                        if not bot_response_text:
+                             # Se não extraiu texto, verificar se houve erro/bloqueio
+                             try:
+                                  # Tentar acessar .prompt_feedback pode indicar bloqueio
+                                  _ = final_response.prompt_feedback
+                             except Exception as final_call_err:
+                                  log.error(f"Erro/Bloqueio na segunda chamada Gemini após function call: {final_call_err}")
+                                  bot_response_text = f"Houve um problema ao processar o resultado da ferramenta '{tool_name}'."
+                                  error_message = f"Erro na segunda chamada Gemini: {final_call_err}"
+                             else:
+                                  # Se não houve erro mas não há texto, usar mensagem padrão
+                                  bot_response_text = f"Ok, a ação '{tool_name}' foi executada."
+                                  log.warning("Resposta final do Gemini após function call não continha texto.")
+
+                    except Exception as text_extract_err:
+                         # Erro ao tentar extrair texto das partes
+                         log.error(f"Erro ao extrair texto da resposta final do Gemini: {text_extract_err}", exc_info=True)
+                         bot_response_text = f"Houve um problema ao processar o resultado da ferramenta '{tool_name}'."
+                         error_message = f"Erro ao processar resposta final Gemini: {text_extract_err}"
+
+
+                    bot_response_image = None
+
+                else:
+                    # Nenhuma FunctionCall
+                    # Tentar extrair texto iterando pelas partes
+                    extracted_text = ""
+                    try:
+                        if response.candidates and response.candidates[0].content and response.candidates[0].content.parts:
+                             for part in response.candidates[0].content.parts:
+                                 if hasattr(part, 'text'):
+                                      extracted_text += part.text + "\n"
+                        bot_response_text = extracted_text.strip() if extracted_text else None
+
+                        if not bot_response_text:
+                             try:
+                                  _ = response.prompt_feedback
+                             except Exception as first_call_err:
+                                  log.error(f"Erro/Bloqueio na primeira chamada Gemini: {first_call_err}")
+                                  bot_response_text = "Desculpe, não consegui processar sua solicitação devido a um problema interno."
+                                  error_message = f"Erro na primeira chamada Gemini: {first_call_err}"
+                             else:
+                                  bot_response_text = "Não consegui processar sua solicitação."
+                                  log.warning("Resposta inicial do Gemini não continha texto nem function call.")
+                    except Exception as text_extract_err:
+                         log.error(f"Erro ao extrair texto da resposta inicial do Gemini: {text_extract_err}", exc_info=True)
+                         bot_response_text = "Desculpe, ocorreu um erro ao processar a resposta inicial."
+                         error_message = f"Erro ao processar resposta inicial Gemini: {text_extract_err}"
+
+
+                    # Verificar se há imagem na primeira resposta
+                    if first_part and hasattr(first_part, 'inline_data') and first_part.inline_data:
+                         image_data = first_part.inline_data.data
+                         mime_type = first_part.inline_data.mime_type
+                         bot_response_image = f"data:{mime_type};base64,{base64.b64encode(image_data).decode('utf-8')}"
+                         log.info(f"Recebida imagem na primeira resposta (MIME: {mime_type})")
 
     except Exception as e:
-        log.error(f"Unexpected error in /send endpoint for user {user_id}: {e}", exc_info=True)
+        log.error(f"Erro inesperado no fluxo principal do chat para user {user_id}: {e}", exc_info=True)
+        error_message = f"Erro inesperado no servidor: {e}"
+        # Tentar limpar arquivo do Google se foi criado
         if google_file_object:
             try: genai.delete_file(google_file_object.name)
-            except Exception as del_err: log.error(f"Failed to delete Google file {google_file_object.name} after unexpected error: {del_err}")
+            except Exception as del_err: log.error(f"Falha ao deletar arquivo Google {google_file_object.name} durante handling de erro: {del_err}")
+
+    finally:
+        # --- 8. Limpeza Final ---
         try:
             if local_filepath_to_remove and os.path.exists(local_filepath_to_remove):
+                log.info(f"Removendo arquivo local temporário no finally: {local_filepath_to_remove}")
                 os.remove(local_filepath_to_remove)
         except OSError as e:
-             log.warning(f"Could not remove local file {local_filepath_to_remove} during exception handling: {e}")
+            log.warning(f"Não foi possível remover arquivo temporário {local_filepath_to_remove} no finally: {e}")
+        # A sessão MCP é fechada automaticamente pelo 'async with'
 
-        return jsonify({"error": "An unexpected internal error occurred"}), 500
+    # --- 9. Salvar Mensagens no DB ---
+    if conversation_id:
+        user_msg_to_save = original_user_message or (f"Arquivo: {google_file_object.display_name}" if google_file_object else "")
+        # Salvar msg usuário
+        saved_user_msg_id, db_save_error_user = _save_single_message(conversation_id, 'user', user_msg_to_save, google_file_object)
+        if db_save_error_user:
+             log.error(f"Falha ao salvar msg USUÁRIO no DB para conv {conversation_id}: {db_save_error_user}")
+             error_message = f"{error_message}\n{db_save_error_user}" if error_message else db_save_error_user
+        else:
+             user_msg_id = saved_user_msg_id
+
+        # Salvar msg assistente (se não for None)
+        if bot_response_text is not None:
+             _, db_save_error_assistant = _save_single_message(conversation_id, 'assistant', bot_response_text, None)
+             if db_save_error_assistant:
+                  log.error(f"Falha ao salvar msg ASSISTENTE no DB para conv {conversation_id}: {db_save_error_assistant}")
+                  error_message = f"{error_message}\n{db_save_error_assistant}" if error_message else db_save_error_assistant
+        else:
+             log.warning(f"bot_response_text era None para conv {conversation_id}, não salvando resposta do assistente.")
+
+    # --- 10. Gerar Título ---
+    if conversation_id and is_new_conversation and user_msg_id:
+         title_source = original_user_message or (f"Arquivo: {google_file_object.display_name}" if google_file_object else "Nova Conversa")
+         final_title = _handle_new_conversation_title(
+              is_new_conversation, conversation_id, user_id, user_msg_id, title_source
+         )
+
+    # --- 11. Preparar Resposta JSON Final ---
+    response_data = {
+        "response": bot_response_text,
+        "conversation_id": conversation_id,
+        "new_title": final_title if is_new_conversation else None,
+        "image_data": bot_response_image
+    }
+    if error_message:
+        response_data["error"] = error_message
+        log.error(f"Retornando erro para o cliente: {error_message}")
+        if not bot_response_text or bot_response_text == "Desculpe, ocorreu um erro inesperado.":
+             response_data["response"] = f"Erro: {error_message}"
+        return jsonify(response_data), 500
+
+    return jsonify(response_data), 200

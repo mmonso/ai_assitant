@@ -1,0 +1,101 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=ja
+
+モデル
+もっと見る
+/
+日本語
+ログイン
+Gemini API のドキュメント
+API リファレンス
+クックブック
+概要
+使ってみる
+クイックスタート
+API キー
+ライブラリ
+リリースノート
+OpenAI の互換性
+デベロッパー フォーラム
+モデル
+すべてのモデル
+料金
+レート制限
+お支払い情報
+機能
+テキスト生成
+画像の生成
+ビジョン
+音声の理解
+長いコンテキスト
+コードの実行
+構造化出力
+考えている
+関数呼び出し
+ドキュメントの理解
+Google 検索によるグラウンディング
+ファインチューニング
+エンベディング
+ガイド
+ライブ API
+コンテキストのキャッシュ保存
+プロンプト エンジニアリング
+トークンのカウント
+安全性
+参考情報
+Gemini for Research
+Gemini アカデミック プログラム
+使用例
+アプリケーション
+トラブルシューティング
+API のトラブルシューティング
+AI Studio のトラブルシューティング
+Google Workspace
+法律
+利用規約
+利用可能なリージョン
+その他の利用ポリシー
+Google の最先端モデルである Gemini 2.5 Pro 試験運用版が利用可能になりました。詳細
+このページは Cloud Translation API によって翻訳されました。
+Switch to English
+ホーム
+Gemini API
+モデル
+Gemini Developer API
+Gemini API キーを取得する
+Gemini API キーを取得して、数分で最初の API リクエストを実行できます。
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+モデルの詳細
+Google AI Studio で Gemini を使用する
+2.5 Pro experiment
+複雑な推論機能などを備えた Google の最も強力な思考モデル
+2.0 Flash spark
+次世代の機能と強化された機能を備えた最新のマルチモーダル モデル
+2.0 Flash-Lite bolt
+最も高速で費用対効果の高いマルチモーダル モデル。高頻度のタスクで優れたパフォーマンスを発揮します。
+API の確認
+ネイティブ画像生成
+Gemini 2.0 Flash で、コンテキストに沿った画像をネイティブに生成して編集します。
+長いコンテキストを確認する
+数百万個のトークンを Gemini モデルに入力し、非構造化の画像、動画、ドキュメントから理解を導き出します。
+構造化出力を生成する
+自動処理に適した構造化データ形式である JSON で応答するように Gemini を制約します。
+Gemini API で構築を開始する
+ご利用開始
+特に記載のない限り、このページのコンテンツはクリエイティブ・コモンズの表示 4.0 ライセンスにより使用許諾されます。コードサンプルは Apache 2.0 ライセンスにより使用許諾されます。詳しくは、Google Developers サイトのポリシーをご覧ください。Java は Oracle および関連会社の登録商標です。
+最終更新日 2025-04-04 UTC。
+利用規約
+プライバシー
+日本語

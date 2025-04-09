@@ -1,0 +1,94 @@
+URL: https://ai.google.dev/gemini-api/docs/firebase-extensions
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Extensões do Firebase para a API Gemini
+Nesta página
+Criar um chatbot com a API Gemini
+Tarefas multimodais com a API Gemini
+O Firebase é uma plataforma de desenvolvimento de apps com suporte do Google e e a confiança de milhões de desenvolvedores no mundo todo. Se você for um usuário do Firebase desenvolvedores interessados em usar a API Gemini para adicionar recursos ao aplicativos, há várias extensões do Firebase para ajudar você faça isso. São soluções prontas que ajudam você a implantar novos recursos para seu app rapidamente.
+Criar um chatbot com a API Gemini
+A extensão Build Chatbot com a API Gemini permite estabelecer e gerenciar conversas interativas entre seus usuários e modelos de linguagem grandes pela API Gemini, usando o Cloud Firestore como banco de dados. Uma coleção no Cloud Firestore representa cada conversa. A extensão monitora coleção de novas mensagens e consulta a API Gemini para uma resposta adequada, considerando as mensagens anteriores do chat como contexto.
+Ao integrar a extensão Build Chatbot com a API Gemini, você pode: criar aplicativos de chatbot com eficiência, melhorando a experiência do usuário e ao mesmo tempo que economiza tempo e esforço no desenvolvimento de códigos personalizados.
+Tarefas multimodais com a API Gemini
+A extensão Tarefas multimodais com a API Gemini permite realizar tarefas de linguagem em dados no Firestore, usando um prompt de texto e, opcionalmente, uma imagem.
+Configure cada instância da extensão para executar uma tarefa específica. Se você tiver várias tarefas, poderá instalar várias instâncias.
+Por exemplo, você pode usar essa extensão para:
+Prever notas em um conjunto de avaliações de produtos.
+Classificar o feedback dos clientes como positivo, negativo ou neutro.
+Resumir artigos longos.
+Extrair entidades nomeadas do texto.
+Gerar texto criativo, como poemas ou códigos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

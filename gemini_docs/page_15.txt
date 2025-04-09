@@ -1,0 +1,101 @@
+URL: https://ai.google.dev/gemini-api/docs/quickstart
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Guia de início rápido da API Gemini
+Nesta página
+Instalar a biblioteca da API Gemini
+Faça sua primeira solicitação
+A seguir
+Este guia de início rápido mostra como instalar o SDK escolhido e fazer sua primeira solicitação da API Gemini.
+Python
+JavaScript
+REST
+Go
+Instalar a biblioteca da API Gemini
+Observação: estamos lançando um novo conjunto de bibliotecas da API Gemini, o SDK do Google Gen AI.
+Usando o Python 3.9+, instale o pacote google-genai usando o seguinte comando pip:
+pip install -q -U google-genai
+Faça sua primeira solicitação
+Conseguir uma chave da API Gemini no Google AI Studio
+Use o método generateContent para enviar uma solicitação à API Gemini.
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash", contents="Explain how AI works in a few words"
+)
+print(response.text)
+A seguir
+Agora que você fez sua primeira solicitação de API, confira estes guias que mostram o Gemini em ação:
+Geração de texto
+Vision
+Contexto longo
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

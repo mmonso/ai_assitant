@@ -1,0 +1,259 @@
+URL: https://ai.google.dev/gemini-api/docs/changelog
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Notas da versão
+Nesta página
+4 de abril de 2025
+25 de março de 2025
+12 de março de 2025
+11 de março de 2025
+7 de março de 2025
+Esta página documenta as atualizações da API Gemini.
+4 de abril de 2025
+Lançamos o gemini-2.5-pro-preview-03-25, uma versão de pré-lançamento público do Gemini 2.5 Pro com faturamento ativado. Você pode continuar usando o gemini-2.5-pro-exp-03-25 no nível sem custo financeiro.
+25 de março de 2025
+Lançamos o gemini-2.5-pro-exp-03-25, um modelo experimental público do Gemini com o modo de pensamento sempre ativado por padrão. Para saber mais, consulte Gemini 2.5 Pro Experimental.
+12 de março de 2025
+Atualizações de modelos:
+Lançamos um modelo experimental do Gemini 2.0 Flash capaz de gerar e editar imagens.
+Lançamento do gemma-3-27b-it, disponível no AI Studio e pela API Gemini, como parte do lançamento do Gemma 3.
+Atualizações da API:
+Adição de suporte a URLs do YouTube como uma fonte de mídia.
+Foi adicionado suporte para a inclusão de um vídeo inline de menos de 20 MB.
+11 de março de 2025
+Atualizações do SDK:
+Lançamos o SDK da IA generativa do Google para TypeScript e JavaScript na prévia pública.
+7 de março de 2025
+Atualizações de modelos:
+Lançamos o gemini-embedding-exp-03-07, um modelo de embeddings experimental baseado no Gemini em pré-lançamento público.
+28 de fevereiro de 2025
+Atualizações da API:
+Suporte para a Pesquisa como ferramenta adicionado a gemini-2.0-pro-exp-02-05, um modelo experimental baseado no Gemini 2.0 Pro.
+25 de fevereiro de 2025
+Atualizações de modelos:
+Lançamos o gemini-2.0-flash-lite, uma versão de disponibilidade geral (GA) do Gemini 2.0 Flash-Lite, otimizado para velocidade, escala e eficiência de custo.
+18 de fevereiro de 2025
+Atualizações de modelos:
+O Gemini 1.0 Pro não é mais compatível. Para conferir a lista de modelos compatíveis, consulte Modelos do Gemini.
+19 de fevereiro de 2025
+Atualizações do AI Studio:
+Suporte para outras regiões (Kosovo, Groenlândia e Ilhas Faroé).
+Atualizações da API:
+Suporte para outras regiões (Kosovo, Groenlândia e Ilhas Faroé).
+11 de fevereiro de 2025
+Atualizações da API:
+Atualizações sobre a compatibilidade com as bibliotecas da OpenAI.
+6 de fevereiro de 2025
+Atualizações de modelos:
+Lançamos a imagen-3.0-generate-002, uma versão de disponibilidade geral (GA, na sigla em inglês) do Imagen 3 na API Gemini.
+Atualizações do SDK:
+Lançamos o SDK da IA generativa do Google para Java para pré-lançamento público.
+5 de fevereiro de 2025
+Atualizações de modelos:
+Lançou o gemini-2.0-flash-001, uma versão de disponibilidade geral (GA) do Gemini 2.0 Flash que oferece suporte a saída somente de texto.
+Lançou o gemini-2.0-pro-exp-02-05, uma versão de pré-lançamento pública do Gemini 2.0 Pro.
+Lançamos o gemini-2.0-flash-lite-preview-02-05, um modelo de visualização pública experimental otimizado para eficiência de custos.
+Atualizações da API:
+Adicionamos suporte a entrada de arquivo e saída de gráfico à execução do código.
+Atualizações do SDK:
+Lançamos o SDK da IA generativa do Google para Python para disponibilidade geral (GA).
+21 de janeiro de 2025
+Atualizações de modelos:
+Lançamos o gemini-2.0-flash-thinking-exp-01-21, a versão de pré-lançamento mais recente do modelo por trás do modelo de pensamento rápido do Gemini 2.0.
+December 19, 2024
+Atualizações de modelos:
+Lançamos o modo Flash Thinking do Gemini 2.0 para pré-lançamento público. O modo de pensamento é um modelo de computação no momento do teste que permite ver o processo de pensamento do modelo enquanto ele gera uma resposta e produz respostas com recursos de raciocínio mais fortes.
+Leia mais sobre o modo Flash Thinking do Gemini 2.0 na nossa página de visão geral.
+11 de dezembro de 2024
+Atualizações de modelos:
+Lançamos o Gemini 2.0 Flash Experimental para pré-lançamento público. A lista parcial de recursos do Gemini 2.0 Flash Experimental inclui:
+Duas vezes mais rápido que o Gemini 1.5 Pro
+Streaming bidirecional com nossa API Live
+Geração de respostas multimodais em forma de texto, imagens e fala
+Uso de ferramentas integradas com raciocínio de vários turnos para usar recursos como execução de código, pesquisa, chamada de função e muito mais
+Leia mais sobre o Gemini 2.0 Flash na nossa página de informações gerais.
+21 de novembro de 2024
+Atualizações de modelos:
+Lançamos o gemini-exp-1121, um modelo experimental da API Gemini ainda mais poderoso.
+Atualizações de modelos:
+Atualizamos os aliases de modelo gemini-1.5-flash-latest e gemini-1.5-flash para usar gemini-1.5-flash-002.
+Mudança para o parâmetro top_k: o modelo gemini-1.5-flash-002 aceita valores de top_k entre 1 e 41 (exclusivos). Valores maiores que 40 serão alterados para 40.
+14 de novembro de 2024
+Atualizações de modelos:
+Lançamos o gemini-exp-1114, um modelo experimental avançado da API Gemini.
+8 de novembro de 2024
+Atualizações da API:
+Adicionamos suporte ao Gemini nas bibliotecas da OpenAI / API REST.
+31 de outubro de 2024
+Atualizações da API:
+Adicionamos suporte ao Embasamento com a Pesquisa Google.
+3 de outubro de 2024
+Atualizações de modelos:
+Lançamos o gemini-1.5-flash-8b-001, uma versão estável do nosso modelo de API Gemini mais compacto.
+24 de setembro de 2024
+Atualizações de modelos:
+Lançamos gemini-1.5-pro-002 e gemini-1.5-flash-002, duas novas versões estáveis do Gemini 1.5 Pro e 1.5 Flash, para disponibilidade geral.
+Atualizamos o código do modelo gemini-1.5-pro-latest para usar gemini-1.5-pro-002 e o código do modelo gemini-1.5-flash-latest para usar gemini-1.5-flash-002.
+gemini-1.5-flash-8b-exp-0924 foi lançado para substituir gemini-1.5-flash-8b-exp-0827.
+Lançamos o filtro de segurança de integridade cívica para a API Gemini e o AI Studio.
+Foi lançado o suporte a dois novos parâmetros para o Gemini 1.5 Pro e 1.5 Flash no Python e NodeJS: frequencyPenalty e presencePenalty.
+19 de setembro de 2024
+Atualizações do AI Studio:
+Foram adicionados botões "Gostei" e "Não gostei" às respostas do modelo para que os usuários possam dar feedback sobre a qualidade de uma resposta.
+Atualizações da API:
+Adicionamos suporte a créditos do Google Cloud, que agora podem ser usados para uso da API Gemini.
+17 de setembro de 2024
+Atualizações do AI Studio:
+Adicionamos um botão Open in Colab que exporta uma solicitação e o código para executá-la em um notebook do Colab. O recurso ainda não oferece suporte a solicitações com ferramentas (modo JSON, chamada de função ou execução de código).
+13 de setembro de 2024
+Atualizações do AI Studio:
+Adição de suporte ao modo de comparação, que permite comparar respostas entre modelos e comandos para encontrar o melhor ajuste para seu caso de uso.
+30 de agosto de 2024
+Atualizações de modelos:
+O Gemini 1.5 Flash oferece suporte ao fornecimento de esquema JSON pela configuração do modelo.
+27 de agosto de 2024
+Atualizações de modelos:
+Lançamos os seguintes modelos experimentais:
+gemini-1.5-pro-exp-0827
+gemini-1.5-flash-exp-0827
+gemini-1.5-flash-8b-exp-0827
+9 de agosto de 2024
+Atualizações da API:
+Inclusão de suporte para processamento de PDF.
+5 de agosto de 2024
+Atualizações de modelos:
+O suporte a ajustes finos foi lançado para o Gemini 1.5 Flash.
+1º de agosto de 2024
+Atualizações de modelos:
+Lançamos o gemini-1.5-pro-exp-0801, uma nova versão experimental do Gemini 1.5 Pro.
+12 de julho de 2024
+Atualizações de modelos:
+O suporte ao Gemini 1.0 Pro Vision foi removido dos serviços e ferramentas de IA do Google.
+27 de junho de 2024
+Atualizações de modelos:
+Versão de disponibilidade geral para a janela de contexto de 2 milhões do Gemini 1.5 Pro.
+Atualizações da API:
+Foi adicionada compatibilidade com a execução de código.
+18 de junho de 2024
+Atualizações da API:
+Adição de suporte para armazenamento em cache de contexto.
+12 de junho de 2024
+Atualizações de modelos:
+O Gemini 1.0 Pro Vision foi descontinuado.
+23 de maio de 2024
+Atualizações de modelos:
+O Gemini 1.5 Pro (gemini-1.5-pro-001) está disponível em geral (GA).
+O Gemini 1.5 Flash (gemini-1.5-flash-001) está disponível em geral (GA).
+14 de maio de 2024
+Atualizações da API:
+Introdução de uma janela de contexto de 2 milhões para o Gemini 1.5 Pro (lista de espera).
+Introdução do faturamento de pagamento por uso para o Gemini 1.0 Pro, com o faturamento do Gemini 1.5 Pro e do Gemini 1.5 Flash em breve.
+Aumento dos limites de taxa para o próximo nível pago do Gemini 1.5 Pro.
+Adicionamos suporte a vídeo integrado à API File.
+Foi adicionado suporte a texto simples à API File.
+Adição de suporte à chamada de função paralela, que retorna mais de uma chamada por vez.
+10 de maio de 2024
+Atualizações de modelos:
+Lançamos o Gemini 1.5 Flash (gemini-1.5-flash-latest) em pré-lançamento.
+9 de abril de 2024
+Atualizações de modelos:
+Lançamos o Gemini 1.5 Pro (gemini-1.5-pro-latest) em versão prévia.
+Lançamos um novo modelo de embedding de texto, text-embeddings-004, que oferece suporte a tamanhos de embedding elástica menores que 768.
+Atualizações da API:
+Lançamos a API File para armazenar temporariamente arquivos de mídia para uso em solicitações.
+Foi adicionado suporte a comandos com dados de texto, imagem e áudio, também conhecidos como comandos multimodais. Para saber mais, consulte Como usar mídia para dar instruções.
+Lançamos a versão Beta das Instruções do sistema.
+Foi adicionado o modo de chamada de função, que define o comportamento de execução da chamada de função.
+Adicionado suporte à opção de configuração response_mime_type, que permite solicitar respostas no formato JSON.
+19 de março de 2024
+Atualizações de modelos:
+Foi adicionado suporte para ajustar o Gemini 1.0 Pro no Google AI Studio ou com a API Gemini.
+13 de dezembro de 2023
+Atualizações de modelos:
+gemini-pro: novo modelo de texto para uma ampla variedade de tarefas. Equilibra capacidade e eficiência.
+gemini-pro-vision: novo modelo multimodal para uma ampla variedade de tarefas. Equilibra capacidade e eficiência.
+embedding-001: novo modelo de embeddings.
+AQA: um novo modelo ajustado especialmente que é treinado para responder a perguntas usando passagens de texto para fundamentar as respostas geradas.
+Consulte Modelos do Gemini para mais detalhes.
+Atualizações da versão da API:
+v1: o canal de API estável.
+v1beta: canal Beta. Este canal tem recursos que podem estar em desenvolvimento.
+Consulte o tópico sobre versões da API para mais detalhes.
+Atualizações da API:
+GenerateContent é um único endpoint unificado para chat e texto.
+Streaming disponível pelo método StreamGenerateContent.
+Recurso multimodal: a imagem é um novo modo compatível
+Novos recursos Beta:
+Chamadas de função
+Semantic Retriever (link em inglês)
+Respostas a perguntas atribuídas (AQA)
+Atualização da contagem de candidatos: os modelos Gemini só retornam um candidato.
+Diferentes categorias de SafetyRating e Configurações de segurança. Consulte Configurações de segurança para mais detalhes.
+Ajustar modelos ainda não é possível para modelos do Gemini (em desenvolvimento).
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

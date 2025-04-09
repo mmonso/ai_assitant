@@ -1,0 +1,178 @@
+URL: https://ai.google.dev/gemini-api/tutorials/web-app
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Aplicativo de chat
+Assistente de código
+Gerador de código do Flutter
+Pesquisa de conteúdo
+Agente de exploração de dados
+Assistente de redação
+Revisor do Apresentações Google
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Criar um app da Web de chat com IA
+Nesta página
+Executar o aplicativo de exemplo
+Fazer o download das dependências do projeto
+consiga uma chave de API
+Fazer o download do código
+Configurar o servidor de back-end
+Instalar as dependências do front-end
+Testar o aplicativo
+Como funciona
+Este tutorial mostra como usar a API Gemini em um aplicativo da Web com um cliente React. O aplicativo oferece três implementações de back-end, permitindo que os usuários escolham entre um servidor Python Flask, Node.js ou Go.
+Um exemplo de aplicativo está disponível para download no GitHub:
+App de chat da API Gemini
+É possível usar a API Gemini para criar um chatbot, assistente pessoal, resumidor de texto ou qualquer outro caso de uso que dependa da funcionalidade de conversão de texto em texto de modelos de linguagem grandes.
+Python
+Node.js
+Go
+Executar o aplicativo de exemplo
+Estas instruções orientam você no processo de download do aplicativo de chat exemplo, adição de uma chave de API Gemini, configuração do cliente de front-end e do servidor de back-end do Python e execução do aplicativo localmente.
+Fazer o download das dependências do projeto
+O aplicativo requer o Node.js v18 ou mais recente, o npm e o Python 3.11 ou mais recente. Use os links a seguir para fazer o download do Node.js e do Python:
+Node.js
+Python
+Depois de fazer o download do Node, npm ou Python, talvez seja necessário reiniciar o terminal para que o sistema reconheça as dependências.
+consiga uma chave de API
+Você precisa de uma chave de API Google Gemini para executar o projeto, que pode ser conseguida na página de configuração da API Google Gemini.
+Conseguir uma chave da API Gemini no Google AI Studio
+Fazer o download do código
+O app de chat de exemplo do Gemini está hospedado no GitHub. Nesta seção, você vai fazer o download do aplicativo clonando o repositório do GitHub.
+Navegue até o diretório de trabalho e clone o repositório do Git usando o comando abaixo:
+git clone https://github.com/google-gemini/example-chat-app
+Navegue até o diretório raiz do projeto:
+cd example-chat-app/
+Configurar o servidor de back-end
+O back-end do Python usa o Flask para interagir com a API Gemini. Nesta seção, você vai criar um ambiente virtual, instalar as dependências no arquivo requirements.txt, adicionar sua chave de API e executar o servidor Python.
+Navegue até o diretório do servidor Python:
+cd server-python
+Crie e ative um novo ambiente virtual:
+python3 -m venv venv
+. venv/bin/activate
+Instale as dependências obrigatórias do pacote Python:
+pip install -r requirements.txt
+Crie um arquivo de variáveis de ambiente copiando o arquivo .env.example. Esse arquivo vai conter sua chave de API:
+cp .env.example .env
+Adicione a chave de API ao arquivo .env:
+# Get your Gemini API key from: https://aistudio.google.com/app/apikey
+GOOGLE_API_KEY= 
+YOUR_API_KEY
+PORT=9000
+Execute o servidor Python:
+python3 app.py
+O servidor vai usar localhost:9000. O fechamento do terminal vai encerrar o servidor. Portanto, mantenha a tela atual do terminal aberta e conclua a próxima seção em uma nova tela ou guia do terminal.
+Instalar as dependências do front-end
+O aplicativo usa o React para criar a interface do usuário e usa o Vite como o servidor do cliente. Nesta seção, você vai instalar as dependências do front-end e executar o servidor do cliente.
+Inicie uma nova tela do terminal e navegue até o diretório do cliente React (client-react):
+cd ../client-react/
+Instale as dependências do app de front-end:
+npm install
+Execute o cliente React:
+npm run start
+O site será hospedado em localhost:3000.
+Testar o aplicativo
+Depois de executar o servidor do cliente, é possível acessar o aplicativo em http://localhost:3000/. Você pode usar o aplicativo de chat e a opção Stream Response para transmitir respostas ou receber respostas em um único bloco.
+O aplicativo vai funcionar enquanto localhost:3000 e localhost:9000 permanecerem abertos.
+Como funciona
+Esta seção fornece informações mais detalhadas sobre os principais componentes do aplicativo de chat Gemini. Confira o código em app.py.
+Chave de API e autenticação
+Para configurar a chave de API, defina o parâmetro api_key em genai.configure. A chave da API (GOOGLE_API_KEY) é armazenada no arquivo .env, que foi criado ao configurar o back-end.
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+Aviso: para reduzir o risco de vazamento de chaves, não fixe a chave de API diretamente no código do aplicativo.
+Seleção de modelos
+O modelo é especificado com o método genai.GenerativeModel. O exemplo de aplicativo usa o Gemini 1.5 Flash.
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash"
+)
+Você também pode testar os seguintes modelos do Gemini:
+Gemini 1.5 Flash 8B: gemini-1.5-flash-8b
+Gemini 1.5 Pro: Gemini-1.5-pro
+Para mais informações sobre as variantes dos modelos do Gemini, consulte Modelos do Gemini.
+Processamento de dados
+O aplicativo recebe solicitações do usuário e envia solicitações POST para os endpoints /chat ou /stream. A solicitação precisa ser um payload JSON contendo uma solicitação do usuário e um histórico de conversa opcional. Os endpoints /chat e /stream determinam se a saída é transmitida ou retornada como uma resposta completa.
+Os dados de entrada são processados pelo seguinte código:
+data = request.json
+msg = data.get('chat', '')
+chat_history = data.get('history', [])
+
+# Start a chat session with the model using the provided history.
+chat_session = model.start_chat(history=chat_history)
+Resposta do chat
+A função de resposta do chat retorna uma resposta gerada por IA em um único bloco completo de texto. A função de resposta do chat transmite a solicitação do usuário ao modelo sem adicionar a flag stream:
+response = chat_session.send_message(msg)
+A função retorna um objeto JSON com a resposta gerada pela IA na chave "text":
+return {"text": response.text}
+Composição da resposta
+A função de resposta de fluxo retorna partes da resposta conforme ela é gerada. Isso resulta em um fluxo de texto retornado ao usuário, em vez de um único bloco de texto. A função de resposta do chat transmite a solicitação do usuário ao modelo com a flag stream. A função prepara partes da resposta geral:
+response = chat_session.send_message(msg, stream=True)
+
+for chunk in response:
+   yield f"{chunk.text}"
+A função retorna um objeto Response do Flask que transmite as respostas geradas pela IA:
+return Response(stream_with_context(generate()), mimetype="text/event-stream")
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-19 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

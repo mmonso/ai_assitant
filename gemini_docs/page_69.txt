@@ -1,0 +1,116 @@
+URL: https://ai.google.dev/gemini-api/docs/usage-policies
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Outras políticas de uso
+Nesta página
+Monitoramento de abuso
+Como monitoramos o uso indevido
+Como processamos dados
+Como investigamos possíveis problemas
+Como trabalhar com você para cumprir a política
+Escopo
+Votação de preferência inline
+Por que estamos fazendo isso?
+Esta página inclui outras políticas de uso da API Gemini.
+Monitoramento de abuso
+O Google tem o compromisso de desenvolver e usar a IA de forma responsável. Para garantir a segurança e a integridade da API Gemini, criamos estas diretrizes de política. Ao usar a API Gemini, você concorda com as diretrizes a seguir, os Termos de Serviço adicionais da API Gemini e a Política de uso proibido da IA generativa.
+Como monitoramos o uso indevido
+A Equipe de Confiança e Segurança do Google usa uma combinação de processos automáticos e manuais para detectar possíveis usos indevidos da API Gemini e aplicar nossas políticas.
+Detecção automatizada:os sistemas automatizados verificam o uso da API em busca de violações da nossa Política de uso proibido, como discurso de ódio, assédio, conteúdo sexualmente explícito e conteúdo perigoso.
+Detecção manual:se um projeto apresentar atividade suspeita consistentemente, ele poderá ser sinalizado para revisão manual por funcionários autorizados do Google.
+Como processamos dados
+Para ajudar no monitoramento de abuso, o Google retém os seguintes dados por 55 dias:
+Comandos:comandos de texto enviados à API.
+Informações contextuais:qualquer contexto adicional que você fornecer com seus comandos.
+Saída:as respostas geradas pela API Gemini.
+Como investigamos possíveis problemas
+Quando os comandos ou as saídas do modelo são sinalizados por filtros de segurança e sistemas de detecção de abuso descritos acima, funcionários autorizados do Google podem avaliar o conteúdo sinalizado e confirmar ou corrigir a classificação ou determinação com base em diretrizes e políticas predefinidas. Os dados só podem ser acessados para revisão humana por funcionários autorizados do Google por meio de uma plataforma de avaliação e gerenciamento de revisão interna. Quando os dados são registrados para monitoramento de abuso, eles são usados exclusivamente para a aplicação de políticas e não são usados para treinar ou aprimorar modelos de IA/ML.
+Como trabalhar com você para cumprir a política
+Se o uso do Gemini não estiver de acordo com nossas políticas, poderemos tomar as seguintes medidas:
+Entre em contato:podemos entrar em contato com você por e-mail para entender seu caso de uso e descobrir maneiras de fazer com que seu uso esteja em conformidade.
+Limites de uso temporários:podemos limitar seu acesso à API Gemini.
+Suspensão temporária:podemos pausar temporariamente seu acesso à API Gemini.
+Encerramento da conta:como último recurso, e em caso de violações graves, podemos encerrar permanentemente seu acesso à API Gemini e a outros serviços do Google.
+Escopo
+Estas diretrizes de política se aplicam ao uso da API Gemini e do AI Studio.
+Votação de preferência inline
+No Google AI Studio, às vezes você pode ver uma comparação lado a lado de duas respostas diferentes para o comando. Isso faz parte do nosso sistema de votação de preferência inline. Você vai precisar escolher a resposta que preferir. Isso nos ajuda a entender quais saídas de modelo os usuários acham mais úteis.
+Por que estamos fazendo isso?
+Trabalhamos constantemente para melhorar nossos modelos e serviços de IA. Seu feedback por meio do Voto de preferência inline nos ajuda a fornecer, melhorar e desenvolver produtos e serviços do Google e tecnologias de aprendizado de máquina, incluindo os recursos, produtos e serviços empresariais do Google, de acordo com os Termos de Serviço Adicionais da API Gemini e a Política de Privacidade.
+Quais dados são incluídos no Feedback?
+Para tomar decisões informadas sobre nossos modelos, coletamos determinados dados quando você participa da votação de preferência inline:
+Instruções e respostas:registramos todas as instruções e respostas, incluindo qualquer conteúdo enviado, na conversa em que você enviou o feedback. Também registramos as duas opções de resposta que você selecionou. Isso nos ajuda a entender o contexto da sua preferência.
+Seu voto:registramos a resposta que você preferiu. Esse é o núcleo do feedback que estamos coletando.
+Detalhes de uso:inclui informações sobre qual modelo gerou a resposta e outros detalhes técnicos e operacionais sobre seu uso desse recurso.
+Sua privacidade
+Levamos sua privacidade a sério. O Google toma medidas para proteger sua privacidade como parte desse processo. Isso inclui desconectar esses dados da sua Conta do Google, da chave de API e do projeto do Cloud antes que os revisores os vejam ou façam anotações. Não envie feedback sobre conversas que incluam informações sensíveis, confidenciais ou pessoais.
+Como desativar
+Você vai ter a opção de pular a votação de preferência inline quando ela aparecer.
+Agradecemos por nos ajudar a melhorar o Google AI Studio.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-24 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

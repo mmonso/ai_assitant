@@ -1,0 +1,250 @@
+URL: https://ai.google.dev/gemini-api/docs/imagen-prompt-guide
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Introdução aos comandos
+Estratégias de comando
+Estratégias de solicitação de arquivos
+Guia de comandos do Imagen
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Guia de comandos do Imagen
+Nesta página
+Noções básicas de redação imediatas (assunto, contexto e estilo)
+Gravação de comandos da Imagen 3
+Gerar texto em imagens
+Parametrização do comando
+Estilo: fotografia
+Estilo: ilustração e arte
+Técnicas avançadas para a criação de prompts
+Modificadores de fotografia
+Para usar o Imagen, é necessário fornecer uma descrição em texto do que você quer gerar. Essas descrições são chamadas de solicitações, e elas são a maneira principal de se comunicar com o Imagen.
+Neste guia, mostramos como modificar partes de um comando de texto para imagem pode produzir resultados diferentes e oferecemos exemplos de imagens que podem ser criadas.
+Noções básicas de redação imediatas (assunto, contexto e estilo)
+Observação: o comprimento máximo do comando é de 480 tokens.
+Embora haja muitas maneiras de escrever uma boa solicitação, adicionar algumas palavras-chave e modificadores ajudará você a se aproximar da meta final. Os prompts não precisam ser longos ou complexos, mas a maioria deles é descritiva e clara.
+Um bom ponto de partida pode ser pensar em assunto, contexto e estilo.
+Texto da imagem: um esboço (estilo) de um prédio moderno (assunto) cercado por arranha-céus (contexto e plano de fundo).
+Assunto: a primeira coisa a considerar com qualquer solicitação é o assunto: o objeto, a pessoa, o animal ou o cenário de que você quer uma imagem.
+Contexto e plano de fundo: o mais importante é o plano de fundo ou o contexto em que o assunto será colocado. Tente colocar o objeto de várias formas. Por exemplo, um estúdio com fundo branco, ambientes externos ou ambientes internos.
+Estilo: por fim, adicione o estilo da imagem que você quer usar. Os estilos podem ser gerais (pintura, fotografia, esboços) ou muito específicos (pintura pastel, desenho a carvão, isométrico 3D). Também é possível combinar estilos.
+Depois de escrever uma primeira versão da proposta, aprimore-a adicionando mais detalhes até chegar à imagem que você quer. A iteração é importante. Comece estabelecendo sua ideia principal e, em seguida, refine e expanda essa ideia até que a imagem gerada esteja próxima da sua visão.
+Prompt: Um parque na primavera ao lado de um lago
+Instrução: um parque na primavera ao lado de um lago, o sol se põe no lago, golden hour
+Instrução: um parque na primavera ao lado de um lago, o sol se põe no lago, golden hour, flores silvestres vermelhas
+Gravação de comandos da Imagen 3
+A Imagen 3 pode transformar suas ideias em imagens detalhadas, sejam comandos curtos ou longos e detalhados. Aprimore sua visão com instruções iterativas, adicionando detalhes até alcançar o resultado perfeito.
+Com comandos curtos, você gera uma imagem rapidamente.
+Instrução: foto de uma mulher de 20 e poucos anos, fotografia de rua, imagem estática de um filme, tons quentes de laranja suave
+Com comandos mais longos, você pode adicionar detalhes específicos e criar sua imagem.
+Instrução: foto cativante de uma mulher na faixa dos 20 anos usando um estilo de fotografia de rua. A imagem precisa parecer um filme com tons quentes de laranja esmaecido.
+Outros conselhos para escrever o comando da Imagen 3:
+Use uma linguagem descritiva: use adjetivos e advérbios detalhados para descrever claramente a Imagem 3.
+Forneça contexto: se necessário, inclua informações de contexto para ajudar a IA a entender.
+Cite artistas ou estilos específicos: se você tem uma estética específica em mente, citar artistas ou movimentos artísticos específicos pode ser útil.
+Usar ferramentas de engenharia de comando: considere explorar ferramentas ou recursos de engenharia de comando para refinar seus comandos e alcançar resultados ideais.
+Como melhorar os detalhes faciais nas suas imagens pessoais e em grupo:
+Especifique detalhes faciais como foco da foto. Por exemplo, use a palavra "retrato" no comando.
+Gerar texto em imagens
+A capacidade do Imagen 3 de adicionar texto às imagens abre possibilidades criativas de geração de imagens. Use as orientações a seguir para aproveitar ao máximo esse recurso:
+Iterar com confiança: talvez seja necessário regenerar imagens até alcançar o visual desejado. A integração de texto do Imagen ainda está evoluindo, e às vezes várias tentativas produzem os melhores resultados.
+Mantenha o texto curto: limite o texto a 25 caracteres ou menos para uma geração ótima.
+Várias frases: teste duas ou três frases diferentes para fornecer mais informações. Evite exceder três frases para composições mais limpas.
+Instrução: um cartaz com o texto "Summerland" em negrito como título, abaixo do texto está o slogan "Summer never felt so good"
+Posicionamento do guia: embora o Imagen possa tentar posicionar o texto conforme indicado, é possível que haja variações ocasionais. Esse recurso está sendo aprimorado constantemente.
+Inspire font style: especifique um estilo de fonte geral para influenciar sutilmente as escolhas do Imagen. Não confie na replicação precisa de fontes, mas espere interpretações criativas.
+Tamanho da fonte: especifique um tamanho de fonte ou uma indicação geral de tamanho (por exemplo, pequeno, médio, grande) para influenciar a geração do tamanho da fonte.
+Parametrização do comando
+Para controlar melhor os resultados de saída, pode ser útil parametrizar as entradas no Imagen. Por exemplo, suponha que você queira que os clientes possam gerar logotipos para a empresa e que eles sejam sempre gerados em um plano de fundo de cor sólida. Você também quer limitar as opções que o cliente pode selecionar em um menu.
+Neste exemplo, você pode criar uma solicitação parametrizada semelhante a esta:
+A {logo_style} logo for a {company_area} company on a solid color background. Include the text {company_name}.
+Na interface do usuário personalizada, o cliente pode inserir os parâmetros usando um menu, e o valor escolhido preenche o comando que o Imagen recebe.
+Exemplo:
+Comando: A minimalist logo for a health care company on a solid color background. Include the text Journey.
+Comando: A modern logo for a software company on a solid color background. Include the text Silo.
+Comando: A traditional logo for a baking company on a solid color background. Include the text Seed.
+Estilo: fotografia
+A solicitação inclui: "Uma foto de..."
+Para usar esse estilo, comece usando palavras-chave que informem claramente ao Imagen que você está procurando uma fotografia. Inicie suas solicitações com "Uma foto de . ". Por exemplo:
+Prompt: uma foto de grãos de café em uma cozinha em uma superfície de madeira
+Prompt: uma foto de uma barra de chocolate em um balcão de cozinha
+Prompt: uma foto de um edifício moderno com água em segundo plano
+Fonte da imagem: cada imagem foi gerada usando o comando de texto correspondente com o modelo Imagen 3.
+Estilo: ilustração e arte
+A solicitação inclui: "A painting de...", "Um sketch de..."
+Os estilos de arte variam de estilos monocromáticos como esboços a lápis à arte digital realista. Por exemplo, as imagens a seguir usam a mesma solicitação com estilos diferentes:
+"Um [art style or creation technique] de um sedan elétrico esportivo angular com arranha-céus em segundo plano"
+Prompt: um desenho técnico de lápis de um angular...
+Prompt: um desenho de carvão de um angular...
+Prompt: um desenho de lápis de cor de um angular...
+Instrução: uma pintura pastel de um angular...
+Prompt: uma arte digital de um angular...
+Prompt: um art déco (pôster) de um angular...
+Fonte da imagem: cada imagem foi gerada usando o comando de texto correspondente com o modelo Imagen 2.
+Técnicas avançadas para a criação de prompts
+Use os exemplos a seguir para criar solicitações mais específicas com base nos atributos: descritores de foto, formas e materiais, movimentos de arte históricos e modificadores de qualidade de imagem.
+Modificadores de fotografia
+Nos exemplos a seguir, você pode conferir vários modificadores e parâmetros específicos para fotografia. É possível combinar vários modificadores para ter um controle mais preciso.
+Proximidade da câmera - Close-up, tirada de longe
+Solicitação: uma foto de perto de grãos de café
+Prompt: uma foto com zoom desativado de um pequeno saco de
+grãos de café em uma cozinha bagunçada
+Posição da câmera: aéreo, vista de baixo
+Instrução: foto aérea de uma cidade com arranha-céus
+Solicitação: uma foto de um dossel florestal com céu azul abaixo
+Iluminação: natural, dramático, calor, frio
+Prompt: foto de estúdio de uma cadeira moderna, iluminação natural
+Prompt: foto de estúdio de uma cadeira moderna, iluminação dramática
+Configurações da câmera — desfoque de movimento, foco suave, bokeh, retrato
+Prompt: foto de uma cidade com arranha-céus dentro de um carro com desfoque de movimento
+Prompt: foco suave na fotografia de uma ponte em uma cidade urbana à noite
+Tipos de lentes - 35 mm, 50 mm, olho de peixe, grande angular, macro
+Prompt: foto de uma folha, lente macro
+Instrução: fotografia de rua, cidade de Nova York, lente olho de peixe
+Tipos de filme - preto e branco, polaroid
+Instrução: um retrato polaroide de um cachorro usando óculos escuros
+Instrução: foto em preto e branco de um cachorro usando óculos escuros
+Fonte da imagem: cada imagem foi gerada usando o comando de texto correspondente com o modelo Imagen 3.
+Formas e materiais
+A solicitação inclui: "...made of...", "...na forma de..."
+Um dos pontos fortes dessa tecnologia é a possibilidade de criar imagens que seriam difíceis ou impossíveis. Por exemplo, é possível recriar o logotipo da empresa em diferentes materiais e texturas.
+Prompt: um saco de mochila feito de queijo
+Instrução: tubos de neon no formato de um pássaro
+Solicitação: uma poltrona feita de papel, foto de estúdio, estilo origami
+Fonte da imagem: cada imagem foi gerada usando o comando de texto correspondente com o modelo Imagen 3.
+Referências de arte históricas
+A solicitação inclui: "...in the style of..."
+Alguns estilos se tornaram icônicos ao longo dos anos. Confira a seguir algumas ideias de pintura histórica ou estilos de arte que você pode testar.
+"gerar uma imagem no estilo de [art period or movement] : um parque eólico"
+Instrução: gere uma imagem no estilo de uma pintura impressionista: um parque eólico
+Instrução: gerar uma imagem no estilo de uma pintura renascentista: um parque eólico
+Solicitação: gere uma imagem no estilo de pop art: um parque eólico
+Fonte da imagem: cada imagem foi gerada usando o comando de texto correspondente com o modelo Imagen 3.
+Modificadores de qualidade da imagem
+Algumas palavras-chave podem informar ao modelo que você está procurando um recurso de alta qualidade. Veja alguns exemplos de modificadores de qualidade:
+Modificadores gerais: alta qualidade, bonito, estilizado
+Fotos: fotos 4K, HDR e do Studio
+Arte, Ilustração: por um profissional, detalhado
+Veja a seguir alguns exemplos de prompts sem modificadores de qualidade e o mesmo com modificadores de qualidade.
+Solicitação (sem modificadores de qualidade): uma foto de um talo de milho
+Instrução (com modificadores de qualidade): linda foto
+de 4K HDR de um talo de milho tirada por um fotógrafo
+profissional
+Fonte da imagem: cada imagem foi gerada usando o comando de texto correspondente com o modelo Imagen 3.
+Proporções
+A geração de imagens do Imagen 3 permite definir cinco proporções de imagem distintas.
+Quadrado (1:1, padrão): uma foto quadrada padrão. Usos comuns para essa proporção incluem postagens de mídias sociais.
+Tela cheia (4:3): essa proporção é usada com frequência em mídias ou filmes. Elas também têm as mesmas dimensões da maioria das TVs e câmeras de formato médio antigas. Ela captura mais da cena horizontalmente (em comparação com 1:1), o que a torna uma proporção preferencial para fotografia.
+Instrução: close dos dedos de um músico tocando piano, filme em preto e branco, vintage (proporção de 4:3)
+Instrução: uma foto profissional de um estúdio que mostra batatas fritas para um restaurante sofisticado, no estilo de uma revista de culinária (proporção de 4:3) )
+Tela cheia em modo retrato (3:4): é a proporção de tela cheia girada em 90 graus. Isso permite capturar mais da cena verticalmente em comparação com a proporção de 1:1.
+Instrução: uma mulher caminhando, perto de suas botas refletidas em uma poça, grandes montanhas ao fundo, no estilo de um anúncio, ângulos dramáticos (proporção 3:4)
+Instrução: imagem aérea de um rio fluindo por um vale místico (proporção 3:4)
+Widescreen (16:9): essa proporção substituiu a de 4:3 e agora é a proporção mais comum para TVs, monitores e telas de smartphones (paisagem). Use essa proporção quando quiser capturar mais do plano de fundo (por exemplo, paisagens panorâmicas).
+Instrução: um homem vestindo roupas brancas sentado na praia, de perto, com iluminação de golden hour (proporção de 16:9){101
+Retrato (9:16): essa proporção é widescreen, mas girada. Essa é uma proporção relativamente nova que ficou conhecida por apps de vídeos mais curtos (por exemplo, YouTube Shorts). Use essa opção para objetos altos com fortes orientações verticais, como edifícios, árvores, cachoeiras ou outros objetos semelhantes.
+Prompt: uma renderização digital de um arranha-céu enorme, moderno, grandioso, épico com um lindo pôr do sol ao fundo (proporção de 9:16){101
+Imagens fotorrealistas
+Diferentes versões do modelo de geração de imagens podem oferecer uma mistura de saídas artísticas e realistas. Use a seguinte palavra nos comandos para gerar uma saída mais fotorrealista com base no assunto que quiser gerar.
+Observação: considere essas palavras-chave como orientação geral ao tentar criar imagens fotorrealistas. Elas não são necessárias para atingir sua meta.
+Caso de uso Tipo de lente Distâncias focais Mais detalhes
+Pessoas (retratos) Prime, zoom 24-35mm filme em preto e branco, Filme noir, Profundidade de campo, duotone (mencione duas cores)
+Comida, insetos, plantas (objetos, natureza morta) Macro 60-105mm Alto nível de detalhes, foco preciso, iluminação controlada
+Esportes, vida selvagem (movimento) Zoom telefoto 100-400mm Velocidade rápida do obturador, rastreamento de ação ou movimento
+Astronômico, paisagem (amplo angular) Grande angular 10-24mm Longos tempos de exposição, foco nítido, exposição longa, água suave ou nuvens
+Retratos
+Caso de uso Tipo de lente Distâncias focais Mais detalhes
+Pessoas (retratos) Prime, zoom 24-35mm filme em preto e branco, Filme noir, Profundidade de campo, duotone (mencione duas cores)
+Usando várias palavras-chave da tabela, o Imagen pode gerar os retratos a seguir.
+Comando: uma mulher, retrato de 35 mm, duotons azul e cinza
+Modelo: imagen-3.0-generate-002
+Comando: A mulher, retrato de 35 mm, film noir
+Modelo: imagen-3.0-generate-002
+Objetos
+Caso de uso Tipo de lente Distâncias focais Mais detalhes
+Comida, insetos, plantas (objetos, natureza morta) Macro 60-105mm Alto nível de detalhes, foco preciso, iluminação controlada
+Usando várias palavras-chave da tabela, o Imagen pode gerar as seguintes imagens de objeto.
+Comando: folha de uma planta de oração, lente macro, 60 mm
+Modelo: imagen-3.0-generate-002
+Comando: um prato de macarrão, lente macro de 100 mm
+Modelo: imagen-3.0-generate-002
+Movimento
+Caso de uso Tipo de lente Distâncias focais Mais detalhes
+Esportes, vida selvagem (movimento) Zoom telefoto 100-400mm Velocidade rápida do obturador, rastreamento de ação ou movimento
+Usando várias palavras-chave da tabela, o Imagen pode gerar as seguintes imagens em movimento.
+Comando: um touchdown vencedor, velocidade do obturador rápida e rastreamento de movimento
+Modelo: imagen-3.0-generate-002
+Comando: um cervo correndo na floresta, alta velocidade do obturador, rastreamento de movimento
+Modelo: imagen-3.0-generate-002
+Grande angular
+Caso de uso Tipo de lente Distâncias focais Mais detalhes
+Astronômico, paisagem (amplo angular) Grande angular 10-24mm Longos tempos de exposição, foco nítido, exposição longa, água suave ou nuvens
+Usando várias palavras-chave da tabela, o Imagen pode gerar as seguintes imagens grande angulares.
+Comando: uma ampla cordilheira, ângulo amplo de paisagem de 10 mm
+Modelo: imagen-3.0-generate-002
+Comando: uma foto da lua, fotografia astronômica, ângulo amplo de 10 mm
+Modelo: imagen-3.0-generate-002
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-01-21 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

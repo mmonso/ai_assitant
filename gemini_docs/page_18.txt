@@ -1,0 +1,750 @@
+URL: https://ai.google.dev/gemini-api/docs/migrate
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Instalar
+Migrar para o SDK de IA generativa
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Fazer upgrade do SDK do Google GenAI para Python
+Nesta página
+Instalar o SDK
+Autenticar
+Geração de conteúdo
+Streaming
+Argumentos opcionais
+Lançamos um novo SDK (google-genai, v1.0) com a versão do Gemini 2. O SDK atualizado é totalmente compatível com todos os modelos e recursos da API Gemini, incluindo adições recentes, como a API multimídia ao vivo (streaming de áudio e vídeo), uso aprimorado de ferramentas (execução de código, chamada de função e integração da busca no Google) e geração de mídia (Imagen). Esse SDK permite conectar-se à API Gemini pelo Google AI Studio ou pela Vertex AI.
+O pacote google-generativeai continuará compatível com os modelos originais do Gemini. Ele pode ser usado com modelos Gemini 2, mas com um conjunto limitado de recursos. Todos os novos recursos serão desenvolvidos no novo SDK do Google GenAI.
+Teste o novo SDK no Google Colab
+Instalar o SDK
+Antes
+pip install -U -q "google-generativeai"
+Depois
+pip install -U -q "google-genai"
+Autenticar
+Autenticar usando uma chave de API. Você pode criar sua chave de API no Google AI Studio.
+O SDK antigo processava o objeto de cliente da API de forma implícita. No novo SDK, você cria o cliente da API e o usa para chamar a API.
+Em ambos os casos, o SDK vai buscar a chave de API na variável de ambiente GOOGLE_API_KEY se você não transmitir uma para configure/Client.
+export GOOGLE_API_KEY=...
+Antes
+import google.generativeai as genai
+
+genai.configure(api_key=...)
+Depois
+from google import genai
+
+client = genai.Client(api_key=...)
+Geração de conteúdo
+O novo SDK oferece acesso a todos os métodos da API pelo objeto Client. Exceto alguns casos especiais com estado (chat e sessions de API ao vivo), essas são todas funções sem estado. Para utilidade e uniformidade, os objetos retornados são classes pydantic.
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content(
+    'Tell me a story in 300 words'
+)
+print(response.text)
+Depois
+from google import genai
+client = genai.Client()
+
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='Tell me a story in 300 words.'
+)
+print(response.text)
+
+print(response.model_dump_json(
+    exclude_none=True, indent=4))
+Muitos dos mesmos recursos de conveniência existem no novo SDK. Por exemplo, os objetos PIL.Image são convertidos automaticamente:
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content([
+    'Tell me a story based on this image',
+    Image.open(image_path)
+])
+print(response.text)
+Depois
+from google import genai
+from PIL import Image
+
+client = genai.Client()
+
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents=[
+        'Tell me a story based on this image',
+        Image.open(image_path)
+    ]
+)
+print(response.text)
+Streaming
+Os métodos de streaming são funções separadas com o sufixo _stream.
+Antes
+import google.generativeai as genai
+
+response = model.generate_content(
+    "Write a cute story about cats.",
+    stream=True)
+for chunk in response:
+    print(chunk.text)
+Depois
+from google import genai
+
+client = genai.Client()
+
+for chunk in client.models.generate_content_stream(
+  model='gemini-2.0-flash',
+  contents='Tell me a story in 300 words.'
+):
+    print(chunk.text)
+Argumentos opcionais
+Para todos os métodos no novo SDK, os argumentos obrigatórios são fornecidos como argumentos de palavra-chave. Todas as entradas opcionais são fornecidas no argumento config.
+Os argumentos de configuração podem ser especificados como dicionários Python ou classes Config no namespace google.genai.types. Para utilidade e uniformidade, todas as definições no módulo types são classes pydantic.
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel(
+   'gemini-1.5-flash',
+    system_instruction='you are a story teller for kids under 5 years old',
+    generation_config=genai.GenerationConfig(
+       max_output_tokens=400,
+       top_k=2,
+       top_p=0.5,
+       temperature=0.5,
+       response_mime_type='application/json',
+       stop_sequences=['\n'],
+    )
+)
+response = model.generate_content('tell me a story in 100 words')
+Depois
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+response = client.models.generate_content(
+  model='gemini-2.0-flash',
+  contents='Tell me a story in 100 words.',
+  config=types.GenerateContentConfig(
+      system_instruction='you are a story teller for kids under 5 years old',
+      max_output_tokens= 400,
+      top_k= 2,
+      top_p= 0.5,
+      temperature= 0.5,
+      response_mime_type= 'application/json',
+      stop_sequences= ['\n'],
+      seed=42,
+   ),
+)
+Exemplo: configurações de segurança
+Gerar resposta com as configurações de segurança:
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content(
+    'say something bad',
+    safety_settings={
+        'HATE': 'BLOCK_ONLY_HIGH',
+        'HARASSMENT': 'BLOCK_ONLY_HIGH',
+   }
+)
+Depois
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+response = client.models.generate_content(
+  model='gemini-2.0-flash',
+  contents='say something bad',
+  config=types.GenerateContentConfig(
+      safety_settings= [
+          types.SafetySetting(
+              category='HARM_CATEGORY_HATE_SPEECH',
+              threshold='BLOCK_ONLY_HIGH'
+          ),
+      ]
+  ),
+)
+Assíncrona
+Para usar o novo SDK com asyncio, há uma implementação async separada de cada método em client.aio.
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content_async(
+    'tell me a story in 100 words'
+)
+Depois
+from google import genai
+
+client = genai.Client()
+
+response = await client.aio.models.generate_content(
+    model='gemini-2.0-flash', 
+    contents='Tell me a story in 300 words.'
+)
+Chat
+Inicia um chat e envia uma mensagem para o modelo:
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+chat = model.start_chat()
+
+response = chat.send_message(
+    "Tell me a story in 100 words")
+response = chat.send_message(
+    "What happened after that?")
+Depois
+from google import genai
+
+client = genai.Client()
+
+chat = client.chats.create(model='gemini-2.0-flash')
+
+response = chat.send_message(
+    message='Tell me a story in 100 words')
+response = chat.send_message(
+    message='What happened after that?')
+Chamadas de função
+No novo SDK, a chamada de função automática é o padrão. Aqui, você desativa.
+Antes
+import google.generativeai as genai
+from enum import Enum 
+
+def get_current_weather(location: str) -> str:
+    """Get the current whether in a given location.
+
+    Args:
+        location: required, The city and state, e.g. San Franciso, CA
+        unit: celsius or fahrenheit
+    """
+    print(f'Called with: {location=}')
+    return "23C"
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    tools=[get_current_weather]
+)
+
+response = model.generate_content("What is the weather in San Francisco?")
+function_call = response.candidates[0].parts[0].function_call
+Depois
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+def get_current_weather(location: str) -> str:
+    """Get the current whether in a given location.
+
+    Args:
+        location: required, The city and state, e.g. San Franciso, CA
+        unit: celsius or fahrenheit
+    """
+    print(f'Called with: {location=}')
+    return "23C"
+
+response = client.models.generate_content(
+   model='gemini-2.0-flash',
+   contents="What is the weather like in Boston?",
+   config=types.GenerateContentConfig(
+       tools=[get_current_weather],
+       automatic_function_calling={'disable': True},
+   ),
+)
+
+function_call = response.candidates[0].content.parts[0].function_call
+Chamadas de função automáticas
+O SDK antigo só oferece suporte à chamada de função automática no chat. No novo SDK, esse é o comportamento padrão em generate_content.
+Antes
+import google.generativeai as genai
+
+def get_current_weather(city: str) -> str:
+    return "23C"
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    tools=[get_current_weather]
+)
+
+chat = model.start_chat(
+    enable_automatic_function_calling=True)
+result = chat.send_message("What is the weather in San Francisco?")
+Depois
+from google import genai
+from google.genai import types
+client = genai.Client()
+
+def get_current_weather(city: str) -> str:
+    return "23C"
+
+response = client.models.generate_content(
+   model='gemini-2.0-flash',
+   contents="What is the weather like in Boston?",
+   config=types.GenerateContentConfig(
+       tools=[get_current_weather] 
+   ),
+)
+Execução do código
+A execução de código é uma ferramenta que permite que o modelo gere, execute e retorne o resultado do código Python.
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    tools="code_execution"
+)
+
+result = model.generate_content(
+  "What is the sum of the first 50 prime numbers? Generate and run code for "
+  "the calculation, and make sure you get all 50.")
+Depois
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='What is the sum of the first 50 prime numbers? Generate and run '
+             'code for the calculation, and make sure you get all 50.',
+    config=types.GenerateContentConfig(
+        tools=[types.Tool(code_execution=types.ToolCodeExecution)],
+    ),
+)
+Busca de aterramento
+GoogleSearch (Gemini>=2.0) e GoogleSearchRetrieval (Gemini < 2.0) são ferramentas que permitem que o modelo recupere dados da Web pública para embasamento, com tecnologia do Google.
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content(
+    contents="what is the Google stock price?",
+    tools='google_search_retrieval'
+)
+Depois
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+response = client.models.generate_content(
+    model='gemini-2.0-flash',
+    contents='What is the Google stock price?',
+    config=types.GenerateContentConfig(
+        tools=[
+            types.Tool(
+                google_search=types.GoogleSearch()
+            )
+        ]
+    )
+)
+Resposta JSON
+Gerar respostas no formato JSON.
+Ao especificar um response_schema e definir response_mime_type="application/json", os usuários podem restringir o modelo para produzir uma resposta JSON seguindo uma determinada estrutura. O novo SDK usa classes pydantic para fornecer o esquema, embora seja possível transmitir um genai.types.Schema ou um dict equivalente. Quando possível, o SDK analisa o JSON retornado e retorna o resultado em response.parsed. Se você forneceu uma classe pydantic como o esquema, o SDK vai converter essa JSON em uma instância da classe.
+Antes
+import google.generativeai as genai
+import typing_extensions as typing
+
+class CountryInfo(typing.TypedDict):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    major_cities: list[str]
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+
+model = genai.GenerativeModel(model_name="gemini-1.5-flash")
+result = model.generate_content(
+    "Give me information of the United States",
+     generation_config=genai.GenerationConfig(
+         response_mime_type="application/json",
+         response_schema = CountryInfo
+     ),
+)
+Depois
+from google import genai
+from pydantic import BaseModel
+
+client = genai.Client()
+
+class CountryInfo(BaseModel):
+    name: str
+    population: int
+    capital: str
+    continent: str
+    major_cities: list[str]
+    gdp: int
+    official_language: str
+    total_area_sq_mi: int
+
+response = client.models.generate_content( 
+    model='gemini-2.0-flash', 
+    contents='Give me information of the United States.', 
+    config={ 
+        'response_mime_type': 'application/json',
+        'response_schema': CountryInfo, 
+    }, 
+ )
+
+response.parsed
+Arquivos
+Fazer upload
+Faça upload de um arquivo:
+Antes
+import requests
+import pathlib
+import google.generativeai as genai
+
+# Download file
+response = requests.get(
+    'https://storage.googleapis.com/generativeai-downloads/data/a11.txt')
+pathlib.Path('a11.txt').write_text(response.text)
+
+file = genai.upload_file(path='a11.txt')
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.generate_content([
+    'Can you summarize this file:', 
+    my_file
+])
+print(response.text)
+Depois
+import requests
+import pathlib
+from google import genai
+
+client = genai.Client()
+
+# Download file
+response = requests.get(
+    'https://storage.googleapis.com/generativeai-downloads/data/a11.txt')
+pathlib.Path('a11.txt').write_text(response.text)
+
+my_file = client.files.upload(file='a11.txt')
+
+response = client.models.generate_content(
+    model='gemini-2.0-flash', 
+    contents=[
+        'Can you summarize this file:', 
+        my_file
+    ]
+)
+print(response.text)
+Listar e receber
+Listar arquivos enviados e receber um arquivo enviado com um nome:
+Antes
+import google.generativeai as genai
+
+for file in genai.list_files():
+  print(file.name)
+
+file = genai.get_file(name=file.name)
+Depois
+from google import genai
+client = genai.Client()
+
+for file in client.files.list():
+    print(file.name)
+
+file = client.files.get(name=file.name)
+Excluir
+Excluir um arquivo:
+Antes
+import pathlib
+import google.generativeai as genai
+
+pathlib.Path('dummy.txt').write_text(dummy)
+dummy_file = genai.upload_file(path='dummy.txt')
+
+file = genai.delete_file(name=dummy_file.name)
+Depois
+import pathlib
+from google import genai
+
+client = genai.Client()
+
+pathlib.Path('dummy.txt').write_text(dummy)
+dummy_file = client.files.upload(file='dummy.txt')
+
+response = client.files.delete(name=dummy_file.name)
+O armazenamento em cache de contexto
+O armazenamento em cache de contexto permite que o usuário transmita o conteúdo ao modelo uma vez, armazene em cache os tokens de entrada e, em seguida, consulte os tokens em cache em chamadas subsequentes para reduzir o custo.
+Antes
+import requests
+import pathlib
+import google.generativeai as genai
+from google.generativeai import caching
+
+# Download file
+response = requests.get(
+    'https://storage.googleapis.com/generativeai-downloads/data/a11.txt')
+pathlib.Path('a11.txt').write_text(response.text)
+
+
+# Upload file
+document = genai.upload_file(path="a11.txt")
+
+# Create cache
+apollo_cache = caching.CachedContent.create(
+    model="gemini-1.5-flash-001",
+    system_instruction="You are an expert at analyzing transcripts.",
+    contents=[document],
+)
+
+# Generate response
+apollo_model = genai.GenerativeModel.from_cached_content(
+    cached_content=apollo_cache
+)
+response = apollo_model.generate_content("Find a lighthearted moment from this transcript")
+Depois
+import requests
+import pathlib
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+# Check which models support caching.
+for m in client.models.list():
+  for action in m.supported_actions:
+    if action == "createCachedContent":
+      print(m.name) 
+      break
+
+# Download file
+response = requests.get(
+    'https://storage.googleapis.com/generativeai-downloads/data/a11.txt')
+pathlib.Path('a11.txt').write_text(response.text)
+
+
+# Upload file
+document = client.files.upload(file='a11.txt')
+
+# Create cache
+model='gemini-1.5-flash-001'
+apollo_cache = client.caches.create(
+      model=model,
+      config={
+          'contents': [document],
+          'system_instruction': 'You are an expert at analyzing transcripts.',
+      },
+  )
+
+# Generate response
+response = client.models.generate_content(
+    model=model,
+    contents='Find a lighthearted moment from this transcript',
+    config=types.GenerateContentConfig(
+        cached_content=apollo_cache.name,
+    )
+)
+Contar Tokens
+Conte o número de tokens em uma solicitação.
+Antes
+import google.generativeai as genai
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+response = model.count_tokens(
+    'The quick brown fox jumps over the lazy dog.')
+Depois
+from google import genai
+
+client = genai.Client()
+
+response = client.models.count_tokens(
+    model='gemini-2.0-flash',
+    contents='The quick brown fox jumps over the lazy dog.',
+)
+Gerar imagens
+Gerar imagens:
+Antes
+#pip install https://github.com/google-gemini/generative-ai-python@imagen
+import google.generativeai as genai
+
+imagen = genai.ImageGenerationModel(
+    "imagen-3.0-generate-001")
+gen_images = imagen.generate_images(
+    prompt="Robot holding a red skateboard",
+    number_of_images=1,
+    safety_filter_level="block_low_and_above",
+    person_generation="allow_adult",
+    aspect_ratio="3:4",
+)
+Depois
+from google import genai
+
+client = genai.Client()
+
+gen_images = client.models.generate_images(
+    model='imagen-3.0-generate-001',
+    prompt='Robot holding a red skateboard',
+    config=types.GenerateImagesConfig(
+        number_of_images= 1,
+        safety_filter_level= "BLOCK_LOW_AND_ABOVE",
+        person_generation= "ALLOW_ADULT",
+        aspect_ratio= "3:4",
+    )
+)
+
+for n, image in enumerate(gen_images.generated_images):
+    pathlib.Path(f'{n}.png').write_bytes(
+        image.image.image_bytes)
+Incorporar conteúdo
+Gerar embeddings de conteúdo.
+Antes
+import google.generativeai as genai
+
+response = genai.embed_content(
+   model='models/text-embedding-004',
+   content='Hello world'
+)
+Depois
+from google import genai
+
+client = genai.Client()
+
+response = client.models.embed_content(
+   model='text-embedding-004',
+   contents='Hello world',
+)
+Ajustar um modelo
+Crie e use um modelo ajustado.
+O novo SDK simplifica o ajuste com client.tunings.tune, que inicia o job de ajuste e faz pesquisas até que ele seja concluído.
+Antes
+import google.generativeai as genai
+import random
+
+# create tuning model
+train_data = {} 
+for i in range(1, 6): 
+   key = f'input {i}' 
+   value = f'output {i}' 
+   train_data[key] = value
+
+name = f'generate-num-{random.randint(0,10000)}'
+operation = genai.create_tuned_model(
+    source_model='models/gemini-1.5-flash-001-tuning',
+    training_data=train_data,
+    id = name,
+    epoch_count = 5,
+    batch_size=4,
+    learning_rate=0.001,
+)
+# wait for tuning complete
+tuningProgress = operation.result()
+
+# generate content with the tuned model
+model = genai.GenerativeModel(model_name=f'tunedModels/{name}')
+response = model.generate_content('55')
+Depois
+from google import genai
+from google.genai import types
+
+client = genai.Client()
+
+# Check which models are available for tuning.
+for m in client.models.list():
+  for action in m.supported_actions:
+    if action == "createTunedModel":
+      print(m.name) 
+      break
+
+# create tuning model
+training_dataset=types.TuningDataset(
+        examples=[
+            types.TuningExample(
+                text_input=f'input {i}',
+                output=f'output {i}',
+            )
+            for i in range(5)
+        ],
+    )
+tuning_job = client.tunings.tune(
+    base_model='models/gemini-1.5-flash-001-tuning',
+    training_dataset=training_dataset,
+    config=types.CreateTuningJobConfig(
+        epoch_count= 5,
+        batch_size=4,
+        learning_rate=0.001,
+        tuned_model_display_name="test tuned model"
+    )
+)
+
+# generate content with the tuned model
+response = client.models.generate_content(
+    model=tuning_job.tuned_model.model,
+    contents='55', 
+)
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-03-27 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

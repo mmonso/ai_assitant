@@ -1,0 +1,86 @@
+URL: https://ai.google.dev/gemma/docs
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Gemma
+Documentos
+Visão geral
+Começar
+Lançamentos
+Modelos
+Gemma 3
+CodeGemma
+PaliGemma 2
+ShieldGemma 2
+Executar o Gemma
+Visão geral
+Ollama
+Biblioteca do Gemma
+Keras
+PyTorch
+Gemma.cpp
+Gemini API
+Comandos e instruções do sistema
+Configuração do Gemma
+Recursos
+Chamadas de função
+Solicitação com dados visuais
+Guias de ajuste
+Visão geral
+Ajustar usando LoRA e Keras
+Ajustar usando a biblioteca Gemma
+Ajustar usando o Hugging Face Transformers e o QLoRA
+Ajustar a visão usando Transformers do Hugging Face e QLoRA
+Ajuste distribuído usando o Keras
+Guias de inscrição
+Assistente pessoal de programação
+Assistente de e-mail comercial
+Tarefas de idioma falado
+Chatbot usando Python
+Gerador de memes
+Guias de implantação
+Web
+Dispositivos móveis
+Google Cloud
+LangChain
+Pesquisa e ferramentas
+RecurrentGemma
+DataGemma
+Telescópio Gemma
+Gemma-APS
+Comunidade
+Gemmaverse
+Discord
+Jurídico
+Termos de Uso
+Uso proibido
+Confira o repositório do Gemma Cookbook para ver exemplos de geração e ajuste. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemma
+Documentos
+Isso foi útil?
+Envie comentários
+Visão geral dos modelos Gemma
+Nesta página
+Modelos pré-treinados e ajustados por instrução
+Próximas etapas
+O Gemma é uma família de modelos abertos, leves e de última geração criados a partir da mesma pesquisa e tecnologia usadas para criar modelos do Gemini. Desenvolvido pelo Google DeepMind e outras equipes do Google, o Gemma recebe o nome de a palavra latina gemma, que significa "pedra preciosa". Os pesos do modelo Gemma são com ferramentas de desenvolvimento que promovem a inovação, a colaboração e a uso responsável da inteligência artificial (IA).
+Os modelos Gemma estão disponíveis para execução aplicativos e no hardware, dispositivos móveis ou serviços hospedados. Você também pode personalizar esses modelos usando técnicas de ajuste para que se sobressaiam realizar tarefas específicas que importam para você e seus usuários. Desenho de modelos Gemma inspiração e linhagem tecnológica da família de modelos Gemini e são para a comunidade de desenvolvimento de IA ampliar e ir mais além.
+Pronto para começar? Comece a usar os modelos do Gemma.
+Modelos pré-treinados e ajustados por instrução
+É possível modificar o comportamento dos modelos Gemma com treinamento adicional para que o modelo tenha um desempenho melhor em tarefas específicas. Esse processo é chamado de modelo ajuste e, embora essa técnica melhore a capacidade de um modelo de realizar para tarefas direcionadas, isso também pode piorar o modelo em outras tarefas. Para Por isso, os modelos Gemma estão disponíveis tanto nos modelos ajustados por instrução versões pré-treinadas:
+Ajuste por instruções (TI): essas versões do modelo são treinadas com interações de linguagem humana e podem responder a entradas de conversa, semelhantes a um chatbot.
+Pré-treinado (PT): essas versões do modelo não são treinadas tarefas ou instruções específicas além do conjunto de treinamento de dados principais do Gemma. Você não devem implantar esses modelos em aplicativos sem realizar sintonização.
+Próximas etapas
+Comece sua jornada na criação de aplicativos com o Gemma com o Guia para começar a usar o Gemma.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2024-08-05 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

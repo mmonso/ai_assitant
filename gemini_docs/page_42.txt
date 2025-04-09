@@ -1,0 +1,202 @@
+URL: https://ai.google.dev/gemini-api/docs/prompting-intro
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Introdução aos comandos
+Estratégias de comando
+Estratégias de solicitação de arquivos
+Guia de comandos do Imagen
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Introdução ao design de prompts
+Nesta página
+O que é um prompt
+Tipos de conteúdo do prompt
+Próximas etapas
+Design de prompt é o processo de criação de prompts que extraem a resposta desejada dos modelos de linguagem. Escrever solicitações bem estruturadas é uma parte essencial para garantir respostas precisas e de alta qualidade de um modelo de linguagem. Esta página apresenta alguns conceitos básicos, estratégias e práticas recomendadas para você começar a projetar solicitações.
+O que é um prompt
+Uma solicitação é uma solicitação de linguagem natural enviada a um modelo de linguagem para receber uma resposta. As solicitações podem conter perguntas, instruções, informações contextuais, exemplos e entrada parcial para que o modelo conclua ou continue. Depois que o modelo recebe uma solicitação, dependendo do tipo de modelo usado, ele pode gerar texto, embeddings, código, imagens, vídeos, músicas e muito mais.
+Tipos de conteúdo do prompt
+As solicitações podem incluir um ou mais dos seguintes tipos de conteúdo:
+Este campo é (obrigatório)
+Contexto (opcional)
+Exemplos (opcional)
+Entrada
+Uma entrada é o texto no prompt para o qual você quer que o modelo forneça uma resposta, e é um tipo de conteúdo obrigatório. As entradas podem ser uma pergunta que o modelo responde (entrada de pergunta), uma tarefa que o modelo realiza (entrada de tarefa), uma entidade em que o modelo opera (entrada de entidade) ou entrada parcial que o modelo conclui ou continue (entrada concluída).
+Entrada da pergunta
+Uma entrada de pergunta é uma pergunta feita ao modelo ao qual o modelo fornece uma resposta.
+Comando:
+What's a good name for a flower shop that specializes in selling bouquets of
+dried flowers? Create a list of 10 options with just the names.
+Resposta:
+Here are 10 names for a flower shop specializing in dried flowers:
+
+ 1. Everlasting Blooms
+ 2. Dried & Delightful
+ 3. The Petal Preserve
+ 4. Whispers of Wildflowers
+ 5. Forever Blooms
+ 6. The Botanical Muse
+ 7. Timeless Blooms
+ 8. Dried Flower Co.
+ 9. Bloom & Co.
+ 10. The Sun-Kissed Petals
+(gemini-1.5-flash)
+Entrada da tarefa
+Uma entrada de tarefa é uma tarefa que você quer que o modelo execute. Por exemplo, é possível dizer ao modelo para dar ideias ou sugestões para algo.
+Comando:
+Give me a simple list of just the things that I must bring on a camping trip. The list should have 10 items.
+Resposta:
+Here's a list of 10 essential items for a camping trip:
+
+ 1. **Tent:** Your shelter from the elements.
+ 2. **Sleeping Bag:** Stay warm and comfortable.
+ 3. **Sleeping Pad:** Insulation and cushioning for a good night's sleep.
+ 4. **Headlamp or Flashlight:** Light for nighttime activities.
+ 5. **First Aid Kit:** Be prepared for minor injuries.
+ 6. **Water Bottle/Hydration Pack:** Stay hydrated.
+ 7. **Food and Snacks:** Fuel for your adventures.
+ 8. **Cooking Gear:** Camp stove, fuel, utensils, etc.
+ 9. **Knife and Multitool:** Essential for various tasks.
+ 10. **Camp Chair:** Enjoy your campfire and meals comfortably.
+(gemini-1.5-flash)
+Entrada de entidade
+Uma entrada de entidade é o modelo que realiza uma ação, como classificar ou resumir. Esse tipo de entrada pode se beneficiar da inclusão de instruções.
+Comando:
+Classify the following items as [large, small].
+Elephant
+Mouse
+Snail
+Resposta:
+Here's the classification:
+
+ * **Elephant:** Large
+ * **Mouse:** Small
+ * **Snail:** Small
+(gemini-1.5-flash)
+Entrada de conclusão
+Uma entrada de conclusão é o texto que o modelo deve concluir ou continuar.
+Comando:
+Complete the following prompt: Some simple strategies for overcoming writer's block include...
+Resposta:
+Some simple strategies for overcoming writer's block include:
+
+ * **Freewriting:** Write non-stop for a set amount of time (5-10 minutes) without worrying about grammar, spelling, or even making sense. Just keep your pen moving and let your thoughts flow freely. This can help you loosen up and access ideas you might not have considered otherwise.
+ * **Brainstorming:** Make a list of everything that comes to mind related to your topic, no matter how silly or unrelated it seems. You can also use mind mapping or other visual brainstorming techniques.
+ * **Changing your environment:** Sometimes a change of scenery can be all you need to get the creative juices flowing. Go for a walk, work in a coffee shop, or even just move to a different room in your house. 
+ * **Reading:** Immerse yourself in the work of other writers, especially those who inspire you. Pay attention to their style, their structure, and their use of language. 
+ * **Taking a break:** Sometimes the best way to overcome writer's block is to simply step away from the project for a while. Go for a walk, watch a movie, listen to music, or do something else that you enjoy. You might be surprised at how much clearer your head feels when you return to your writing. 
+ * **Focusing on a single element:** Instead of tackling the entire project, focus on a single sentence, paragraph, or scene. Once you get something down on paper, it can be easier to build from there.
+ * **Starting with the ending:** If you're stuck on the beginning, try writing the ending first. This can help you to clarify your overall vision for the project and provide a framework for your ideas.
+ * **Talking it out:** Share your ideas and challenges with a friend, a writing group, or a writing coach. Discussing your project with someone else can help you to see it from a new perspective and find solutions to your writing problems.
+ 
+ Remember, writer's block is a common experience, and it's not a sign that you're a bad writer. Just be patient with yourself, try some of these strategies, and keep writing!
+(gemini-1.5-flash)
+Contexto
+Será um dos seguintes:
+Instruções que especificam como o modelo deve se comportar.
+Informações que o modelo usa ou faz referência para gerar uma resposta.
+Adicione informações contextuais ao prompt quando for preciso fornecer informações ao modelo ou restrinja os limites das respostas apenas ao que está dentro do prompt.
+Comando:
+Marbles:
+Color: red
+Number: 12
+Color: blue
+Number: 28
+Color: yellow
+Number: 15
+Color: green
+Number: 17
+
+How many green marbles are there?
+Resposta:
+There are 17 green marbles.
+(gemini-1.5-flash)
+Exemplos
+Exemplos são pares de entrada e saída incluídos no prompt para dar ao modelo um exemplo de resposta ideal. Incluir exemplos no prompt é uma estratégia eficaz para personalizar o formato da resposta.
+Comando:
+Classify the following.
+Options:
+- red wine
+- white wine
+
+Text: Chardonnay
+The answer is: white wine
+Text: Cabernet
+The answer is: red wine
+Text: Moscato
+The answer is: white wine
+
+Text: Riesling
+The answer is:
+Resposta:
+The answer is: white wine
+(gemini-1.5-flash)
+Próximas etapas
+Agora que você já entende o design de comandos, tente escrever seus próprios comandos usando o Google AI Studio.
+Para entender melhor o design de comandos, consulte o tópico estratégias de comandos.
+Para saber mais sobre comandos multimodais, consulte Comandos com arquivos de mídia.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

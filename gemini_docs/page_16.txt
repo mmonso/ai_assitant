@@ -1,0 +1,109 @@
+URL: https://ai.google.dev/gemini-api/docs/api-key
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Gerar uma chave de API Gemini
+Nesta página
+Configurar a chave de API
+Enviar sua primeira solicitação da API Gemini
+Proteger a chave de API
+Para usar a API Gemini, você precisa de uma chave de API. É possível criar uma chave com apenas alguns cliques no Google AI Studio.
+Conseguir uma chave da API Gemini no Google AI Studio
+Configurar a chave de API
+Para o teste inicial, você pode codificar uma chave de API, mas isso deve ser temporário, já que não é seguro. O restante desta seção explica como configurar a chave de API localmente como uma variável de ambiente com diferentes sistemas operacionais.
+Linux/macOS: Bash
+macOS: Zsh
+Windows
+O Bash é uma configuração comum de terminal do Linux e do macOS. Para verificar se você tem um arquivo de configuração, execute o seguinte comando:
+~/.bashrc
+Se a resposta for "No such file or directory", você vai precisar criar esse arquivo e abri-lo executando os comandos a seguir ou usando zsh:
+touch ~/.bashrc
+open ~/.bashrc
+Em seguida, defina a chave de API adicionando o seguinte comando de exportação:
+export GEMINI_API_KEY=<YOUR_API_KEY_HERE>
+Depois de salvar o arquivo, aplique as mudanças executando:
+source ~/.bashrc
+Enviar sua primeira solicitação da API Gemini
+Use um comando curl para verificar a configuração:
+  curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}" \
+    -H 'Content-Type: application/json' \
+    -X POST \
+    -d '{
+      "contents": [{
+        "parts":[{"text": "Write a story about a magic backpack."}]
+        }]
+       }'
+Proteger a chave de API
+É importante manter a chave da API Gemini segura. Confira alguns pontos a serem considerados ao usar sua chave da API Gemini:
+A API Gemini da IA do Google usa chaves de API para autorização. Se outras pessoas tiverem acesso à sua chave de API Gemini, elas poderão fazer chamadas usando a cota do seu projeto, o que pode resultar na perda da cota ou em cobranças adicionais para projetos faturados, além de acessar modelos e arquivos ajustados.
+Adicionar restrições de chave de API pode ajudar a limitar a área utilizável em cada chave de API.
+Você é responsável por manter a chave da API Gemini segura.
+NÃO registre as chaves da API Gemini no controle da origem.
+Os aplicativos do lado do cliente (Android, Swift, Web e Dart/Flutter) correm o risco de expor as chaves de API. Não recomendamos usar os SDKs de cliente da IA do Google em apps de produção para chamar a API Gemini da IA do Google diretamente dos seus apps para dispositivos móveis e da Web.
+Para conferir algumas práticas recomendadas gerais, consulte este artigo de suporte.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-01-21 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

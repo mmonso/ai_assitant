@@ -1,0 +1,86 @@
+URL: https://ai.google.dev/responsible
+
+Soluções
+/
+Português – Brasil
+Fazer login
+Kit de ferramentas de IA generativa responsável
+Documentos
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Toolkit para IA generativa responsável
+Ferramentas e orientações para projetar, desenvolver e avaliar modelos abertos de IA com responsabilidade.
+Design responsável de aplicativos
+Defina regras para o comportamento do modelo, crie um aplicativo seguro e responsável e mantenha uma comunicação transparente com os usuários.
+Alinhamento de segurança
+Descubra técnicas de depuração imediata e orientações para ajustes e RLHF para alinhar modelos de IA às políticas de segurança.
+Avaliação do modelo
+Encontre orientações e dados para realizar uma avaliação robusta do modelo de segurança, imparcialidade e precisão com o Comparador de LLM.
+de saída
+Implante classificadores de segurança usando soluções prontas para uso ou crie as suas próprias com tutoriais passo a passo.
+Projetar uma abordagem responsável
+PRIMEIROS PASSOS
+Definir políticas no nível do sistema
+Determine que tipo de conteúdo seu aplicativo deve e não deve gerar.
+Definir políticas
+Confira exemplos
+Design com foco na segurança
+Defina sua abordagem geral para implementar técnicas de redução de riscos, considerando as compensações técnicas e comerciais.
+Saiba mais
+Seja transparente
+Comunique sua abordagem com artefatos como cards de modelo.
+Consulte "Modelos"
+Sistemas de IA seguros
+Considere os riscos de segurança específicos da IA e os métodos de correção destacados no framework de IA segura (SAIF, na sigla em inglês).
+Framework de IA segura do Google
+Documentação
+Alinhar o modelo
+PRIMEIROS PASSOS
+Crie avisos mais seguros e robustos
+Use o poder dos LLMs para criar modelos de comando mais seguros com a biblioteca de alinhamento de modelos.
+Testar agora
+Alinhamento do modelo
+Ajustar modelos para segurança
+Controle o comportamento do modelo ajustando-o para que ele se alinhe às suas políticas de segurança e conteúdo.
+Saiba mais sobre os ajustes
+Saiba mais sobre o ajuste do SFT
+Saiba mais sobre o ajuste de RLHF
+Investigar comandos de modelo
+Crie instruções seguras e úteis com melhorias iterativas usando a Ferramenta de interpretabilidade de aprendizado (LIT, na sigla em inglês).
+Testar agora
+Ferramenta de interpretabilidade de aprendizado
+Avalie o modelo
+PRIMEIROS PASSOS
+Comparador de LLM
+Realize avaliações lado a lado com o Comparador de LLM para avaliar qualitativamente as diferenças nas respostas entre modelos, comandos diferentes para o mesmo modelo ou até mesmo diferentes ajustes de um modelo.
+Teste a demonstração
+Saiba mais sobre o comparador de LLM
+Diretrizes de avaliação de modelos
+Saiba mais sobre as práticas recomendadas de red team e avalie seu modelo com base em comparativos acadêmicos para avaliar os danos relacionados à segurança, à imparcialidade e à veracidade.
+Saiba mais
+Conferir comparativos de mercado
+Confira as práticas recomendadas para equipes vermelhas
+Proteger com proteções
+PRIMEIROS PASSOS
+Texto do SynthID
+Uma ferramenta para adicionar marca d'água e detectar texto gerado pelo modelo.
+Marca-d'água de texto do SynthID
+ShieldGemma
+Uma série de classificadores de segurança de conteúdo criados com o Gemma 2, disponíveis em três tamanhos: 2B, 9B e 27B.
+Classificadores de segurança de conteúdo do ShieldGemma
+Classificadores ágeis
+Criar classificadores de segurança para suas políticas específicas usando o ajuste eficiente de parâmetros (PET, na sigla em inglês) com dados de treinamento relativamente pequenos
+Criar classificadores de segurança
+Verifica a segurança da IA
+Garanta a conformidade da IA com suas políticas de conteúdo usando APIs e painéis de monitoramento.
+Verifica a segurança da IA
+Serviço de moderação de texto
+Detecte uma lista de atributos de segurança, incluindo várias categorias e tópicos potencialmente nocivos que podem ser considerados sensíveis com essa API Google Cloud Natural Language disponível sem custo financeiro abaixo de um determinado limite de uso.
+API Cloud Natural Language
+Preços da API Cloud Natural Language
+API Perspective
+Identifique comentários "tóxicos" com esta API sem custo financeiro do Google Jigsaw para reduzir a toxicidade on-line e garantir um diálogo saudável.
+API Perspective
+Termos de Serviço
+Privacidade
+Português – Brasil

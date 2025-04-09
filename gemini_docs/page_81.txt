@@ -1,0 +1,100 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=fr
+
+Modèles
+/
+Français
+Connexion
+Documentation de l'API Gemini
+Documentation de référence de l'API
+Liste de recettes
+Aperçu
+Premiers pas
+Guide de démarrage rapide
+Clés API
+Bibliothèques
+Notes de version
+Compatibilité OpenAI
+Forum des développeurs
+Modèles
+Tous les modèles
+Tarifs
+Limites de débit
+Infos de facturation
+Capacités
+Génération de texte
+Génération d'images
+Vision
+Compréhension audio
+Contexte long
+Exécution du code
+Sortie structurée
+Penser
+Appel de fonction
+Compréhension des documents
+Ancrage avec la recherche Google
+Affinage
+Embeddings
+Guides
+API Live
+mise en cache du contexte
+Ingénierie des invites
+Comptage de jetons
+Sécurité
+Ressources supplémentaires
+Gemini pour la recherche
+Programme Gemini pour les établissements d'enseignement
+Cas d'utilisation
+Applications
+Dépannage
+Dépannage de l'API
+Résoudre les problèmes liés à AI Studio
+Google Workspace
+Juridique
+Conditions d'utilisation
+Régions disponibles
+Autres règles d'utilisation
+Gemini 2.5 Pro Experimental, notre modèle le plus avancé, est désormais disponible. En savoir plus
+Cette page a été traduite par l'API Cloud Translation.
+Switch to English
+Accueil
+Gemini API
+Modèles
+API Gemini pour les développeurs
+Obtenir une clé API Gemini
+Obtenez une clé API Gemini et effectuez votre première requête API en quelques minutes.
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+Rencontrez les modèles
+Utiliser Gemini dans Google AI Studio
+2.5 Pro experiment
+Notre modèle de pensée le plus puissant, avec des fonctionnalités de raisonnement complexe et bien plus
+2.0 Flash spark
+Notre tout dernier modèle multimodal, avec des fonctionnalités de nouvelle génération et des fonctionnalités améliorées
+2.0 Flash-Lite bolt
+Notre modèle multimodal le plus rapide et le plus économique, offrant d'excellentes performances pour les tâches à haute fréquence
+Explorer l'API
+Génération d'images natives
+Générez et modifiez des images hautement contextuelles en mode natif avec Gemini 2.0 Flash.
+Explorer le contexte long
+Importez des millions de jetons dans les modèles Gemini et tirez des insights des images, vidéos et documents non structurés.
+Générer des sorties structurées
+Contraignez Gemini à répondre au format JSON, un format de données structurées adapté au traitement automatisé.
+Commencer à créer avec l'API Gemini
+Commencer
+Sauf indication contraire, le contenu de cette page est régi par une licence Creative Commons Attribution 4.0, et les échantillons de code sont régis par une licence Apache 2.0. Pour en savoir plus, consultez les Règles du site Google Developers. Java est une marque déposée d'Oracle et/ou de ses sociétés affiliées.
+Dernière mise à jour le 2025/04/04 (UTC).
+Conditions d'utilisation
+Règles de confidentialité
+Français

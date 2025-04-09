@@ -1,0 +1,101 @@
+URL: https://ai.google.dev/gemini-api/docs?hl=zh-tw
+
+模型
+更多選項
+/
+中文 – 繁體
+登入
+Gemini API 說明文件
+API 參考資料
+教戰手冊
+總覽
+開始使用
+快速入門導覽課程
+API 金鑰
+程式庫
+版本資訊
+OpenAI 相容性
+開發人員論壇
+模型
+所有模型
+定價
+頻率限制
+帳單資訊
+功能
+文字生成
+圖像生成
+Vision
+音訊理解
+詳細背景資訊
+程式碼執行
+結構化輸出內容
+思考
+函式呼叫
+文件解讀
+以 Google 搜尋建立基準
+微調
+嵌入
+指南
+Live API
+內容快取
+提示工程
+符記計數
+安全分
+其他資源
+Gemini for Research
+Gemini 學術計畫
+用途
+應用程式
+疑難排解
+API 疑難排解
+AI Studio 疑難排解
+Google Workspace
+Legal
+服務條款
+可用地區
+其他使用政策
+我們最先進的模型 Gemini 2.5 Pro 實驗版現已推出！瞭解詳情
+本頁面由 Cloud Translation API 翻譯而成。
+Switch to English
+首頁
+Gemini API
+模型
+Gemini Developer API
+取得 Gemini API 金鑰
+取得 Gemini API 金鑰，幾分鐘內就能發出第一個 API 要求。
+Python
+JavaScript
+REST
+from google import genai
+
+client = genai.Client(api_key="
+YOUR_API_KEY")
+
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents="Explain how AI works",
+)
+
+print(response.text)
+認識模型
+在 Google AI Studio 中使用 Gemini
+2.5 Pro experiment
+我們最強大的思考模型，提供複雜推理等多項功能
+2.0 Flash spark
+最新的多模態模型，提供新一代功能和強化功能
+2.0 Flash-Lite bolt
+這是我們最快速且最具成本效益的多模態模型，可為高頻率工作提供出色的效能
+探索 API
+原生圖片產生
+使用 Gemini 2.0 Flash 原生生成及編輯高度符合情境的圖片。
+探索長脈絡
+將數百萬個符記輸入 Gemini 模型，從非結構化圖片、影片和文件中擷取理解資訊。
+產生結構化輸出內容
+限制 Gemini 以 JSON 回應，這是適合自動處理的結構化資料格式。
+開始使用 Gemini API 建構
+踏出第一步
+除非另有註明，否則本頁面中的內容是採用創用 CC 姓名標示 4.0 授權，程式碼範例則為阿帕契 2.0 授權。詳情請參閱《Google Developers 網站政策》。Java 是 Oracle 和/或其關聯企業的註冊商標。
+上次更新時間：2025-04-04 (世界標準時間)。
+條款
+隱私權
+中文 – 繁體

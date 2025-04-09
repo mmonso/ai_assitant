@@ -14,7 +14,7 @@
     flex-direction: column;
     border-right: 1px solid var(--border-color);
     flex-shrink: 0; /* Prevent shrinking */
-    overflow-y: auto; /* Handle scrolling here */
+    /* overflow-y: auto; */ /* Moved to #conversation-list */
     position: relative; /* Needed if popover calculation depends on sidebar */
 }
 

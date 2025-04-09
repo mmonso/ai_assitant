@@ -1,0 +1,421 @@
+URL: https://ai.google.dev/gemini-api/docs/vision
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Explore as capacidades visuais com a API Gemini
+Nesta página
+Entrada de imagem
+Como trabalhar com imagens locais
+Imagens codificadas em Base64
+Várias imagens
+Payloads de imagens grandes
+Compatibilidade com o OpenAI
+Como usar imagens
+Detalhes técnicos (imagens)
+Python
+Node.js
+Go
+REST
+Testar um notebook do Colab
+Acessar o notebook no GitHub
+Os modelos Gemini são capazes de processar imagens e vídeos, permitindo muitos casos de uso de desenvolvedores de fronteira que historicamente exigiriam modelos específicos de domínio. Alguns dos recursos de visão do Gemini incluem a capacidade de:
+Adicionar legendas e responder a perguntas sobre imagens
+Transcrever e analisar PDFs, incluindo até 2 milhões de tokens
+Descrever, segmentar e extrair informações de vídeos com até 90 minutos de duração
+Detectar objetos em uma imagem e retornar as coordenadas da caixa delimitadora
+O Gemini foi criado para ser multimodais desde o início, e continuamos avançando os limites do que é possível.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Entrada de imagem
+Para tamanhos de payload de imagem total de menos de 20 MB, recomendamos fazer o upload de imagens codificadas em base64 ou diretamente de arquivos de imagem armazenados localmente.
+Como trabalhar com imagens locais
+Se você estiver usando a biblioteca de imagens do Python (Pillow), também poderá usar objetos de imagem PIL.
+from google import genai
+from google.genai import types
+
+import PIL.Image
+
+image = PIL.Image.open('/path/to/image.png')
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+response = client.models.generate_content(
+    model="gemini-2.0-flash",
+    contents=["What is this image?", image])
+
+print(response.text)
+Imagens codificadas em Base64
+Você pode fazer upload de URLs de imagens públicas codificando-os como payloads Base64. O exemplo de código abaixo mostra como fazer isso usando apenas ferramentas de biblioteca padrão:
+from google import genai
+from google.genai import types
+
+import requests
+
+image_path = "https://goo.gle/instrument-img"
+image = requests.get(image_path)
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp",
+    contents=["What is this image?",
+              types.Part.from_bytes(data=image.content, mime_type="image/jpeg")])
+
+print(response.text)
+Várias imagens
+Para solicitar com várias imagens, forneça várias imagens na chamada para generate_content. Eles podem estar em qualquer formato compatível, incluindo base64 ou PIL.
+from google import genai
+from google.genai import types
+
+import pathlib
+import PIL.Image
+
+image_path_1 = "path/to/your/image1.jpeg"  # Replace with the actual path to your first image
+image_path_2 = "path/to/your/image2.jpeg" # Replace with the actual path to your second image
+
+image_url_1 = "https://goo.gle/instrument-img" # Replace with the actual URL to your third image
+
+pil_image = PIL.Image.open(image_path_1)
+
+b64_image = types.Part.from_bytes(
+    data=pathlib.Path(image_path_2).read_bytes(),
+    mime_type="image/jpeg"
+)
+
+downloaded_image = requests.get(image_url_1)
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp",
+    contents=["What do these images have in common?",
+              pil_image, b64_image, downloaded_image])
+
+print(response.text)
+Essas chamadas de dados inline não incluem muitos dos recursos disponíveis na API File, como a extração de metadados de arquivos, listagem ou exclusão de arquivos.
+Payloads de imagens grandes
+Quando a combinação de arquivos e instruções do sistema que você pretende enviar tiver um tamanho maior que 20 MB, use a API File para fazer upload deles.
+Use o método media.upload da API File para fazer upload de uma imagem de qualquer tamanho.
+Observação: a API File permite armazenar até 20 GB de arquivos por projeto, com um tamanho máximo de 2 GB por arquivo. Os arquivos são armazenados por 48 horas. Eles podem ser acessados nesse período com sua chave de API, mas não podem ser transferidos por download da API. Ele está disponível sem custo financeiro em todas as regiões onde a API Gemini está disponível.
+Depois de fazer o upload do arquivo, é possível fazer solicitações GenerateContent que fazem referência ao URI da API File. Selecione o modelo generativo e forneça um comando de texto e a imagem enviada.
+from google import genai
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+img_path = "/path/to/Cajun_instruments.jpg"
+file_ref = client.files.upload(file=img_path)
+print(f'{file_ref=}')
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+response = client.models.generate_content(
+    model="gemini-2.0-flash-exp",
+    contents=["What can you tell me about these instruments?",
+              file_ref])
+
+print(response.text)
+Compatibilidade com o OpenAI
+É possível acessar os recursos de compreensão de imagem do Gemini usando as bibliotecas da OpenAI. Isso permite integrar o Gemini aos fluxos de trabalho atuais da OpenAI atualizando três linhas de código e usando a chave da API Gemini. Consulte o exemplo de compreensão de imagem para ver o código que demonstra como enviar imagens codificadas como payloads Base64.
+Como usar imagens
+Neste tutorial, você vai fazer upload de imagens usando a API File ou como dados inline e gerar conteúdo com base nessas imagens.
+Detalhes técnicos (imagens)
+O Gemini 2.0 Flash, 1.5 Pro e 1.5 Flash oferecem suporte a um máximo de 3.600 arquivos de imagem.
+As imagens precisam estar em um dos seguintes tipos MIME de dados de imagem:
+PNG - image/png
+JPEG - image/jpeg
+WEBP - image/webp
+HEIC - image/heic
+HEIF - image/heif
+Tokens
+Veja como os tokens são calculados para imagens:
+Gemini 1.0 Pro Vision: cada imagem representa 258 tokens.
+Gemini 1.5 Flash e Gemini 1.5 Pro: se as duas dimensões de uma imagem forem menores ou iguais a 384 pixels, então 258 tokens serão usados. Se uma dimensão de uma imagem for maior que 384 pixels, ela será cortada em blocos. O padrão de cada tamanho de bloco é a menor dimensão (largura ou altura) dividida por 1,5. Se necessário, cada bloco é ajustado para não ser menor que 256 pixels nem maior que 768 pixels. Cada bloco é redimensionado para 768 x 768 e usa 258 tokens.
+Gemini 2.0 Flash: as entradas de imagem com as duas dimensões <=384 pixels são contabilizadas como 258 tokens. As imagens maiores em uma ou ambas as dimensões são cortadas e redimensionadas conforme necessário em blocos de 768 x 768 pixels, cada um contado como 258 tokens.
+Para ter os melhores resultados
+Gire as imagens para a orientação correta antes de fazer o upload.
+Evite imagens desfocadas.
+Se estiver usando uma única imagem, coloque o comando de texto depois dela.
+Recursos
+Esta seção descreve os recursos de visão específicos do modelo do Gemini, incluindo a detecção de objetos e as coordenadas da caixa delimitadora.
+Extrair uma caixa delimitadora para um objeto
+Os modelos do Gemini são treinados para retornar as coordenadas da caixa delimitadora como larguras ou alturas relativas no intervalo [0, 1]. Esses valores são dimensionados por 1.000 e convertidos em números inteiros. Na prática, as coordenadas representam a caixa delimitadora em uma versão de 1.000 x 1.000 pixels da imagem. Portanto, você precisará converter essas coordenadas de volta às dimensões da imagem original para mapear as caixas delimitadoras com precisão.
+from google import genai
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+prompt = (
+  "Return a bounding box for each of the objects in this image "
+  "in [ymin, xmin, ymax, xmax] format.")
+
+response = client.models.generate_content(
+  model="gemini-1.5-pro",
+  contents=[sample_file_1, prompt])
+
+print(response.text)
+É possível usar caixas delimitadoras para a detecção e a localização de objetos em imagens e vídeos. Ao identificar e delimitar objetos com caixas limitadoras, você pode desbloquear uma ampla gama de aplicativos e melhorar a inteligência dos seus projetos.
+Principais vantagens
+Simples:integre recursos de detecção de objetos aos seus aplicativos com facilidade, independentemente da sua experiência em visão computacional.
+Personalizável:produz caixas delimitadoras com base em instruções personalizadas (por exemplo, "Quero ver caixas delimitadoras de todos os objetos verdes nesta imagem") sem precisar treinar um modelo personalizado.
+Detalhes técnicos
+Entrada:seu comando e as imagens ou frames de vídeo associados.
+Saída:caixas delimitadoras no formato [y_min, x_min, y_max, x_max]. O canto superior esquerdo é a origem. Os eixos x e y vão horizontalmente e verticalmente, respectivamente. Os valores de coordenadas são normalizados de 0 a 1.000 para cada imagem.
+Visualização:os usuários do AI Studio vão ver as caixas de limite plotadas na interface.
+Para desenvolvedores Python, teste o notebook de compreensão espacial 2D ou o notebook experimental de ponteiro 3D.
+Normalizar coordenadas
+O modelo retorna coordenadas da caixa delimitadora no formato [y_min, x_min, y_max, x_max]. Para converter essas coordenadas normalizadas nas coordenadas de pixel da imagem original, siga estas etapas:
+Divida cada coordenada de saída por 1.000.
+Multiplique as coordenadas x pela largura da imagem original.
+Multiplique as coordenadas y pela altura da imagem original.
+Para conferir exemplos mais detalhados de como gerar coordenadas de caixa delimitadora e visualizá-las em imagens, consulte nosso exemplo de manual de detecção de objetos.
+Segmentação de imagens
+A partir da geração 2.5, os modelos do Gemini são treinados para não apenas detectar itens, mas também segmentá-los e fornecer uma máscara do contorno deles.
+O modelo prevê uma lista JSON, em que cada item representa uma máscara de segmentação. Cada item tem uma caixa delimitadora ("box_2d") no formato [y0, x0, y1, x1] com coordenadas normalizadas entre 0 e 1000, um rótulo ("label") que identifica o objeto e, por fim, a máscara de segmentação dentro da caixa delimitadora, como png codificado em base64, que é um mapa de probabilidade com valores entre 0 e 255. A máscara precisa ser redimensionada para corresponder às dimensões da caixa delimitadora e, em seguida, binarizada no limite de confiança (127 para o ponto médio).
+from google import genai
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+prompt = """
+  Give the segmentation masks for the wooden and glass items.
+  Output a JSON list of segmentation masks where each entry contains the 2D
+  bounding box in the key "box_2d", the segmentation mask in key "mask", and
+  the text label in the key "label". Use descriptive labels.
+"""
+
+response = client.models.generate_content(
+  model="gemini-2.5-pro-exp-03-25",
+  contents=[sample_file_1, prompt])
+
+print(response.text)
+Máscara dos objetos de madeira e vidro encontrados na imagem
+Confira o exemplo de segmentação no guia do livro de receitas para conferir um exemplo mais detalhado.
+Como usar vídeos para dar comandos
+Neste tutorial, você vai fazer o upload de um vídeo usando a API File e gerar conteúdo com base nessas imagens.
+Detalhes técnicos (vídeo)
+O Gemini 1.5 Pro e o Flash oferecem suporte a aproximadamente uma hora de dados de vídeo.
+O vídeo precisa estar em um dos seguintes tipos MIME de formato de vídeo:
+video/mp4
+video/mpeg
+video/mov
+video/avi
+video/x-flv
+video/mpg
+video/webm
+video/wmv
+video/3gpp
+O serviço da API File extrai frames de imagens de vídeos a 1 frame por segundo (FPS) e áudio a 1 Kbps, canal único, adicionando carimbos de data/hora a cada segundo. Essas taxas estão sujeitas a mudanças no futuro para melhorias na inferência.
+Observação: os detalhes de sequências de ação rápidas podem ser perdidos na taxa de amostragem de frames de 1 QPS. Considere desacelerar clipes de alta velocidade para melhorar a qualidade da inferência.
+Os frames individuais são 258 tokens, e o áudio é 32 tokens por segundo. Com metadados, cada segundo de vídeo se torna cerca de 300 tokens, o que significa que uma janela de contexto de 1 milhão pode caber em pouco menos de uma hora de vídeo. Como resultado, o Gemini Pro, que tem uma janela de contexto de 2 milhões, pode processar vídeos com até 2 horas de duração, e o Gemini Flash, que tem uma janela de contexto de 1 milhão, pode processar vídeos com até 1 hora de duração.
+Para fazer perguntas sobre locais com carimbo de data/hora, use o formato MM:SS, em que os dois primeiros dígitos representam minutos e os dois últimos dígitos representam segundos.
+Para os melhores resultados:
+Use um vídeo por comando.
+Se você estiver usando um único vídeo, coloque o comando de texto depois dele.
+Fazer upload de um arquivo de vídeo usando a API File
+Observação: a API File permite armazenar até 20 GB de arquivos por projeto, com um tamanho máximo de 2 GB por arquivo. Os arquivos são armazenados por 48 horas. Eles podem ser acessados nesse período com sua chave de API, mas não podem ser transferidos por download usando nenhuma API. Ele está disponível sem custo em todas as regiões em que a API Gemini está disponível.
+A API File aceita formatos de arquivo de vídeo diretamente. Este exemplo usa o curto-metragem da NASA "Jupiter's Great Red Spot Shrinks and Grows". Crédito: Centro de Voos Espaciais Goddard (GSFC)/David Ladd (2018).
+"Jupiter's Great Red Spot Shrinks and Grows" está no domínio público e não mostra pessoas identificáveis. (Diretrizes de uso de imagens e mídia da NASA.)
+Comece recuperando o vídeo curto:
+wget https://storage.googleapis.com/generativeai-downloads/images/GreatRedSpot.mp4
+Faça upload do vídeo usando a API File e imprima o URI.
+from google import genai
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+print("Uploading file...")
+video_file = client.files.upload(file="GreatRedSpot.mp4")
+print(f"Completed upload: {video_file.uri}")
+Verificar o upload de arquivos e o estado de verificação
+Verifique se a API recebeu os arquivos chamando o método files.get.
+Observação: os arquivos de vídeo têm um campo State na API File. Quando um vídeo é enviado, ele fica no estado PROCESSING até que esteja pronto para inferência. Somente arquivos ACTIVE podem ser usados para inferência de modelo.
+import time
+
+# Check whether the file is ready to be used.
+while video_file.state.name == "PROCESSING":
+    print('.', end='')
+    time.sleep(1)
+    video_file = client.files.get(name=video_file.name)
+
+if video_file.state.name == "FAILED":
+  raise ValueError(video_file.state.name)
+
+print('Done')
+Com um vídeo e texto
+Quando o vídeo enviado estiver no estado ACTIVE, será possível fazer solicitações GenerateContent que especifiquem o URI da API File para esse vídeo. Selecione o modelo generativo e forneça o vídeo enviado e um comando de texto.
+from IPython.display import Markdown
+
+# Pass the video file reference like any other media part.
+response = client.models.generate_content(
+    model="gemini-1.5-pro",
+    contents=[
+        video_file,
+        "Summarize this video. Then create a quiz with answer key "
+        "based on the information in the video."])
+
+# Print the response, rendering any Markdown
+Markdown(response.text)
+Fazer upload de um vídeo inline
+Se o vídeo tiver menos de 20 MB, você poderá incluí-lo inline com a solicitação como um Part de dados.
+Confira um exemplo de upload de um vídeo inline:
+# Only for videos of size <20Mb
+video_file_name = "/path/to/your/video.mp4"
+video_bytes = open(video_file_name, 'rb').read()
+
+response = client.models.generate_content(
+    model='models/gemini-2.0-flash',
+    contents=types.Content(
+        parts=[
+            types.Part(text='Can you summarize this video?'),
+            types.Part(
+                inline_data=types.Blob(data=video_bytes, mime_type='video/mp4')
+            )
+        ]
+    )
+)
+Incluir um URL do YouTube
+Pré-lançamento :o recurso de URL do YouTube está em fase de pré-lançamento e não tem custo financeiro. Os preços e os limites de taxa podem mudar.
+A API Gemini e o AI Studio oferecem suporte a URLs do YouTube como Part de dados de arquivo. É possível incluir um URL do YouTube com um comando que pede ao modelo para resumir, traduzir ou interagir com o conteúdo do vídeo.
+Limitações:
+Não é possível enviar mais de oito horas de vídeo do YouTube por dia.
+Você só pode enviar um vídeo por solicitação.
+Só é possível enviar vídeos públicos, não privados ou não listados.
+Observação: o Gemini Pro, que tem uma janela de contexto de 2 milhões, pode processar vídeos de até 2 horas. Já o Gemini Flash, que tem uma janela de contexto de 1 milhão, pode processar vídeos de até 1 hora.
+O exemplo a seguir mostra como incluir um URL do YouTube com uma solicitação:
+response = client.models.generate_content(
+    model='models/gemini-2.0-flash',
+    contents=types.Content(
+        parts=[
+            types.Part(text='Can you summarize this video?'),
+            types.Part(
+                file_data=types.FileData(file_uri='https://www.youtube.com/watch?v=9hE5-98ZeCg')
+            )
+        ]
+    )
+)
+Consulte as marcações de tempo no conteúdo
+Você pode usar carimbos de data/hora no formato MM:SS para se referir a momentos específicos no vídeo.
+prompt = "What are the examples given at 01:05 and 01:19 supposed to show us?"
+
+response = client.models.generate_content(
+    model="gemini-1.5-pro",
+    contents=[video_file, prompt])
+
+print(response.text)
+Transcrever vídeos e fornecer descrições visuais
+Os modelos Gemini podem transcrever e fornecer descrições visuais do conteúdo do vídeo processando a faixa de áudio e os frames visuais. Para descrições visuais, o modelo faz a amostragem do vídeo a uma taxa de 1 frame por segundo. Essa taxa de amostragem pode afetar o nível de detalhes nas descrições, principalmente em vídeos com mudanças visuais rápidas.
+prompt = (
+    "Transcribe the audio from this video, giving timestamps for "
+    "salient events in the video. Also provide visual descriptions.")
+
+response = client.models.generate_content(
+    model="gemini-1.5-pro",
+    contents=[video_file, prompt])
+
+print(response.text)
+Listar arquivos
+É possível listar todos os arquivos enviados usando a API File e os URIs deles usando files.list.
+from google import genai
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+print('My files:')
+for f in client.files.list():
+  print(" ", f'{f.name}: {f.uri}')
+Excluir arquivos
+Os arquivos enviados usando a API File são excluídos automaticamente após dois dias. Também é possível excluí-las manualmente usando files.delete.
+from google import genai
+
+client = genai.Client(api_key="
+GEMINI_API_KEY")
+
+# Upload a file
+poem_file = client.files.upload(file="poem.txt")
+
+# Files will auto-delete after a period.
+print(poem_file.expiration_time)
+
+# Or they can be deleted explicitly.
+dr = client.files.delete(name=poem_file.name)
+
+try:
+  client.models.generate_content(
+      model="gemini-2.0-flash-exp",
+      contents=['Finish this poem:', poem_file])
+except genai.errors.ClientError as e:
+  print(e.code)  # 403
+  print(e.status)  # PERMISSION_DENIED
+  print(e.message)  # You do not have permission to access the File .. or it may not exist.
+A seguir
+Este guia mostra como fazer upload de arquivos de imagem e vídeo usando a API File e, em seguida, gerar saídas de texto de entradas de imagem e vídeo. Para saber mais, confira estes recursos:
+Estratégias de solicitação de arquivo: a API Gemini oferece suporte a solicitações com dados de texto, imagem, áudio e vídeo, também conhecidas como solicitações multimodais.
+Instruções do sistema: as instruções do sistema permitem orientar o comportamento do modelo com base nas suas necessidades e casos de uso específicos.
+Orientações de segurança: às vezes, os modelos de IA generativa produzem resultados inesperados, como respostas imprecisas, parciais ou ofensivas. O pós-processamento e a avaliação humana são essenciais para limitar o risco de danos causados por essas saídas.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-04 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

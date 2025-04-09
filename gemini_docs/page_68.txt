@@ -1,0 +1,300 @@
+URL: https://ai.google.dev/gemini-api/docs/available-regions
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Regiões disponíveis para o Google AI Studio e a API Gemini
+Nesta página
+Regiões disponíveis
+Se você chegou a esta página depois de tentar abrir o Google AI Studio, talvez seja porque ele não está disponível na sua região ou porque você não atende aos requisitos de idade (18 anos ou mais) para acessar. Saiba mais sobre as regiões disponíveis na próxima seção e outros requisitos nos termos de serviço.
+Regiões disponíveis
+Observação: para usuários do Colab, as restrições de região são aplicadas com base na região em que a instância do Colab está, e não na região em que o usuário está. É possível verificar o local da instância do Colab usando !curl ipinfo.io
+A API Gemini e o Google AI Studio estão disponíveis nos seguintes países e territórios. Se você não estiver em um desses países ou territórios, teste a API Gemini na Vertex AI:
+Albânia
+Argélia
+Samoa Americana
+Angola
+Anguila
+Antártida
+Antígua e Barbuda
+Argentina
+Armênia
+Aruba
+Austrália
+Áustria
+Azerbaijão
+Bahamas
+Barein
+Bangladesh
+Barbados
+Bélgica
+Belize
+Benin
+Bermudas
+Butão
+Bolívia
+Bósnia
+Botsuana
+Brasil
+Território Britânico do Oceano Índico
+Ilhas Virgens Britânicas
+Brunei
+Bulgária
+Burkina Fasso
+Burundi
+Cabo Verde
+Camboja
+Camarões
+Canadá
+Países Baixos Caribenhos
+Ilhas Cayman
+República Centro-Africana
+Chade
+Chile
+Ilha Christmas
+Ilhas Cocos (Keeling)
+Colômbia
+Comores
+Ilhas Cook
+Costa do Marfim
+Costa Rica
+Croácia
+Curaçao
+República Tcheca
+República Democrática do Congo
+Dinamarca
+Djibuti
+Dominica
+República Dominicana
+Equador
+Egito
+El Salvador
+Guiné Equatorial
+Eritreia
+Estônia
+Suazilândia
+Etiópia
+Ilhas Malvinas (Falkland)
+Ilhas Faroé
+Fiji
+Finlândia
+França
+Gabão
+Gâmbia
+Geórgia
+Alemanha
+Gana
+Gibraltar
+Grécia
+Groenlândia
+Granada
+Guam
+Guatemala
+Guernsey
+Guiné
+Guiné-Bissau
+Guiana
+Haiti
+Ilhas Heard e McDonald
+Herzegovina
+Honduras
+Hungria
+Islândia
+Índia
+Indonésia
+Iraque
+Irlanda
+Ilha de Man
+Israel
+Itália
+Jamaica
+Japão
+Jersey
+Jordânia
+Cazaquistão
+Quênia
+Kiribati
+Kosovo
+Quirguistão
+Kuwait
+Laos
+Letônia
+Líbano
+Lesoto
+Libéria
+Líbia
+Liechtenstein
+Lituânia
+Luxemburgo
+Madagascar
+Malauí
+Malásia
+Maldivas
+Mali
+Malta
+Ilhas Marshall
+Mauritânia
+Ilhas Maurício
+México
+Micronésia
+Mongólia
+Montenegro
+Montserrat
+Marrocos
+Moçambique
+Namíbia
+Nauru
+Nepal
+Países Baixos
+Nova Caledônia
+Nova Zelândia
+Nicarágua
+Níger
+Nigéria
+Niue
+Ilha Norfolk
+Macedônia do Norte
+Ilhas Mariana do Norte
+Noruega
+Omã
+Paquistão
+Palau
+Palestina
+Panamá
+Papua-Nova Guiné
+Paraguai
+Peru
+Filipinas
+Ilhas Pitcairn
+Polônia
+Portugal
+Porto Rico
+Catar
+República do Chipre
+República do Congo
+Romênia
+Ruanda
+São Bartolomeu
+São Cristóvão e Névis
+Santa Lúcia
+Saint Pierre e Miquelon
+São Vicente e Granadinas
+Santa Helena, Ascensão e Tristão da Cunha
+Samoa
+São Tomé e Príncipe
+Arábia Saudita
+Senegal
+Sérvia
+Ilhas Seychelles
+Serra Leoa
+Singapura
+Eslováquia
+Eslovênia
+Ilhas Salomão
+Somália
+África do Sul
+Ilhas Geórgia do Sul e Sandwich do Sul
+Coreia do Sul
+Sudão do Sul
+Espanha
+Sri Lanka
+Sudão
+Suriname
+Suécia
+Suíça
+Taiwan
+Tajiquistão
+Tanzânia
+Tailândia
+Timor Leste
+Togo
+Toquelau
+Tonga
+Trinidad e Tobago
+Tunísia
+Turquia
+Turcomenistão
+Ilhas Turks e Caicos
+Tuvalu
+Uganda
+Ucrânia
+Reino Unido
+Emirados Árabes Unidos
+Estados Unidos
+Territórios Insulares dos Estados Unidos
+Ilhas Virgens Americanas
+Uruguai
+Uzbequistão
+Vanuatu
+Venezuela
+Vietnã
+Ilhas Wallis e Futuna
+Saara Ocidental
+Iêmen
+Zâmbia
+Zimbábue
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-11 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

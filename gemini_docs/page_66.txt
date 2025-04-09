@@ -1,0 +1,86 @@
+URL: https://ai.google.dev/gemini-api/docs/workspace
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Acesse o Google AI Studio com sua conta do Workspace
+Nesta página
+Solução de problemas
+Ativar o AI Studio para usuários do Workspace
+Todos os usuários do Google Workspace têm acesso à IA Studio por padrão. Se você é usuário do Workspace e quer começar a usar AI Studio, confira Guia de início rápido do AI Studio.
+Solução de problemas
+Se o acesso ao AI Studio estiver desativado na sua conta do Google Workspace, você poderá você verá um erro como este:
+We are sorry, but you do not have access to Google AI Studio. Please contact your Organization Administrator for access.
+Se você acha que deveria ter acesso ao AI Studio, entre em contato com seu Workspace administrador.
+Ativar o AI Studio para usuários do Workspace
+Importante :esta seção é destinada aos administradores do Google Workspace.
+Como administrador do Google Workspace, você controla quem usa o AI Studio:
+O AI Studio está ativado por padrão em todas as edições.
+É possível ativar ou desativar o AI Studio para conjuntos de usuários de um lado para o outro unidades organizacionais.
+Edições do Google Workspace for Education: os usuários com menos de 18 anos não têm impedidas de usar o AI Studio com o Google Workspace por Google Workspace for Education. Isso é válido mesmo quando a configuração do AI Studio Saiba mais em Controlar o acesso aos Serviços do Google por idade.
+Para ativar ou desativar o AI Studio para os usuários da organização, consulte Ativar ou desativar o Google AI Studio para os usuários.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-25 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

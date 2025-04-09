@@ -48,95 +48,129 @@
     color: var(--text-primary);
 }
 
-#new-chat-button {
+#new-chat-button,
+#create-folder-button { /* Apply base styles to both buttons */
     background-color: transparent;
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 4px 10px;
+    padding: 4px 8px; /* Slightly less padding for icon button */
     font-size: 0.85em;
     border-radius: var(--border-radius-sm);
+    display: inline-flex; /* Align icon and text if any */
+    align-items: center;
+    justify-content: center;
+    margin-left: 5px; /* Space between buttons */
 }
 
-#new-chat-button:hover {
+#create-folder-button svg { /* Style icon */
+    width: 1em;
+    height: 1em;
+}
+
+#new-chat-button:hover,
+#create-folder-button:hover {
     background-color: var(--bg-tertiary);
     border-color: var(--text-secondary);
     color: var(--text-primary);
 }
 
+/* Container for both folders and root conversations */
 #conversation-list {
-    list-style: none;
-    padding: 0;
+    padding: 0 0 20px 0; /* Add 20px padding at the bottom */
     margin: 0;
+    /* No list-style needed if using divs/uls */
+    min-height: 50px; /* Ensure it has some height even when empty for dropping */
+    flex-grow: 1; /* Allow this element to grow and fill available space */
+    overflow-y: auto; /* Allow scrolling within the list itself */
 }
 
-#conversation-list li {
-    padding: 0; /* Remove padding from li itself */
+/* General message for empty list */
+.empty-list-message {
+    padding: 15px;
+    font-style: italic;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* Style for individual conversation items (li) */
+.conversation-item {
+    list-style: none; /* Ensure no bullets if inside a ul */
+    padding: 0;
     margin-bottom: 4px;
     border-radius: var(--border-radius-md);
     cursor: pointer;
     font-size: 0.9em;
-    position: relative; /* Make li the positioning context for popover */
+    position: relative;
     color: var(--text-secondary);
     transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
 }
 
-#conversation-list li:hover {
+.conversation-item:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
 }
 
-#conversation-list li .conversation-item-content {
+/* Content wrapper inside conversation item */
+.conversation-item-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    position: relative; /* Needed for popover positioning */
-    padding-right: 8px; /* Add padding to push button from right edge */
+    position: relative;
+    padding-right: 8px;
 }
 
-#conversation-list li .conversation-title {
+/* Title span inside conversation item */
+.conversation-title {
     flex-grow: 1;
-    white-space: nowrap; /* Prevent wrapping */
-    overflow: hidden; /* Hide overflow */
-    text-overflow: ellipsis; /* Show ellipsis */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 10px 5px 10px 12px;
 }
-
-#conversation-list li:hover .conversation-title,
-#conversation-list li.active .conversation-title {
-     pointer-events: auto; /* Allow clicking title when item is hovered/active */
+.conversation-item:hover .conversation-title,
+.conversation-item.active .conversation-title {
+     pointer-events: auto;
 }
+/* Removed extra closing brace */
 
 
-#conversation-list li .conversation-actions-button {
+/* Generic styles for action buttons (conversation and folder) */
+.actions-button {
     background: none;
     border: none;
     color: var(--text-secondary);
-    padding: 4px; /* Adjust padding for SVG */
+    padding: 4px;
     margin-left: 5px;
     cursor: pointer;
-    /* font-size: 1.1em; */ /* Let SVG size control */
-    line-height: 1; /* Keep for vertical alignment */
+    line-height: 1;
     border-radius: var(--border-radius-sm);
-    display: inline-flex; /* Align SVG */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    opacity: 0; /* Hidden by default */
+    opacity: 0;
     transition: opacity 0.15s ease-in-out, background-color 0.15s ease-in-out;
-    flex-shrink: 0; /* Prevent shrinking */
+    flex-shrink: 0;
 }
 
-#conversation-list li:hover .conversation-actions-button,
-#conversation-list li .actions-popover.visible + .conversation-actions-button /* Keep visible if popover is open */
- {
-    opacity: 1; /* Show on hover */
+/* Specific button classes if needed, but generic might suffice */
+/* .conversation-actions-button {} */
+/* .folder-actions-button {} */
+
+/* Show actions button on item hover */
+.conversation-item:hover .actions-button,
+.folder-item:hover .actions-button,
+/* Keep visible if its popover is open (requires JS to manage popover visibility correctly) */
+.actions-popover.visible + .actions-button { /* This might be tricky depending on DOM structure */
+    opacity: 1;
 }
 
-#conversation-list li .conversation-actions-button:hover {
+.actions-button:hover {
     background-color: var(--bg-hover);
     color: var(--text-primary);
 }
-#conversation-list li .conversation-actions-button svg { /* Style the SVG */
+
+.actions-button svg { /* Style the SVG inside action buttons */
     width: 1.1em;
     height: 1.1em;
 }
@@ -191,22 +225,113 @@
     color: var(--accent-secondary); /* Red hint on hover for delete */
 }
 
-/* Inline Edit Input */
-.edit-conversation-input {
-    flex-grow: 1; /* Take available space */
+/* Inline Edit Input (for both conversation and folder) */
+.edit-conversation-input,
+.edit-folder-input {
+    flex-grow: 1;
     background-color: var(--bg-tertiary);
-    border: 1px solid var(--border-focus); /* Indicate editing */
+    border: 1px solid var(--border-focus);
     color: var(--text-primary);
-    padding: 2px 5px; /* Minimal padding */
-    margin: 0; /* Reset margin */
-    font-size: inherit; /* Match list item font size */
+    padding: 2px 5px;
+    margin: 0;
+    font-size: inherit;
     border-radius: var(--border-radius-sm);
-    height: auto; /* Adjust height */
+    height: auto;
     line-height: inherit;
+    /* Ensure it takes up space correctly within flex container */
+    min-width: 50px; /* Prevent collapsing too small */
 }
 
 #conversation-list li.active {
     background-color: var(--bg-active);
     color: var(--text-primary);
     font-weight: 500;
+}
+
+/* --- Folder Specific Styles --- */
+
+.folder-item {
+    margin-bottom: 5px; /* Space between folders/items */
+    border-radius: var(--border-radius-md);
+    background-color: var(--bg-secondary); /* Slightly different bg for folder */
+    /* border: 1px solid var(--border-color); */ /* Optional border */
+}
+
+.folder-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px 8px 8px; /* Adjust padding */
+    cursor: pointer;
+    border-radius: var(--border-radius-md); /* Match item radius */
+    transition: background-color 0.15s ease-in-out;
+}
+
+.folder-item:hover .folder-header {
+     background-color: var(--bg-hover); /* Hover effect on header */
+}
+
+.folder-toggle-icon {
+    margin-right: 6px;
+    font-size: 0.7em; /* Smaller icon */
+    color: var(--text-secondary);
+    transition: transform 0.2s ease-in-out;
+    display: inline-block; /* Needed for transform */
+    width: 1em; /* Reserve space */
+    text-align: center;
+}
+
+.folder-item.folder-open .folder-toggle-icon {
+    transform: rotate(90deg);
+}
+
+.folder-title {
+    flex-grow: 1;
+    font-weight: 500; /* Make folder titles slightly bolder */
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.folder-contents {
+    list-style: none;
+    padding: 0 0 5px 25px; /* Indent conversations within folder */
+    margin: 0;
+    display: none; /* Hidden by default */
+}
+
+.folder-item.folder-open .folder-contents {
+    display: block; /* Show when folder is open */
+}
+
+/* --- Drag and Drop Styles --- */
+
+.conversation-item.dragging {
+    opacity: 0.5;
+    background-color: var(--bg-active); /* Highlight while dragging */
+}
+
+/* Style for potential drop targets */
+[data-drop-target].drag-over {
+    background-color: var(--bg-drop-target, rgba(0, 120, 255, 0.1)); /* Highlight drop zone, provide fallback */
+    outline: 1px dashed var(--accent-color);
+    outline-offset: -2px;
+}
+
+/* Specific styling for folder header as drop target */
+.folder-header[data-drop-target].drag-over {
+     background-color: var(--bg-drop-target, rgba(0, 120, 255, 0.1));
+}
+
+/* Specific styling for folder contents UL as drop target */
+.folder-contents[data-drop-target].drag-over {
+    /* Maybe add padding or border */
+    /* background-color: rgba(0, 120, 255, 0.1); */ /* Lighter highlight inside */
+    min-height: 20px; /* Ensure it's visible even if empty */
+}
+
+/* Style for root container as drop target */
+#conversation-list[data-drop-target="root"].drag-over {
+     /* Maybe a border around the whole list? */
+     /* outline: 2px dashed var(--accent-color); */
 }

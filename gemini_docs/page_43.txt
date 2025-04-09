@@ -1,0 +1,476 @@
+URL: https://ai.google.dev/gemini-api/docs/prompting-strategies
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Introdução aos comandos
+Estratégias de comando
+Estratégias de solicitação de arquivos
+Guia de comandos do Imagen
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Estratégias de design de comandos
+Nesta página
+Dê instruções claras e específicas
+Definir a tarefa a ser executada
+Especificar restrições
+Definir o formato da resposta
+Incluir exemplos few-shott
+Nesta página, apresentamos algumas estratégias gerais de criação de comandos que podem ser implementadas.
+Os modelos de linguagem grandes (LLM) são treinados com grandes quantidades de dados de texto para aprender os padrões e as relações entre a linguagem. Quando recebem algum texto (o prompt), os modelos de idioma podem prever o que provavelmente virá em seguida, como uma sofisticada ferramenta de preenchimento automático.
+O Google AI Studio hospeda uma galeria de comandos simples para mostrar de forma interativa muitos dos conceitos compartilhados neste guia. No restante deste guia, você vai aprender sobre as seguintes estratégias de design de comando:
+Dê instruções claras e específicas
+Incluir exemplos few-shott
+Adicionar informações contextuais
+Adicionar prefixos
+Permitir que o modelo conclua a entrada parcial
+Dê instruções claras e específicas
+Dar instruções ao modelo sobre o que fazer é uma maneira eficaz e eficiente de personalizar o comportamento dele. As instruções fornecidas precisam ser claras e específicas. As instruções podem ser tão simples quanto uma lista de instruções detalhadas ou complexas, como mapear a experiência e a mentalidade de um usuário.
+Definir a tarefa a ser executada
+Descreva em detalhes a tarefa que você quer que o modelo realize. A tarefa pode ser tão simples quanto uma lista passo a passo de instruções ou tão complexa quanto mapear a experiência e a mentalidade de um usuário. O comando a seguir pede que o modelo resuma um bloco de texto:
+Comando:
+Summarize this text:
+Text: A quantum computer exploits quantum mechanical phenomena to perform calculations exponentially
+faster than any modern traditional computer. At very tiny scales, physical matter acts as both
+particles and as waves, and quantum computing uses specialized hardware to leverage this behavior.
+The operating principles of quantum devices is beyond the scope of classical physics. When deployed
+at scale, quantum computers could be used in a wide variety of applications such as: in
+cybersecurity to break existing encryption methods while helping researchers create new ones, in
+meteorology to develop better weather forecasting etc. However, the current state of the art quantum
+computers are still largely experimental and impractical.
+Resposta:
+Quantum computers leverage the wave-particle duality of matter at tiny scales to perform
+ calculations exponentially faster than traditional computers. They harness quantum phenomena,
+ which are beyond the scope of classical physics, to achieve this speed advantage. While
+ promising for applications like cybersecurity, weather forecasting, and beyond, current
+ quantum computers are still experimental and not yet practical for widespread use.
+(gemini-1.5-flash)
+Especificar restrições
+Especifique as restrições à leitura do comando ou à geração de uma resposta. Você pode dizer ao modelo o que fazer e o que não fazer. No exemplo anterior, o resumo é mais curto do que o texto original, mas talvez você queira que o resumo seja mais curto. Nesse caso, é possível especificar uma restrição no comando sobre a duração do resumo:
+Comando:
+Summarize this text in two sentences:
+Text: A quantum computer exploits quantum mechanical phenomena to perform calculations exponentially
+faster than any modern traditional computer. At very tiny scales, physical matter acts as both
+particles and as waves, and quantum computing uses specialized hardware to leverage this behavior.
+The operating principles of quantum devices is beyond the scope of classical physics. When deployed
+at scale, quantum computers could be used in a wide variety of applications such as: in
+cybersecurity to break existing encryption methods while helping researchers create new ones, in
+meteorology to develop better weather forecasting etc. However, the current state of the art quantum
+computers are still largely experimental and impractical.
+Resposta:
+Quantum computers harness the wave-particle duality of matter at the quantum level to perform
+ computations exponentially faster than traditional computers. While these machines hold
+ immense potential for fields like cybersecurity and weather forecasting, they are currently
+ in their early stages of development and not yet practical for widespread use.
+(gemini-1.5-flash)
+Definir o formato da resposta
+Você também pode dar instruções que especifiquem o formato da resposta. Por exemplo, você pode pedir que a resposta seja formatada como tabela, lista com marcadores, argumento rápido de venda, palavras-chave, frase ou parágrafo. A mensagem do sistema a seguir instrui o modelo a ser mais interativo na resposta:
+Mensagem do sistema
+All questions should be answered comprehensively with details, unless the user requests a concise response specifically.
+Comando
+What is a smart way to make a business that sells DVD's in 2025?
+Resposta:
+Okay, you're looking at a real uphill battle here. The DVD market is significantly diminished due to streaming services, digital downloads, and Blu-ray. However, that doesn't necessarily mean it's impossible to build a DVD-based business in 2025. It just requires a hyper-focused strategy and a deep understanding of the remaining market. Here's a breakdown of smart approaches:
+
+ I. Understanding the Challenges and Opportunities
+ Challenges:
+ Dominance of Streaming: Netflix, Amazon Prime Video, Disney+, and countless other services offer vast libraries on-demand.
+ Digital Downloads/Rentals: Platforms like iTunes, Google Play, and Vudu make purchasing or renting digital versions easy.
+ Blu-ray & 4K Ultra HD: Offer superior picture and sound quality, often preferred by home theater enthusiasts.
+ ....
+.....
+(gemini-2.0-flash)
+Outro exemplo que usamos no passado é:
+Mensagem do sistema
+All questions should be answered comprehensively with details, unless the user requests a
+ concise response specifically. Respond in the same language as the query.
+Comando
+What is a smart way to create a lemonade business?
+Resposta:
+Launching a Successful Lemonade Stand: A Smart Approach
+ Creating a lemonade business, whether a simple stand or a larger operation, requires strategic thinking. Here's a breakdown of how to approach it smartly:
+ 
+ 1. Define Your Business:
+ Scope: Are you aiming for a small, seasonal lemonade stand, a food truck, a delivery service, or something else entirely?
+ Target Audience: Who are you selling to? Families, office workers, tourists?
+ Unique Selling Proposition: What sets your lemonade apart? Special flavors, organic ingredients, a unique recipe?
+ 
+ Pricing: Research competitor prices and determine a profitable pricing structure.
+ Location: Consider foot traffic, accessibility, and regulations for your chosen location.
+ .....
+(gemini-1.5-flash)
+Resumo
+Dê aos modelos instruções sobre o que fazer.
+As instruções precisam ser claras e específicas.
+Especifique restrições ou requisitos de formatação para a saída.
+Incluir exemplos few-shott
+Você pode incluir exemplos no comando que mostram ao modelo como fazer isso da forma certa. O modelo tenta identificar padrões e relações entre os exemplos e os aplica ao gerar uma resposta. As solicitações que contêm alguns exemplos são chamadas de solicitações curtas, enquanto as que não fornecem exemplos são chamadas de solicitações de zero disparo. Muitas vezes, as solicitações de imagem são usadas para regular a formatação, a frase, o escopo ou o padrão geral das respostas do modelo. Use exemplos específicos e variados para ajudar o modelo a restringir o foco e gerar resultados mais precisos.
+Recomendamos sempre incluir exemplos few-shot nos comandos. Os comandos sem exemplos few-shot provavelmente serão menos eficazes. Na verdade, é possível remover instruções do comando se os exemplos forem claros o suficiente para mostrar a tarefa em questão.
+Tomada zero ou poucas fotos
+O prompt de imagem zero pede ao modelo para escolher a melhor explicação.
+Comando:
+Please choose the best explanation to the question:
+
+Question: How is snow formed?
+Explanation1: Snow is formed when water vapor in the air freezes into ice crystals in the
+atmosphere, which can combine and grow into snowflakes as they fall through the atmosphere and
+accumulate on the ground.
+Explanation2: Water vapor freezes into ice crystals forming snow.
+Answer:
+Resposta:
+Explanation 1 is the best explanation.
+(gemini-1.5-flash)
+Se o caso de uso exigir que o modelo produza respostas concisas, inclua exemplos no prompt para dar preferência a respostas concisas.
+O prompt a seguir fornece dois exemplos que mostram preferência pelas explicações mais curtas. Na resposta, é possível ver que os exemplos guiaram o modelo para escolher a explicação mais curta (Explicação2), em vez da explicação mais longa (Explicação1) como fazia anteriormente.
+Comando:
+Below are some examples showing a question, explanation, and answer format:
+
+Question: Why is sky blue?
+Explanation1: The sky appears blue because of Rayleigh scattering, which causes shorter blue
+wavelengths of light to be scattered more easily than longer red wavelengths, making the sky look
+blue.
+Explanation2: Due to Rayleigh scattering effect.
+Answer: Explanation2
+
+Question: What is the cause of earthquakes?
+Explanation1: Sudden release of energy in the Earth's crust.
+Explanation2: Earthquakes happen when tectonic plates suddenly slip or break apart, causing a
+release of energy that creates seismic waves that can shake the ground and cause damage.
+Answer: Explanation1
+
+Now, Answer the following question given the example formats above:
+
+Question: How is snow formed?
+Explanation1: Snow is formed when water vapor in the air freezes into ice crystals in the
+atmosphere, which can combine and grow into snowflakes as they fall through the atmosphere and
+accumulate on the ground.
+Explanation2: Water vapor freezes into ice crystals forming snow.
+Answer:
+Resposta:
+Answer: Explanation2
+(gemini-1.5-flash)
+Encontre o número ideal de exemplos
+Teste o número de exemplos a serem fornecidos no comando para ter os resultados mais desejados. Modelos como o Gemini geralmente podem identificar padrões usando alguns exemplos. No entanto, talvez seja necessário testar quantos exemplos levam aos resultados desejados. Ao mesmo tempo, se você incluir muitos exemplos, o modelo poderá começar a sobrepor a resposta aos exemplos.
+Use exemplos para mostrar padrões em vez de antipadrões
+Usar exemplos para mostrar ao modelo um padrão a ser seguido é mais eficaz do que usar exemplos para mostrar ao modelo um antipadrão a ser evitado.
+⛔ Padrão negativo:
+Exemplo
+Don't end haikus with a question:
+Haiku are fun
+A short and simple poem
+Don't you enjoy them?
+
+✅ Padrão positivo:
+Exemplo
+Always end haikus with an assertion:
+Haiku are fun
+A short and simple poem
+A joy to write
+
+Usar formatação consistente em todos os exemplos
+Confira se a estrutura e a formatação desses exemplos são iguais para evitar respostas com formatos indesejados. Um dos principais objetivos de adicionar exemplos few-shot nos comandos é mostrar ao modelo o formato da resposta. Portanto, é essencial garantir um formato consistente em todos os exemplos, especialmente prestando atenção às tags XML, espaços em branco, novas linhas e divisores de exemplo.
+Resumo
+Incluir exemplos de resposta no prompt ajuda o modelo a aprender como responder.
+Dê ao modelo exemplos dos padrões a serem seguidos em vez de exemplos de padrões a serem evitados.
+Faça experiências com o número de solicitações para incluir. Dependendo do modelo, poucos exemplos são ineficazes na alteração do comportamento do modelo. Muitos exemplos fazem com que o modelo apresente overfitting.
+Usar formatação consistente em todos os exemplos
+Adicionar informações contextuais
+É possível incluir nas instruções e informações do prompt que o modelo precisa para resolver um problema, em vez de presumir que o modelo tem todas as informações necessárias. Essas informações contextuais ajudam o modelo a entender as restrições e os detalhes do que você está pedindo que ele faça.
+O exemplo a seguir pede ao modelo que forneça orientação para solução de problemas de um roteador:
+Comando:
+What should I do to fix my disconnected wifi? The light on my Google Wifi router is yellow and
+blinking slowly.
+Resposta:
+A yellow blinking light on your Google Wifi router usually indicates a problem with the internet connection. Here are some steps to troubleshoot and fix the issue:
+ 1. Restart your router and modem:
+ - Unplug your modem from the power outlet and wait for 30 seconds.
+ - Plug your modem back in and wait for it to fully boot up.
+ - Unplug your Google Wifi router and wait for 30 seconds.
+ - Plug your Google Wifi router back in and wait for it to fully boot up.
+.....
+(gemini-1.5-flash)
+A resposta se parece com informações genéricas de solução de problemas que não são específicas do roteador ou do status das luzes indicadoras de LED.
+Para personalizar a resposta do roteador específico, é possível adicionar ao prompt o guia de solução de problemas dele como contexto para consulta ao fornecer uma resposta.
+Comando:
+Answer the question using the text below. Respond with only the text provided.
+Question: What should I do to fix my disconnected wifi? The light on my Google Wifi router is yellow and blinking slowly.
+
+Text:
+Color: Slowly pulsing yellow
+What it means: There is a network error.
+What to do:
+Check that the Ethernet cable is connected to both your router and your modem and both devices are turned on. You might need to unplug and plug in each device again.
+
+Color: Fast blinking yellow
+What it means: You are holding down the reset button and are factory resetting this device.
+What to do:
+If you keep holding down the reset button, after about 12 seconds, the light will turn solid yellow. Once it is solid yellow, let go of the factory reset button.
+
+Color: Solid yellow
+What it means: Router is factory resetting.
+What to do:
+This can take up to 10 minutes. When it's done, the device will reset itself and start pulsing white, letting you know it's ready for setup.
+
+Color: Solid red
+What it means: Something is wrong.
+What to do:
+Critical failure. Factory reset the router. If the light stays red, contact Wifi customer support.
+Resposta:
+Check that the Ethernet cable is connected to both your router and your modem and both devices are turned on. You might need to unplug and plug in each device again.
+(gemini-1.5-flash)
+Resumo
+Inclua informações (contexto) no prompt que você quer que o modelo use ao gerar uma resposta.
+Dê ao modelo instruções sobre como usar as informações contextuais.
+Adicionar prefixos
+Um prefixo é uma palavra ou frase que você adiciona ao conteúdo do prompt e pode ser usada para várias finalidades, dependendo de onde você o colocou:
+Prefixo de entrada: a adição de um prefixo aos sinais de entrada indica partes semanticamente significativas da entrada para o modelo. Por exemplo, os prefixos "Inglês:" e "Francês:" demarcam dois idiomas diferentes.
+Prefixo da saída: mesmo que a saída seja gerada pelo modelo, é possível adicionar um prefixo à saída na solicitação. O prefixo de saída fornece ao modelo informações sobre o que é esperado como resposta. Por exemplo, o prefixo de saída "JSON:" sinaliza para o modelo que a saída precisa estar no formato JSON.
+Prefixo de exemplo: em prompts curtos, adicionar prefixos aos exemplos fornece rótulos que o modelo pode usar ao gerar a saída, o que facilita a análise do conteúdo de saída.
+No exemplo a seguir, "Texto:" é o prefixo de entrada e "A resposta é:" é o prefixo de saída.
+Comando:
+Classify the text as one of the following categories.
+- large
+- small
+Text: Rhino
+The answer is: large
+Text: Mouse
+The answer is: small
+Text: Snail
+The answer is: small
+Text: Elephant
+The answer is:
+Resposta:
+The answer is: large
+(gemini-1.5-flash)
+Permitir que o modelo conclua a entrada parcial
+Os modelos de linguagem generativa funcionam como uma ferramenta avançada de preenchimento automático. Quando você fornece conteúdo parcial, o modelo pode fornecer o restante do conteúdo ou o que considera ser uma continuação desse conteúdo, como uma resposta. Ao fazer isso, se você incluir exemplos ou contexto, o modelo poderá levar esses exemplos ou contexto em consideração.
+O exemplo a seguir fornece um prompt com uma instrução e uma entrada de entidade:
+Comando:
+For the given order, return a JSON object that has the fields cheeseburger, hamburger, fries, or
+drink, with the value being the quantity.
+
+Order: A burger and a drink.
+Resposta:
+```
+{
+ "hamburger": 1,
+ "drink": 1
+}
+```
+(gemini-1.5-flash)
+Embora o modelo tenha feito o que foi solicitado, escrever as instruções em linguagem natural às vezes pode ser desafiador e deixar muito para a interpretação do modelo. Por exemplo, o cardápio de um restaurante pode conter muitos itens. Para reduzir o tamanho da resposta JSON, omita os itens que não foram ordenados. Nesse caso, é possível fornecer um exemplo e um prefixo de resposta e deixar o modelo concluí-lo:
+Comando:
+Valid fields are cheeseburger, hamburger, fries, and drink.
+Order: Give me a cheeseburger and fries
+Output:
+```
+{
+ "cheeseburger": 1,
+ "fries": 1
+}
+```
+Order: I want two burgers, a drink, and fries.
+Output:
+Resposta:
+```
+{
+ "hamburger": 2,
+ "drink": 1,
+ "fries": 1
+}
+```
+(gemini-1.5-flash)
+Observe como "cheeseburger" foi excluído da saída porque não fazia parte do pedido.
+Solicitar que o modelo formate a resposta
+A estratégia de conclusão também pode ajudar a formatar a resposta. O exemplo a seguir solicita que o modelo crie um esboço de redação:
+Comando:
+Create an outline for an essay about hummingbirds.
+Resposta:
+Hummingbirds: A Symphony of Speed and Color
+ I. Introduction
+ A. Hummingbirds are fascinating creatures known for their dazzling colors, lightning-fast flight, and unique feeding habits.
+ B. Brief overview of the diversity of hummingbird species and their geographic distribution.
+ C. Thesis statement: Hummingbirds are an embodiment of resilience, adaptation, and the wonders of the natural world.
+.....
+(gemini-1.5-flash)
+O prompt não especificou o formato da estrutura de tópicos, e o modelo escolheu um formato para você. Para que o modelo retorne um contorno em um formato específico, adicione texto que represente o início dele e deixe que o modelo o conclua com base no padrão iniciado.
+Comando:
+Create an outline for an essay about hummingbirds.
+I. Introduction
+ *
+Resposta:
+Hummingbirds: Jewels of the Air
+ **I. Introduction**
+ * **Hook:** Begin with a captivating image or anecdote about hummingbirds, emphasizing their vibrant colors, rapid flight, and unique feeding habits.
+ * **Background:** Briefly introduce hummingbirds as the smallest birds in the world and their fascinating adaptations for a nectar-rich diet.
+ * **Thesis:** State the main argument or focus of the essay. Examples: 
+ * **The incredible adaptations of hummingbirds enable them to thrive in diverse ecosystems.**
+ * **Hummingbirds play a crucial role in pollination and biodiversity.**
+ * **The beauty and grace of hummingbirds make them captivating subjects for both scientific study and artistic appreciation.**
+(gemini-1.5-flash)
+Resumo
+Se você fornecer uma entrada parcial ao modelo, ele a preencherá com base em qualquer exemplo ou contexto disponível no prompt.
+Às vezes, pode ser mais fácil fazer com que o modelo conclua uma entrada do que descrever a tarefa em linguagem natural.
+Adicionar uma resposta parcial a uma solicitação pode orientar o modelo para seguir um padrão ou formato desejado.
+Dividir comandos em componentes simples
+Para casos de uso que exigem solicitações complexas, é possível ajudar o modelo a gerenciar essa complexidade dividindo os itens em componentes mais simples.
+Detalhar as instruções
+Em vez de ter várias instruções em um só comando, crie um por instrução. Você pode escolher qual solicitação processar com base na entrada do usuário.
+Comandos em cadeia
+Para tarefas complexas que envolvem várias etapas sequenciais, torne cada etapa uma solicitação e encadeie os comandos em uma sequência. Nessa cadeia sequencial, a saída de um comando na sequência se torna a entrada do próximo comando. A saída do último comando na sequência é a saída final.
+Respostas agregadas
+A agregação é quando você quer executar diferentes tarefas paralelas em diferentes partes dos dados e agregar os resultados para produzir a saída final. Por exemplo, é possível dizer ao modelo para executar uma operação na primeira parte dos dados, executar outra operação no restante dos dados e agregar os resultados.
+Resumo
+Divida instruções complexas em um comando para cada instrução e decida qual comando aplicar com base na entrada do usuário.
+Divida várias etapas sequenciais em comandos separados e encadeie-os de modo que a saída do comando anterior se torne a entrada do comando a seguir.
+Separe tarefas paralelas e agregue as respostas para produzir o resultado final.
+Teste diferentes valores de parâmetros
+Cada chamada que você envia a um modelo inclui valores de parâmetros que controlam como o modelo gera uma resposta. O modelo pode gerar diferentes resultados para diferentes valores de parâmetros. Teste diferentes valores de parâmetros para conseguir os melhores valores para a tarefa. Os parâmetros disponíveis para modelos diferentes podem ser diferentes. Os parâmetros mais comuns são:
+Máximo de tokens de saída
+Temperatura
+Top-K
+Top-P
+Máximo de tokens de saída
+Número máximo de tokens que podem ser gerados na resposta. Um token tem cerca de quatro caracteres. 100 tokens correspondem a cerca de 20 palavras.
+Especifique um valor mais baixo para respostas mais curtas e um valor mais alto para respostas mais longas.
+Temperatura
+A temperatura é usada para amostragem durante a geração da resposta, que ocorre quando topP e topK são aplicados. A temperatura controla o grau de aleatoriedade na seleção do token. Temperaturas mais baixas são boas para comandos que exigem uma resposta mais determinista e menos aberta ou criativa, enquanto temperaturas maiores podem levar a resultados mais diversos ou criativos. Uma temperatura de 0 é determinista, o que significa que a resposta de maior probabilidade é sempre selecionada.
+Na maioria dos casos de uso, é melhor começar com a temperatura 0.2. Se o modelo retornar uma resposta muito genérica, muito curta ou se o modelo fornecer uma resposta substituta, tente aumentar a temperatura.
+Top-K
+O top-k muda a forma como o modelo seleciona tokens para saída. Um top-K de 1 significa que o próximo token selecionado é o mais provável entre todos os tokens no vocabulário do modelo (também chamado de decodificação gananciosa), enquanto um top-K de 3 significa que o próximo token está selecionado entre os três tokens mais prováveis usando a temperatura.
+Para cada etapa da seleção de tokens, são amostrados os tokens top-K com as maiores probabilidades. Em seguida, os tokens são filtrados com base no valor de top-P com o token final selecionado por meio da amostragem de temperatura.
+Especifique um valor mais baixo para respostas menos aleatórias e um valor mais alto para respostas mais aleatórias. O top-K padrão é 40.
+Top-P
+O top-p muda a forma como o modelo seleciona tokens para saída. Os tokens são selecionados do mais provável (veja o top-K) para o menos provável até que a soma das probabilidades seja igual ao valor do top-P. Por exemplo, se os tokens A, B e C tiverem uma probabilidade de 0,3, 0,2 e 0,1 e o valor de top-P for 0.5, o modelo selecionará A ou B como token seguinte usando temperatura e exclui C como candidato.
+Especifique um valor mais baixo para respostas menos aleatórias e um valor mais alto para respostas mais aleatórias. O top-P padrão é 0.95.
+Estratégias de iteração de prompt
+O design de prompt é um processo iterativo que geralmente requer algumas iterações antes de receber a resposta desejada de forma consistente. Esta seção fornece orientações sobre algumas coisas que você pode tentar ao iterar nas suas solicitações.
+Use formulações diferentes
+O uso de palavras diferentes ou frases em suas solicitações costuma gerar respostas diferentes do modelo, mesmo que todas tenham o mesmo significado. Se você não estiver recebendo os resultados esperados, tente reformular o prompt.
+Version 1:
+How do I bake a pie?
+
+Version 2:
+Suggest a recipe for a pie.
+
+Version 3:
+What's a good pie recipe?
+
+Mude para uma tarefa análoga
+Se você não conseguir que o modelo siga as instruções para uma tarefa, tente dar a ela instruções para uma tarefa análoga que consegue o mesmo resultado.
+Esse prompt instrui o modelo a categorizar um livro usando categorias predefinidas.
+Comando:
+Which category does The Odyssey belong to:
+thriller
+sci-fi
+mythology
+biography
+Resposta:
+The Odyssey belongs to the category of **mythology**. 
+
+ Here's why:
+ 
+ * **Mythology:** The Odyssey tells the story of Odysseus, a hero from Greek mythology, and his
+ journey home after the Trojan War. It features gods, monsters, and supernatural events common to
+ Greek mythology.
+.....
+(gemini-1.5-flash)
+A resposta está correta, mas o modelo não permaneceu dentro dos limites das opções. Você também precisa modelar para responder apenas com uma das opções, em vez de em uma frase completa. Nesse caso, é possível reformular as instruções como uma pergunta de múltipla escolha e solicitar que o modelo escolha uma opção.
+Comando:
+Multiple choice problem: Which of the following options describes the book The Odyssey?
+Options:
+- thriller
+- sci-fi
+- mythology
+- biography
+Resposta:
+The correct answer is **mythology**.
+(gemini-1.5-flash)
+Mude a ordem do conteúdo do comando
+Às vezes, a ordem do conteúdo no prompt pode afetar a resposta. Tente alterar a ordem do conteúdo e ver como isso afeta a resposta.
+Version 1:
+[examples]
+[context]
+[input]
+
+Version 2:
+[input]
+[examples]
+[context]
+
+Version 3:
+[examples]
+[input]
+[context]
+Respostas substitutas
+Uma resposta substituta é retornada pelo modelo quando a solicitação ou a resposta acionam um filtro de segurança. Um exemplo de resposta substituta é "Não posso ajudar com isso, porque sou apenas um modelo de linguagem".
+Se o modelo responder com uma resposta substituta, tente aumentar a temperatura.
+O que evitar
+Evite depender de modelos para gerar informações factuais.
+Use com cuidado em problemas matemáticos e lógicos.
+Próximas etapas
+Agora que você entende melhor o design de comandos, tente escrever seus próprios comandos usando o Google AI Studio.
+Para saber mais sobre comandos multimodais, consulte Comandos com arquivos de mídia.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-02-06 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

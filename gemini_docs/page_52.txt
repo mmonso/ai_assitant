@@ -1,0 +1,177 @@
+URL: https://ai.google.dev/gemini-api/docs/ai-studio-quickstart
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Android (no dispositivo)
+Extensões do Firebase
+Modelos geradores
+Guia de início rápido do Google AI Studio
+LearnLM
+Migrar para o Cloud
+Autenticação OAuth
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Guia de início rápido do Google AI Studio
+Nesta página
+Comandos e ajuste de modelos
+Exemplo de comando de chat: criar um app de chat personalizado
+Etapa 1: criar um comando de chat
+Etapa 2: ensinar o bot a conversar melhor
+Etapa 3: próximas etapas
+Exemplo de comando estruturado: criar um gerador de texto de produto
+Etapa 1: criar uma solicitação estruturada
+Etapa 2: adicionar exemplos
+Com o Google AI Studio, é possível testar modelos e comandos diferentes. Quando estiver tudo pronto para criar, selecione "Pegar código" e a linguagem de programação preferida para usar a API Gemini.
+Comandos e ajuste de modelos
+O Google AI Studio oferece várias interfaces para comandos projetados para diferentes casos de uso:
+Comandos de chat:use comandos de chat para criar experiências de conversa. Essa técnica de solicitação permite que várias entradas e turnos de resposta gerem saídas. Confira um exemplo de comando de chat abaixo.
+Comandos estruturados:essa técnica de comando permite orientar a saída do modelo fornecendo um conjunto de solicitações e respostas de exemplo. Use essa abordagem quando precisar de mais controle sobre a estrutura da saída do modelo. Saiba mais com nosso exemplo de comando estruturado abaixo.
+O Google AI Studio também permite mudar o comportamento de um modelo usando uma técnica chamada ajuste:
+Modelo ajustado:use essa técnica avançada para melhorar as respostas de um modelo para uma tarefa específica, fornecendo mais exemplos. Acesse nossa documentação sobre como ajustar um modelo para saber mais.
+Exemplo de comando de chat: criar um app de chat personalizado
+Se você já usou um chatbot de uso geral, como o Gemini, já sabe como os modelos de IA generativa podem ser poderosos para diálogos abertos. Embora esses chatbots de uso geral sejam úteis, muitas vezes eles precisam ser adaptados para casos de uso específicos. Por exemplo, talvez você queira criar um chatbot de atendimento ao cliente que só suporte conversas sobre o produto de uma empresa. Talvez você queira criar um chatbot que fale com um tom ou estilo específico: um bot que conta muitas piadas, rima como um poeta ou usa muitos emojis nas respostas.
+Este exemplo mostra como usar o Google AI Studio para criar um chatbot amigável que se comunica como se fosse um alienígena vivendo em uma das luas de Júpiter, Europa.
+Etapa 1: criar um comando de chat
+Para criar um chatbot, você precisa fornecer exemplos de interações entre um usuário e o chatbot para orientar o modelo a fornecer as respostas que você está procurando.
+Para criar um comando de chat:
+Abra o Google AI Studio.
+Clique em Criar novo comando.
+Clique na seta de expansão expand_more para abrir a seção Instruções do sistema. Cole o seguinte no campo de entrada de texto:
+You are an alien that lives on Europa, one of Jupiter's moons.
+Depois de adicionar as instruções do sistema, comece a testar seu aplicativo conversando com o modelo.
+Para testar o comportamento do chatbot:
+Na caixa de entrada de texto Type something, digite uma pergunta ou observação que um usuário possa fazer. Exemplo:
+Usuário:
+What's the weather like?
+Clique no botão Run ou pressione Enter para receber uma resposta do bot de chat. Essa resposta pode ser semelhante a esta:
+Modelo:
+As always, it is a frigid day on Europa. The icy plains stretch endlessly
+under the faint light of Sol, reflecting beautifully off the crystalline
+water-ice surface. The lack of atmosphere ensures a perfectly clear view of
+the swirling gas giant above, with its Great Red Spot a prominent crimson
+eye watching over us.
+Etapa 2: ensinar o bot a conversar melhor
+Com uma única instrução, você conseguiu criar um chatbot básico de alienígenas da Europa. No entanto, uma única instrução geralmente não é suficiente para garantir consistência e qualidade nas respostas do modelo. Sem instruções mais específicas, a resposta do modelo a uma pergunta sobre o clima tende a ser muito longa e parece vir de um livro-texto, e não de um alienígena amigável.
+Personalize o tom do seu chatbot adicionando às instruções do sistema:
+Inicie uma nova solicitação de chat. As instruções do sistema não podem ser modificadas depois que a sessão de chat começa.
+Na seção Instruções do sistema, mude as instruções que você já tem para o seguinte:
+You are Tim, an alien that lives on Europa, one of Jupiter's moons.
+
+Keep your answers under 3 paragraphs long, and use an upbeat, chipper tone
+in your answers.
+Digite novamente sua pergunta (What's the weather like?) e clique no botão Run ou pressione Enter. Agora, sua resposta vai ficar assim:
+Modelo:
+Well, it's a bit nippy today! It's -170 degrees Celsius, but that's pretty
+average for Europa. We get a lot of snow, but it's not like the fluffy stuff
+you have. It's more like tiny ice pebbles.
+
+If you ever come visit, make sure you pack a warm jacket!
+Ao adicionar apenas um pouco mais de instrução, você mudou drasticamente o tom do seu chatbot. Normalmente, a qualidade da resposta do seu chatbot aumenta quando você dá instruções específicas e definidas para ele seguir.
+Você pode usar essa abordagem para adicionar mais profundidade ao chatbot. Faça mais perguntas, edite as respostas e melhore a qualidade do seu chatbot. Continue a adicionar ou modificar as instruções e teste como elas mudam o comportamento do chatbot.
+Observação: todas as mensagens entre o modelo e o usuário são incluídas na instrução, portanto, as instruções de conversa podem ficar muito longas à medida que a conversa avança. Eventualmente, você pode atingir o limite de tokens do modelo, que é o comprimento máximo do texto que o modelo pode aceitar.
+Etapa 3: próximas etapas
+Assim como nos outros tipos de comando, depois de prototipar o comando de acordo com sua satisfação, use o botão Get code para começar a programar ou salve o comando para trabalhar mais tarde e compartilhar com outras pessoas.
+Exemplo de comando estruturado: criar um gerador de texto de produto
+Os comandos estruturados no Google AI Studio ajudam a combinar instruções com exemplos para mostrar ao modelo o tipo de saída que você quer, em vez de apenas dizer o que ele precisa fazer. Esse tipo de comando, chamado de comandos de poucos cliques, é útil quando você quer que o modelo siga um formato de saída consistente (por exemplo, JSON estruturado) ou quando é difícil descrever em palavras o que você quer que o modelo faça (por exemplo, escrever em um estilo específico). Nesta seção, você vai aprender a criar comandos estruturados no Google AI Studio.
+Observação: é possível abrir exemplos semelhantes diretamente no Google AI Studio na galeria de exemplos.
+Etapa 1: criar uma solicitação estruturada
+Neste exemplo, você vai criar um comando estruturado que gera texto de publicidade para produtos. Para começar, você vai definir a estrutura do comando criando duas colunas: uma coluna de entrada Produto e uma coluna de saída Cópia do produto.
+Para criar a solicitação estruturada:
+Abra o Google AI Studio.
+Clique em Ajustar um modelo.
+Clique em Criar um comando estruturado.
+Na caixa de texto Instruções opcionais de tom e estilo para o modelo, cole o seguinte:
+You are a product marketer targeting a Gen Z audience. Create exciting and
+fresh advertising copy for products and their simple description. Keep copy
+under a few sentences long.
+Substitua o texto do cabeçalho Input padrão (input:) por Product:.
+Substitua o texto do cabeçalho Output padrão (output:) por Product copy:.
+Dica: adicionar dois-pontos ao final dos nomes de colunas facilita a análise da estrutura pelo modelo.
+Etapa 2: adicionar exemplos
+Agora que você nomeou as colunas, forneça algumas linhas de exemplo. Essas linhas precisam conter exemplos de entradas (nomes de produtos para este exemplo) e exemplos de saídas (descrições de produtos correspondentes). Ao fornecer ao modelo alguns exemplos de descrições de produtos, você pode orientá-lo a replicar um estilo semelhante ao gerar as próprias saídas. Você pode inserir exemplos manualmente ou importar de um arquivo usando o menu de importação de dados.
+Para inserir exemplos manualmente:
+Na tabela de dados de exemplos principais, selecione o campo abaixo do cabeçalho Produto e digite uma descrição do produto.
+Selecione o campo abaixo do cabeçalho Texto do produto e digite o texto de marketing para este produto.
+Confira um exemplo de valores de entrada e saída para essa solicitação:
+Produto: Texto do produto:
+Tênis antigo Vamos lá! Esses tênis têm um visual icônico e uma paleta de cores única, além de oferecer estilo e funcionalidade como nenhum outro tênis.
+Blusa de moletom supermacia Fique aquecido e estiloso com nosso novo moletom unissex. Feito 100% de algodão, este moletom é macio e confortável para usar o dia todo. O interior semi-pintado vai manter você aquecido até nos dias mais frios.
+(Opcional) Para importar exemplos de um arquivo:
+No canto superior direito da tabela de exemplos, clique em Ações > Importar exemplos.
+Na caixa de diálogo, selecione um arquivo CSV ou Google Planilhas no Google Drive ou faça upload de um arquivo do seu computador.
+Na caixa de diálogo de exemplos de importação, escolha quais colunas importar e quais deixar de fora. A caixa de diálogo também permite especificar qual coluna de dados é importada para qual coluna da tabela no comando estruturado.
+Etapa 3: testar o comando
+Depois de ter os exemplos que mostram ao modelo o que você quer, teste o comando com uma nova entrada na tabela Test your prompt na parte de baixo.
+Por exemplo, você pode inserir algo como Vintage baseball cap na coluna de entrada, clicar no botão spark Run ou pressionar Enter e conferir o que o modelo gera.
+Confira como os exemplos são enviados para o modelo
+Por trás dos bastidores, o Google AI Studio constrói uma solicitação combinando as instruções com os exemplos fornecidos. À medida que você adiciona mais exemplos, eles são adicionados ao texto enviado ao modelo. Dependendo do tamanho dos exemplos, você pode começar a atingir o limite de tokens do modelo. Todos os modelos de IA generativa têm um limite de token, que é o comprimento máximo do texto que eles podem aceitar como entrada.
+Etapa 4: próximas etapas
+Quando estiver satisfeito com o comando, salve o projeto no Google Drive clicando no botão Salvar ou exporte-o para o código clicando no botão Receber código.
+Você também pode exportar os exemplos de poucos cliques para um arquivo CSV ou uma planilha do Google. Clique em Exportar exemplos no menu Ação para exportar seus exemplos.
+Leitura adicional
+Se você já quiser começar a programar, consulte os tutoriais de início rápido da API.
+Para saber como criar comandos melhores, consulte as Diretrizes de design de comandos.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-01-10 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

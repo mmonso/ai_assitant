@@ -1,0 +1,144 @@
+URL: https://ai.google.dev/gemini-api/docs/embeddings
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Documentos da API Gemini
+Referência da API
+Manual
+Visão geral
+Começar
+Início rápido
+Chaves de API
+Bibliotecas
+Notas da versão
+Compatibilidade com o OpenAI
+Fórum de desenvolvedores
+Modelos
+Todos os modelos
+Preço
+Limites de taxas
+Informações de faturamento
+Recursos
+Geração de texto
+Geração de imagens
+Visão
+Compreensão de áudio
+Contexto longo
+Execução do código
+Saída estruturada
+Pensando
+Chamadas de função
+Entendimento de documentos
+Embasamento com a Pesquisa Google
+Ajuste de detalhes
+Embeddings
+Guias
+API Live
+O armazenamento em cache de contexto
+Engenharia de comando
+Contagem de tokens
+Segurança
+Outros recursos
+Gemini para pesquisa
+Programa acadêmico da Gemini
+Casos de uso
+Aplicativos
+Solução de problemas
+Solução de problemas com APIs
+Solução de problemas do AI Studio
+Google Workspace
+Jurídico
+Termos de Serviço
+Regiões disponíveis
+Outras políticas de uso
+O Gemini 2.5 Pro Experimental, nosso modelo mais avançado, já está disponível. Saiba mais
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Página inicial
+Gemini API
+Modelos
+Isso foi útil?
+Envie comentários
+Embeddings
+Nesta página
+O que são embeddings?
+Gerar embeddings
+Tipos de tarefa
+Tipos de tarefas com suporte
+Casos de uso
+Modelos de embedding
+A seguir
+Observação: apresentamos nosso primeiro modelo de incorporação do Gemini, disponível agora para desenvolvedores como gemini-embedding-exp-03-07 na API.
+A API Gemini oferece suporte a vários modelos de embedding que geram embeddings para palavras, frases, códigos e frases. Os embeddings resultantes podem ser usados para tarefas como pesquisa semântica, classificação de texto e agrupamento, entre muitas outras.
+O que são embeddings?
+Os embeddings são representações numéricas de texto (ou outros formatos de mídia) que capturam as relações entre as entradas. Os embeddings de texto funcionam convertendo texto em matrizes de números de ponto flutuante, chamados de vetores. Esses vetores são projetados para capturar o significado do texto. O comprimento da matriz de embedding é chamado de dimensionalidade do vetor. Uma passagem de texto pode ser representada por um vetor com centenas de dimensões.
+As embedding capturam o significado semântico e o contexto, o que resulta em texto com significados semelhantes com embedding "mais próximas". Por exemplo, as frases "Eu levei meu cachorro ao veterinário" e "Eu levei meu gato ao veterinário" teriam embeddings próximos entre si no espaço vetorial.
+Você pode usar embeddings para comparar textos diferentes e entender como eles se relacionam. Por exemplo, se as embeddings do texto "cat" e "dog" estiverem próximas uma da outra, é possível inferir que essas palavras são semelhantes em significado, contexto ou ambos. Isso permite uma variedade de casos de uso comuns de IA.
+Antes de começar
+Antes de chamar a API Gemini, verifique se você tem o SDK de sua escolha instalado e uma chave da API Gemini configurada e pronta para uso.
+Gerar embeddings
+Use o método embedContent para gerar embeddings de texto:
+Python
+JavaScript
+Go
+REST
+from google import genai
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+result = client.models.embed_content(
+        model="gemini-embedding-exp-03-07",
+        contents="What is the meaning of life?")
+
+print(result.embeddings)
+Também é possível gerar embeddings para vários pedaços de uma só vez transmitindo-os como uma lista de strings.
+Tipos de tarefa
+Ao criar sistemas de geração aumentada de recuperação (RAG), um design comum é usar embeddings de texto para realizar uma pesquisa de similaridade. Em alguns casos, isso pode prejudicar a qualidade, porque as perguntas e as respostas não são semanticamente semelhantes. Por exemplo, uma pergunta como "Por que o céu é azul?" e a resposta "A dispersão da luz solar causa a cor azul" têm significados distintos como frases, o que significa que um sistema RAG não reconhece automaticamente a relação delas.
+Os tipos de tarefa permitem gerar embeddings otimizados para tarefas específicas, economizando tempo e custo e melhorando o desempenho.
+Python
+JavaScript
+REST
+from google import genai
+from google.genai import types
+
+client = genai.Client(api_key="GEMINI_API_KEY")
+
+result = client.models.embed_content(
+        model="gemini-embedding-exp-03-07",
+        contents="What is the meaning of life?",
+        config=types.EmbedContentConfig(task_type="SEMANTIC_SIMILARITY")
+)
+print(result.embeddings)
+Tipos de tarefas com suporte
+Tipo de tarefa Descrição
+SEMANTIC_SIMILARITY Usado para gerar embeddings otimizados para avaliar a similaridade de texto.
+CLASSIFICATION Usado para gerar embeddings otimizados para classificar textos de acordo com rótulos predefinidos.
+CLUSTERING Usado para gerar embeddings otimizados para agrupar textos com base nas semelhanças deles.
+RETRIEVAL_DOCUMENT, RETRIEVAL_QUERY, QUESTION_ANSWERING e FACT_VERIFICATION Usado para gerar embeddings otimizados para pesquisa de documentos ou recuperação de informações.
+CODE_RETRIEVAL_QUERY Usado para recuperar um bloco de código com base em uma consulta de linguagem natural, como classificar uma matriz ou reverter uma lista vinculada. As incorporações dos blocos de código são computadas usando RETRIEVAL_DOCUMENT.
+Casos de uso
+As embeddings de texto são usadas em vários casos de uso comuns de IA, como:
+Recuperação de informações:é possível usar embeddings para recuperar textos semanticamente semelhantes com base em um texto de entrada.
+Tutorial de pesquisa de documentostask
+Agrupamento:comparar grupos de embeddings pode ajudar a identificar tendências ocultas.
+Tutorial de agrupamento de embeddingsbubble_chart
+Banco de dados de vetores:ao levar diferentes casos de uso de embeddings para a produção, é comum armazenar embeddings em um banco de dados de vetores.
+Tutorial do banco de dados do Vectorbolt
+Classificação:é possível treinar um modelo usando embeddings para classificar documentos em categorias.
+Tutorial de classificaçãotoken
+Modelos de embedding
+A API Gemini oferece três modelos que geram embeddings de texto:
+gemini-embedding-exp-03-07
+text-embedding-004
+embedding-001
+A seguir
+Confira o notebook de início rápido de embeddings.
+Isso foi útil?
+Envie comentários
+Exceto em caso de indicação contrária, o conteúdo desta página é licenciado de acordo com a Licença de atribuição 4.0 do Creative Commons, e as amostras de código são licenciadas de acordo com a Licença Apache 2.0. Para mais detalhes, consulte as políticas do site do Google Developers. Java é uma marca registrada da Oracle e/ou afiliadas.
+Última atualização 2025-04-03 UTC.
+Termos de Serviço
+Privacidade
+Português – Brasil

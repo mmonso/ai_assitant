@@ -1,0 +1,52 @@
+URL: https://ai.google.dev/gemma/gemmaverse
+
+Modelos
+/
+Português – Brasil
+Fazer login
+Gemma
+Documentos
+Esta página foi traduzida pela API Cloud Translation.
+Switch to English
+Este é o Gemmaverse
+Conheça os modelos Gemma criados pela comunidade
+Estudos de caso em destaque
+ROBOFLOW e PaliGemma 2
+O objetivo da Roboflow é melhorar a visão computacional para uso do consumidor e da empresa com os fluxos de trabalho de IA, totalmente integrados à PaliGemma.
+Saiba mais
+INSAIT: BgGPT
+O LLM líder na Bulgária com o Gemma 2
+Saiba mais
+NEXA AI: OmniAudio
+Um modelo de linguagem de áudio para aplicativos de borda
+Saiba mais
+AI Singapore: SEA-LION
+Tornando a IA mais inclusiva para os idiomas do Sudeste Asiático com o Gemma 2
+Saiba mais
+Como aproveitar a comunicação global
+Conheça as variantes do Gemma criadas pela comunidade
+Saiba mais sobre o Hugging Face
+PRINCETON-NLP/GEMMA-2-9B-IT-SIMPO
+Um derivado do Gemma 2 9B otimizado para o aprendizado de preferências pelo SimPO.
+UNSLOTH/GEMMA-2-9B-IT-BNB-4BIT
+O Unsloth aumenta a capacidade do Gemma 2 com quantização de 4 bits, oferecendo ajustes mais rápidos e uso reduzido de memória.
+UCLA-AGI/GEMMA-2-9B-IT-SPPO-ITER3
+Um modelo do Gemma 2 desenvolvido usando a otimização de preferência de autojogo.
+AIDC-AI/OVIS1.6-GEMMA2-9B
+Um modelo de linguagem grande multimodal de 10,2 bilhões de parâmetros para processamento e geração de imagens e textos.
+RTZR/KO-GEMMA-2-9B-IT
+Um modelo Gemma 2 em coreano ajustado para conversa e feedback humano.
+LEMON07R/GEMMA-2-ATARAXY-9B
+Mesclagem do Gemma 2, o texto criativo mais bem classificado, que combina o SimPO e o Gutenberg.
+ALPHA-VLLM/LUMINA-IMAGE-2.0
+Um modelo generativo de imagem eficiente criado com o codificador de texto do Gemma 2 e um VAE.
+TELUGU-LLM-LABS/INDIC-GEMMA-2B-FINETUNED-SFT-NAVARASA-2.0
+Um modelo Gemma ajustado para seguir instruções em vários idiomas índicos.
+Participe da nossa comunidade Gemma
+Converse, compartilhe ideias e faça conexões instantâneas no nosso canal #gemma do Google Developer Discord.
+Chat agora
+Acesse a ficha do modelo, confira notebooks interativos e participe das discussões da comunidade.
+Participar do Kaggle
+Termos de Serviço
+Privacidade
+Português – Brasil
